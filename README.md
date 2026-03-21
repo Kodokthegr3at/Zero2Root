@@ -15,6 +15,8 @@ Break down complex topics into easy explanations
 
 Help others who are learning the same path
 
+---
+
 このリポジトリは、サイバーセキュリティ（特にオフェンシブセキュリティ）の学習内容をまとめたものです。
 難しい内容を分かりやすく整理し、他の学習者にも役立つことを目的としています。
 
@@ -62,6 +64,8 @@ LearnCybersecurity/
 2. 問題解決力を高める
 
 3. 知識を共有する
+
+---
 
 ## 🛠️ Learning Style
 
