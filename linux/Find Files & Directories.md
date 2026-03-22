@@ -1,7 +1,7 @@
 # 🔎 Find Files and Directories
 
 > **LearnCybersecurity** | Linux Fundamentals Series  
-> 📅 Last Updated: 2025 | 👤 Author: kodoktheGr3at
+> 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at
 
 ---
 
