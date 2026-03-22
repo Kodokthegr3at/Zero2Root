@@ -9,11 +9,11 @@ This repository contains my personal notes and summaries while learning Cybersec
 
 The goal is simple:
 
-Document my learning journey
+- Document my learning journey
 
-Break down complex topics into easy explanations
+- Break down complex topics into easy explanations
 
-Help others who are learning the same path
+- Help others who are learning the same path
 
 ---
 
