@@ -1,0 +1,325 @@
+# 🆘 Getting Help — man, --help, apropos
+
+> **LearnCybersecurity** | Linux Fundamentals Series  
+> 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at
+
+---
+
+## 📖 Daftar Isi / Table of Contents / 目次
+
+| # | Command | Bahasa Indonesia | English | 日本語 |
+|---|---------|-----------------|---------|--------|
+| 1 | `man` | Manual page lengkap | Full manual page | 完全なマニュアルページ |
+| 2 | `--help` | Bantuan singkat | Short help | 短いヘルプ |
+| 3 | `-h` | Bantuan versi pendek | Short version help | 短縮ヘルプ |
+| 4 | `apropos` | Cari keyword di manual | Search keyword in manuals | マニュアルでキーワード検索 |
+| 5 | ExplainShell | Penjelasan command online | Online command explainer | オンラインコマンド解説 |
+
+---
+
+## 💡 Why Getting Help Matters
+
+### 🇮🇩 Bahasa Indonesia
+Kita tidak perlu menghafal semua perintah dan opsinya. Yang lebih penting adalah **tahu cara mencari bantuan** saat menemukan tool yang belum dikenal atau lupa opsi tertentu. Kemampuan ini adalah tanda seorang engineer yang baik — bukan hafalan, tapi **kemampuan adaptasi**.
+
+Setiap tool memiliki ratusan opsi. Menghafal semua itu tidak mungkin dan tidak perlu. Yang perlu dikuasai adalah **cara menemukan informasi yang tepat dengan cepat**.
+
+### 🇬🇧 English
+We don't need to memorize every command and its options. What's more important is **knowing how to get help** when encountering an unfamiliar tool or forgetting certain options. This ability is a sign of a good engineer — not memorization, but **adaptability**.
+
+Every tool has hundreds of options. Memorizing all of them is neither possible nor necessary. What needs to be mastered is **how to find the right information quickly**.
+
+### 🇯🇵 日本語
+すべてのコマンドとそのオプションを暗記する必要はありません。より重要なのは、見慣れないツールに遭遇したり特定のオプションを忘れたりしたときに**ヘルプを求める方法を知ること**です。この能力は優れたエンジニアの証です — 暗記ではなく**適応力**です。
+
+すべてのツールには何百ものオプションがあります。それをすべて暗記することは不可能であり、必要でもありません。習得すべきは**必要な情報を素早く見つける方法**です。
+
+---
+
+## 1. 📖 `man` — Manual Pages
+
+### 🇮🇩 Bahasa Indonesia
+`man` (manual) menampilkan **dokumentasi lengkap** untuk sebuah perintah atau tool. Manual page berisi penjelasan mendalam tentang semua opsi, argumen, contoh penggunaan, dan perilaku tool tersebut. Ini adalah sumber referensi paling lengkap yang tersedia langsung di sistem.
+
+### 🇬🇧 English
+`man` (manual) displays the **complete documentation** for a command or tool. Manual pages contain in-depth explanations of all options, arguments, usage examples, and tool behavior. This is the most comprehensive reference source available directly on the system.
+
+### 🇯🇵 日本語
+`man`（manual）はコマンドやツールの**完全なドキュメント**を表示します。マニュアルページにはすべてのオプション、引数、使用例、ツールの動作についての詳細な説明が含まれています。これはシステム上で直接利用できる最も包括的なリファレンスです。
+
+```bash
+# Syntax
+man <tool>
+
+# Example: manual for ls
+$ man ls
+```
+
+**Output:**
+```
+LS(1)                    User Commands                    LS(1)
+
+NAME
+       ls - list directory contents
+
+SYNOPSIS
+       ls [OPTION]... [FILE]...
+
+DESCRIPTION
+       List information about the FILEs (the current directory
+       by default). Sort entries alphabetically if none of
+       -cftuvSUX nor --sort is specified.
+
+       -a, --all
+              do not ignore entries starting with .
+
+       -A, --almost-all
+              do not list implied . and ..
+...
+Manual page ls(1) line 1 (press h for help or q to quit)
+```
+
+### Navigating the `man` page
+
+| Key | 🇮🇩 Fungsi | 🇬🇧 Function | 🇯🇵 機能 |
+|-----|-----------|-------------|---------|
+| `↑` / `↓` | Scroll baris per baris | Scroll line by line | 1行ずつスクロール |
+| `Space` | Scroll satu halaman ke bawah | Scroll one page down | 1ページ下にスクロール |
+| `b` | Kembali satu halaman | Go back one page | 1ページ上に戻る |
+| `/keyword` | Cari keyword | Search for keyword | キーワードを検索 |
+| `n` | Lanjut ke hasil pencarian berikutnya | Next search result | 次の検索結果へ |
+| `N` | Kembali ke hasil pencarian sebelumnya | Previous search result | 前の検索結果へ |
+| `g` | Pergi ke awal | Go to beginning | 先頭へ移動 |
+| `G` | Pergi ke akhir | Go to end | 末尾へ移動 |
+| `h` | Tampilkan bantuan navigasi | Show navigation help | ナビゲーションヘルプを表示 |
+| `q` | Keluar dari man page | Quit man page | man ページを終了 |
+
+### Man Page Section Numbers
+
+```bash
+# Format: man <section> <command>
+$ man 1 ls      # user commands
+$ man 5 passwd  # file formats (e.g. /etc/passwd structure)
+$ man 8 sudo    # system admin commands
+```
+
+| Section | 🇮🇩 Isi | 🇬🇧 Content | 🇯🇵 内容 |
+|---------|--------|------------|---------|
+| `1` | Perintah user umum | General user commands | 一般ユーザーコマンド |
+| `2` | System calls | System calls | システムコール |
+| `3` | Library functions | Library functions | ライブラリ関数 |
+| `4` | Device files | Special device files | 特殊デバイスファイル |
+| `5` | Format file konfigurasi | File formats & configurations | ファイル形式と設定 |
+| `6` | Games | Games | ゲーム |
+| `7` | Miscellaneous | Miscellaneous | その他 |
+| `8` | Perintah administrasi sistem | System admin commands | システム管理コマンド |
+
+---
+
+## 2. 🔍 `--help` — Quick Help Flag
+
+### 🇮🇩 Bahasa Indonesia
+`--help` adalah cara **cepat dan ringkas** untuk melihat opsi yang tersedia tanpa harus membuka manual page lengkap. Output-nya lebih pendek dan langsung menampilkan daftar flag beserta penjelasan singkatnya. Cocok saat kita hanya butuh mengingat satu atau dua opsi.
+
+### 🇬🇧 English
+`--help` is a **quick and concise** way to see available options without opening the full manual page. Its output is shorter and directly shows a list of flags with brief explanations. Perfect when we only need to recall one or two options.
+
+### 🇯🇵 日本語
+`--help` は完全なマニュアルページを開かずに利用可能なオプションを確認する**素早く簡潔な**方法です。出力は短く、フラグと簡単な説明のリストを直接表示します。1つか2つのオプションを確認したいだけのときに最適です。
+
+```bash
+# Syntax
+<tool> --help
+
+# Example
+$ ls --help
+```
+
+**Output:**
+```
+Usage: ls [OPTION]... [FILE]...
+List information about the FILEs (the current directory by default).
+Sort entries alphabetically if none of -cftuvSUX nor --sort is specified.
+
+  -a, --all                  do not ignore entries starting with .
+  -A, --almost-all           do not list implied . and ..
+      --author               with -l, print the author of each file
+  -b, --escape               print C-style escapes for nongraphic characters
+  -B, --ignore-backups       do not list implied entries ending with ~
+  -c                         with -lt: sort by, and show, ctime
+  -C                         list entries by columns
+<SNIP>
+```
+
+---
+
+## 3. ⚡ `-h` — Short Help Flag
+
+### 🇮🇩 Bahasa Indonesia
+Beberapa tools menggunakan `-h` (bukan `--help`) sebagai versi pendek dari flag bantuan. Hasilnya biasanya **lebih ringkas** dari `--help`. Tidak semua tools mendukung `-h` — beberapa menggunakan `--help` saja, beberapa mendukung keduanya.
+
+### 🇬🇧 English
+Some tools use `-h` (instead of `--help`) as the short version of the help flag. The output is usually **more compact** than `--help`. Not all tools support `-h` — some only use `--help`, some support both.
+
+### 🇯🇵 日本語
+一部のツールはヘルプフラグの短縮版として `-h`（`--help` の代わりに）を使用します。出力は通常 `--help` より**よりコンパクト**です。すべてのツールが `-h` をサポートするわけではありません — `--help` のみ、または両方をサポートするものがあります。
+
+```bash
+# Syntax
+<tool> -h
+
+# Example: curl short help
+$ curl -h
+```
+
+**Output:**
+```
+Usage: curl [options...] <url>
+     --abstract-unix-socket <path> Connect via abstract Unix domain socket
+     --anyauth       Pick any authentication method
+ -a, --append        Append to target file when uploading
+     --basic         Use HTTP Basic Authentication
+     --cacert <file> CA certificate to verify peer against
+ -E, --cert <certificate[:password]> Client certificate file and password
+<SNIP>
+```
+
+### Which to Use?
+
+```
+Tool unknown?         → man <tool>          (full documentation)
+Need a quick flag?    → <tool> --help       (most tools)
+Tool uses short help? → <tool> -h           (curl, nmap, etc.)
+Not sure?             → try --help first, then -h
+```
+
+---
+
+## 4. 🔎 `apropos` — Search by Keyword
+
+### 🇮🇩 Bahasa Indonesia
+`apropos` digunakan untuk **mencari keyword di dalam deskripsi singkat semua manual page**. Berguna saat kita tahu **apa yang ingin dilakukan** tapi tidak tahu nama perintahnya. Misalnya, ingin tahu tools apa saja yang berhubungan dengan `sudo`.
+
+### 🇬🇧 English
+`apropos` is used to **search for a keyword within the short descriptions of all manual pages**. Useful when we know **what we want to do** but don't know the command name. For example, to find all tools related to `sudo`.
+
+### 🇯🇵 日本語
+`apropos` はすべてのマニュアルページの短い説明の中で**キーワードを検索**するために使います。コマンド名は分からないが**何をしたいかは分かる**ときに便利です。例えば、`sudo` に関連するすべてのツールを探したいとき。
+
+```bash
+# Syntax
+apropos <keyword>
+
+# Example: find everything related to sudo
+$ apropos sudo
+```
+
+**Output:**
+```
+sudo (8)             - execute a command as another user
+sudo.conf (5)        - configuration for sudo front end
+sudo_plugin (8)      - Sudo Plugin API
+sudo_root (8)        - How to run administrative commands
+sudoedit (8)         - execute a command as another user
+sudoers (5)          - default sudo security policy plugin
+sudoreplay (8)       - replay sudo session logs
+visudo (8)           - edit the sudoers file
+```
+
+```bash
+# More examples
+$ apropos password       # find password-related commands
+$ apropos network        # find networking commands
+$ apropos compress       # find compression tools
+$ apropos "file system"  # search multi-word keyword
+```
+
+> 💡 If `apropos` returns nothing, run `sudo mandb` first to update the manual database.
+
+---
+
+## 5. 🌐 ExplainShell — Online Command Explainer
+
+### 🇮🇩 Bahasa Indonesia
+**ExplainShell** (https://explainshell.com) adalah tool online yang **memecah dan menjelaskan setiap bagian dari perintah panjang**. Sangat berguna saat menemukan perintah kompleks yang belum pernah dilihat sebelumnya dan ingin memahami apa yang dilakukan setiap bagiannya.
+
+### 🇬🇧 English
+**ExplainShell** (https://explainshell.com) is an online tool that **breaks down and explains every part of a long command**. Very useful when encountering a complex command never seen before and wanting to understand what each part does.
+
+### 🇯🇵 日本語
+**ExplainShell**（https://explainshell.com）は**長いコマンドの各部分を分解して説明する**オンラインツールです。以前に見たことのない複雑なコマンドに遭遇し、各部分が何をするかを理解したいときに非常に便利です。
+
+```bash
+# Example: paste this complex command into explainshell.com
+find /etc/ -name *.conf -user root -size +20k -newermt 2020-03-03 -exec ls -al {} \; 2>/dev/null
+
+# ExplainShell will break it down:
+# find        → search for files
+# /etc/       → starting directory
+# -name *.conf → match files ending in .conf
+# -user root  → owned by root
+# -size +20k  → larger than 20 kilobytes
+# -newermt    → modified after specified date
+# -exec ls -al {} \; → run ls -al on each result
+# 2>/dev/null → suppress errors
+```
+
+---
+
+## 📊 Help Methods Comparison
+
+| Method | 🇮🇩 Kapan digunakan | 🇬🇧 When to use | 🇯🇵 使いどき | Detail Level |
+|--------|---------------------|----------------|-------------|--------------|
+| `man <tool>` | Butuh dokumentasi lengkap | Need full documentation | 完全なドキュメントが必要 | ⭐⭐⭐⭐⭐ Full |
+| `<tool> --help` | Butuh daftar opsi cepat | Need quick option list | 素早いオプション一覧が必要 | ⭐⭐⭐ Medium |
+| `<tool> -h` | Tool yang pakai short flag | Tools using short flag | 短縮フラグを使うツール | ⭐⭐ Short |
+| `apropos <keyword>` | Tidak tahu nama command | Don't know command name | コマンド名が分からない | ⭐ Names only |
+| `explainshell.com` | Perintah panjang/kompleks | Long/complex commands | 長い・複雑なコマンド | ⭐⭐⭐⭐ Visual |
+
+---
+
+## 🧠 Quick Reference Cheatsheet
+
+```bash
+# ── FULL DOCUMENTATION ───────────────────────────────
+man ls                      # manual for ls
+man 5 /etc/passwd           # manual for passwd file format
+man -k keyword              # same as apropos
+
+# ── QUICK HELP ───────────────────────────────────────
+ls --help                   # long help flag
+curl -h                     # short help flag (some tools)
+nmap -h                     # short help (nmap style)
+
+# ── SEARCH MANUALS ───────────────────────────────────
+apropos sudo                # find commands related to sudo
+apropos password            # find password-related commands
+sudo mandb                  # update man page database
+
+# ── NAVIGATING man PAGES ─────────────────────────────
+/keyword    # search inside man page
+n           # next match
+N           # previous match
+q           # quit
+Space       # next page
+b           # previous page
+g           # go to top
+G           # go to bottom
+
+# ── ONLINE RESOURCES ─────────────────────────────────
+# https://explainshell.com  → visual command breakdown
+# https://tldr.sh           → simplified man pages (community)
+# https://cheat.sh          → cheatsheets from terminal:
+curl cheat.sh/ls            # get ls cheatsheet from terminal
+```
+
+---
+
+> 📚 **References:**
+> - [HackTheBox Academy - Linux Fundamentals](https://academy.hackthebox.com)
+> - [ExplainShell](https://explainshell.com)
+> - [TLDR Pages](https://tldr.sh) — simplified, community-maintained man pages
+> - `man man` — manual for the manual command itself
+
+> 🔖 **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)  
+> 💬 **Feedback & Contributions welcome!** Open an issue or PR if you spot any errors.
