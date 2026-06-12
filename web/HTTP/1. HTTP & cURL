@@ -1,0 +1,363 @@
+# 🌐 HTTP & cURL
+
+> **LearnCybersecurity** | Web Requests Series  
+> 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at
+
+---
+
+## 📖 Daftar Isi / Table of Contents / 目次
+
+| # | Topic | Bahasa Indonesia | English | 日本語 |
+|---|-------|-----------------|---------|--------|
+| 1 | Overview | Apa itu HTTP? | What is HTTP? | HTTPとは？ |
+| 2 | URL Structure | Komponen URL | URL Components | URLの構成要素 |
+| 3 | HTTP Flow | Bagaimana HTTP bekerja | How HTTP works | HTTPの仕組み |
+| 4 | cURL | Pengenalan cURL | Introduction to cURL | cURLの紹介 |
+| 5 | cURL Flags | Flag-flag penting cURL | Important cURL flags | cURLの重要なフラグ |
+| 6 | Cheatsheet | Referensi cepat | Quick reference | クイックリファレンス |
+
+---
+
+## 1. 🏢 Overview — What is HTTP?
+
+### 🇮🇩 Bahasa Indonesia
+**HTTP** (HyperText Transfer Protocol) adalah protokol tingkat aplikasi yang digunakan untuk mengakses sumber daya di World Wide Web. Istilah *hypertext* mengacu pada teks yang mengandung tautan ke sumber daya lain yang dapat diinterpretasikan dengan mudah oleh pembaca.
+
+Komunikasi HTTP terdiri dari **client** dan **server**:
+- **Client** mengirim request ke server untuk meminta resource
+- **Server** memproses request dan mengembalikan resource yang diminta
+
+Port default untuk HTTP adalah **port 80**, dan untuk HTTPS adalah **port 443**.
+
+### 🇬🇧 English
+**HTTP** (HyperText Transfer Protocol) is an application-level protocol used to access resources on the World Wide Web. The term *hypertext* refers to text containing links to other resources that the readers can easily interpret.
+
+HTTP communication consists of a **client** and a **server**:
+- **Client** sends a request to the server asking for a resource
+- **Server** processes the request and returns the requested resource
+
+The default port for HTTP is **port 80**, and for HTTPS is **port 443**.
+
+### 🇯🇵 日本語
+**HTTP**（HyperText Transfer Protocol）はWorld Wide Webのリソースにアクセスするために使われるアプリケーションレベルのプロトコルです。*ハイパーテキスト*とは、読者が簡単に解釈できる他のリソースへのリンクを含むテキストを指します。
+
+HTTP通信は**クライアント**と**サーバー**で構成されます：
+- **クライアント**がリソースを要求してサーバーにリクエストを送信
+- **サーバー**がリクエストを処理して要求されたリソースを返す
+
+HTTPのデフォルトポートは**ポート80**、HTTPSは**ポート443**です。
+
+---
+
+## 2. 🔗 URL Structure — Anatomy of a URL
+
+### 🇮🇩 Bahasa Indonesia
+Resource melalui HTTP diakses menggunakan **URL** (Uniform Resource Locator). URL memiliki beberapa komponen yang masing-masing memiliki fungsi spesifik.
+
+### 🇬🇧 English
+Resources over HTTP are accessed via a **URL** (Uniform Resource Locator). A URL has several components, each with a specific function.
+
+### 🇯🇵 日本語
+HTTP経由のリソースは**URL**（Uniform Resource Locator）を使ってアクセスします。URLはそれぞれ特定の機能を持つ複数のコンポーネントで構成されています。
+
+```
+http://admin:password@inlanefreight.com:80/dashboard.php?login=true#status
+ ─┬──  ──────┬──────  ────────┬───────  ┬  ──────┬──────  ────┬────  ──┬──
+  │          │                │          │        │             │        │
+Scheme    User Info          Host       Port     Path        Query   Fragment
+```
+
+| Component | Example | 🇮🇩 Deskripsi | 🇬🇧 Description | 🇯🇵 説明 |
+|-----------|---------|--------------|----------------|---------|
+| **Scheme** | `http://` `https://` | Protokol yang digunakan, diakhiri `://` | Protocol being used, ends with `://` | 使用するプロトコル、`://`で終わる |
+| **User Info** | `admin:password@` | Kredensial opsional (user:pass), dipisah `@` | Optional credentials (user:pass), separated by `@` | オプションの認証情報（user:pass）、`@`で区切る |
+| **Host** | `inlanefreight.com` | Hostname atau IP address server | Hostname or IP address of the server | サーバーのホスト名またはIPアドレス |
+| **Port** | `:80` | Port dipisah `:` (default: 80/HTTP, 443/HTTPS) | Port separated by `:` (default: 80/HTTP, 443/HTTPS) | `:`で区切るポート（デフォルト: 80/HTTP, 443/HTTPS） |
+| **Path** | `/dashboard.php` | Path ke resource (file/folder) | Path to the resource (file/folder) | リソースへのパス（ファイル/フォルダ） |
+| **Query String** | `?login=true` | Parameter dimulai `?`, dipisah `&` untuk banyak param | Parameters starting with `?`, separated by `&` | `?`で始まるパラメータ、複数は`&`で区切る |
+| **Fragment** | `#status` | Diproses browser untuk navigasi dalam halaman | Processed by browser to navigate within the page | ページ内ナビゲーションのためにブラウザが処理 |
+
+> 💡 **Mandatory fields:** Only **Scheme** and **Host** are required. All other components are optional.
+
+---
+
+## 3. 🔄 HTTP Flow — How a Request Works
+
+### 🇮🇩 Bahasa Indonesia
+Berikut adalah alur yang terjadi ketika kamu mengakses sebuah website melalui browser:
+
+### 🇬🇧 English
+Here is the flow that happens when you access a website through a browser:
+
+### 🇯🇵 日本語
+ブラウザでウェブサイトにアクセスするときのフローは以下の通りです：
+
+```
+User enters: inlanefreight.com
+      │
+      ▼
+┌─────────────┐     DNS Query         ┌─────────────┐
+│   Browser   │ ─────────────────────▶│  DNS Server │
+│  (Client)   │◀─────────────────────  │             │
+└─────────────┘  Returns: 152.153.81.14└─────────────┘
+      │
+      │  GET / HTTP/1.1
+      ▼
+┌─────────────┐                       ┌─────────────┐
+│   Browser   │ ─────────────────────▶│  Web Server │
+│  (Client)   │◀─────────────────────  │  :80        │
+└─────────────┘  HTTP/1.1 200 OK      └─────────────┘
+                 + index.html content
+```
+
+### Step-by-step:
+
+| Step | 🇮🇩 Proses | 🇬🇧 Process | 🇯🇵 プロセス |
+|------|-----------|------------|------------|
+| **1** | Browser menerima URL dari user | Browser receives URL from user | ブラウザがユーザーからURLを受け取る |
+| **2** | Cek `/etc/hosts` untuk record lokal | Check `/etc/hosts` for local records | ローカルレコードの `/etc/hosts` を確認 |
+| **3** | Kirim DNS query untuk mendapatkan IP | Send DNS query to resolve IP address | IPアドレスを解決するためDNSクエリを送信 |
+| **4** | Kirim GET request ke IP:80 untuk path `/` | Send GET request to IP:80 for path `/` | パス `/` のGETリクエストをIP:80に送信 |
+| **5** | Server memproses request dan mengembalikan response | Server processes request and returns response | サーバーがリクエストを処理してレスポンスを返す |
+| **6** | Browser me-render HTML dan menampilkan halaman | Browser renders HTML and displays the page | ブラウザがHTMLをレンダリングしてページを表示 |
+
+> 💡 **Tip:** Kamu bisa menambahkan record manual ke `/etc/hosts` untuk override DNS:
+> ```bash
+> echo "192.168.1.10 target.local" | sudo tee -a /etc/hosts
+> ```
+
+---
+
+## 4. ⚡ cURL — Command Line HTTP Tool
+
+### 🇮🇩 Bahasa Indonesia
+**cURL** (client URL) adalah tool command-line dan library yang mendukung HTTP dan banyak protokol lainnya. cURL sangat berguna untuk:
+- Mengirim berbagai jenis web request dari command line
+- Scripting dan otomatisasi
+- Web penetration testing
+
+Berbeda dengan browser yang me-render HTML, cURL **menampilkan raw response** — sangat berguna untuk penetration tester yang perlu melihat konten request/response secara langsung.
+
+### 🇬🇧 English
+**cURL** (client URL) is a command-line tool and library that supports HTTP and many other protocols. cURL is highly useful for:
+- Sending various types of web requests from the command line
+- Scripting and automation
+- Web penetration testing
+
+Unlike a browser that renders HTML, cURL **displays the raw response** — very useful for penetration testers who need to inspect request/response content directly.
+
+### 🇯🇵 日本語
+**cURL**（client URL）はHTTPや多くの他のプロトコルをサポートするコマンドラインツールおよびライブラリです。cURLは以下のことに非常に役立ちます：
+- コマンドラインからさまざまなWebリクエストを送信
+- スクリプティングと自動化
+- Webペネトレーションテスト
+
+HTMLをレンダリングするブラウザとは異なり、cURLは**生のレスポンスを表示**します — リクエスト/レスポンスの内容を直接検査する必要があるペネトレーションテスターに非常に役立ちます。
+
+```bash
+# Basic HTTP request — prints raw HTML response
+$ curl http://info.cern.ch/
+
+<html><head></head><body><header>
+<title>http://info.cern.ch</title>
+</header>
+<h1>http://info.cern.ch - home of the first website</h1>
+...SNIP...
+```
+
+> 📌 **Historical note:** `http://info.cern.ch/` is the first website ever created — built in 1990 and made publicly accessible in August 1991 by **Tim Berners-Lee** at CERN. A restored version is still accessible today!
+
+---
+
+## 5. 🚩 cURL Flags — Important Options
+
+### 🇮🇩 Bahasa Indonesia
+Berikut adalah flag-flag penting yang sering digunakan dalam penetration testing dan web request analysis.
+
+### 🇬🇧 English
+Here are the important flags frequently used in penetration testing and web request analysis.
+
+### 🇯🇵 日本語
+以下はペネトレーションテストとWebリクエスト分析でよく使われる重要なフラグです。
+
+---
+
+### `-O` / `-o` — Save Output to File
+
+```bash
+# Save with remote filename (index.html → saved as index.html)
+$ curl -O http://info.cern.ch/index.html
+
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100   646  100   646    0     0   9773      0 --:--:-- --:--:-- --:--:--  9787
+
+$ ls
+index.html
+
+# Save with custom filename
+$ curl -o myfile.html http://info.cern.ch/index.html
+```
+
+---
+
+### `-s` — Silent Mode
+
+```bash
+# Suppress progress meter and error messages
+$ curl -s -O http://info.cern.ch/index.html
+# (no output — file saved silently)
+```
+
+---
+
+### `-i` — Include Response Headers
+
+```bash
+# Show both headers and body
+$ curl -i http://info.cern.ch/
+
+HTTP/1.1 200 OK
+Date: Mon, 01 Jan 2026 00:00:00 GMT
+Content-Type: text/html
+Content-Length: 646
+...
+
+<html>...
+```
+
+---
+
+### `-v` — Verbose Mode
+
+```bash
+# Show full request AND response (headers + body)
+$ curl -v http://info.cern.ch/
+
+* Trying 188.184.21.108:80...
+* Connected to info.cern.ch (188.184.21.108) port 80
+> GET / HTTP/1.1
+> Host: info.cern.ch
+> User-Agent: curl/8.5.0
+>
+< HTTP/1.1 200 OK
+< Content-Type: text/html
+<
+<html>...
+```
+
+> 💡 Lines with `>` = request sent. Lines with `<` = response received.
+
+---
+
+### `-u` — Authentication
+
+```bash
+# Basic authentication (user:password)
+$ curl -u admin:password http://target.com/admin/
+
+# URL-embedded auth (same effect)
+$ curl http://admin:password@target.com/admin/
+```
+
+---
+
+### `-A` — Custom User-Agent
+
+```bash
+# Spoof user agent (useful in pentesting)
+$ curl -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" http://target.com/
+```
+
+---
+
+### `-d` — Send POST Data
+
+```bash
+# Send POST request with data
+$ curl -d "username=admin&password=secret" http://target.com/login
+```
+
+---
+
+### `-h` / `--help` — Help Menu
+
+```bash
+# Quick help
+$ curl -h
+
+# Help by category
+$ curl -h http
+
+# Full help
+$ curl --help all
+
+# Manual page
+$ man curl
+```
+
+---
+
+## 📊 cURL Flag Summary Table
+
+| Flag | 🇮🇩 Fungsi | 🇬🇧 Function | 🇯🇵 機能 |
+|------|-----------|-------------|---------|
+| `-O` | Simpan dengan nama file remote | Save with remote filename | リモートファイル名で保存 |
+| `-o <file>` | Simpan dengan nama custom | Save with custom filename | カスタムファイル名で保存 |
+| `-s` | Mode silent (tanpa progress) | Silent mode (no progress) | サイレントモード（進捗なし） |
+| `-i` | Tampilkan header response | Include response headers | レスポンスヘッダーを表示 |
+| `-v` | Mode verbose (detail lengkap) | Verbose mode (full detail) | 詳細モード（完全な詳細） |
+| `-u` | Autentikasi user:password | User:password authentication | ユーザー:パスワード認証 |
+| `-A` | Set custom User-Agent | Set custom User-Agent | カスタムUser-Agentを設定 |
+| `-d` | Kirim data POST | Send POST data | POSTデータを送信 |
+| `-h` | Tampilkan menu bantuan | Show help menu | ヘルプメニューを表示 |
+| `--help all` | Bantuan lengkap semua flag | Full help for all flags | 全フラグの完全なヘルプ |
+| `man curl` | Manual page lengkap | Full manual page | 完全なマニュアルページ |
+
+---
+
+## 🧠 Quick Reference Cheatsheet
+
+```bash
+# ── BASIC REQUESTS ───────────────────────────────────────────
+curl http://target.com/                  # basic GET request
+curl -i http://target.com/               # GET + show response headers
+curl -v http://target.com/               # verbose (full req + res)
+curl -s http://target.com/               # silent (no progress bar)
+
+# ── SAVE OUTPUT ──────────────────────────────────────────────
+curl -O http://target.com/file.txt       # save as remote filename
+curl -o output.txt http://target.com/    # save as custom filename
+curl -s -O http://target.com/file.txt    # save silently
+
+# ── AUTHENTICATION ───────────────────────────────────────────
+curl -u admin:password http://target.com/admin/
+curl http://admin:password@target.com/admin/   # URL-embedded auth
+
+# ── SEND DATA ────────────────────────────────────────────────
+curl -d "param=value&other=123" http://target.com/login   # POST
+
+# ── HEADERS & USER-AGENT ─────────────────────────────────────
+curl -A "Mozilla/5.0" http://target.com/         # custom user-agent
+
+# ── /etc/hosts TRICKS (pentesting) ───────────────────────────
+echo "10.10.10.10 target.htb" | sudo tee -a /etc/hosts
+curl http://target.htb/                  # now resolves locally
+
+# ── HELP ─────────────────────────────────────────────────────
+curl -h                                  # quick help
+curl --help all                          # full help
+curl -h http                             # help for http category
+man curl                                 # full manual
+```
+
+---
+
+> 📚 **References:**
+> - [HackTheBox Academy - Web Requests](https://academy.hackthebox.com)
+> - [http://info.cern.ch/](http://info.cern.ch/) — The first website ever (1991)
+> - `man curl` — cURL full manual
+> - [RFC 9110 — HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110)
+
+> 🔖 **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)  
+> 💬 **Feedback & Contributions welcome!** Open an issue or PR if you spot any errors.

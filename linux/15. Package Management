@@ -1,0 +1,490 @@
+# 📦 Package Management
+
+> **LearnCybersecurity** | Linux Fundamentals Series  
+> 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at
+
+---
+
+## 📖 Daftar Isi / Table of Contents / 目次
+
+| # | Topic | Bahasa Indonesia | English | 日本語 |
+|---|-------|-----------------|---------|--------|
+| 1 | Overview | Mengapa package management penting | Why package management matters | パッケージ管理が重要な理由 |
+| 2 | `apt` | Manajer paket tingkat tinggi | High-level package manager | 高レベルパッケージマネージャー |
+| 3 | `apt-cache` | Cari & lihat info paket | Search & view package info | パッケージ情報を検索・表示 |
+| 4 | `dpkg` | Install paket .deb secara langsung | Install .deb packages directly | .debパッケージを直接インストール |
+| 5 | `git` | Kloning repositori dari GitHub | Clone repositories from GitHub | GitHubからリポジトリをクローン |
+| 6 | `snap` | Paket snap universal | Universal snap packages | ユニバーサルSnapパッケージ |
+| 7 | `pip` | Manajer paket Python | Python package manager | Pythonパッケージマネージャー |
+| 8 | `gem` | Manajer paket Ruby | Ruby package manager | Rubyパッケージマネージャー |
+| 9 | Sources | Repositori & sumber paket | Repositories & package sources | リポジトリとパッケージソース |
+| 10 | Workflow | Contoh praktis lengkap | Full practical example | 実践的なワークフロー例 |
+
+---
+
+## 1. 🏢 Overview — Why Package Management Matters
+
+### 🇮🇩 Bahasa Indonesia
+**Package management** adalah cara sistem Linux mengorganisir, menginstal, memperbarui, dan menghapus perangkat lunak. Sebuah **package** adalah arsip yang berisi:
+- Binary (program yang dapat dieksekusi)
+- File konfigurasi
+- Informasi dependensi
+- Metadata tentang versi dan update
+
+Fitur utama yang diberikan sistem package management:
+- **Package downloading** — mengunduh dari repositori
+- **Dependency resolution** — otomatis menyelesaikan dependensi
+- **Standard binary format** — format standar (.deb, .rpm, dll.)
+- **Quality control** — verifikasi integritas paket
+
+### 🇬🇧 English
+**Package management** is how Linux systems organize, install, update, and remove software. A **package** is an archive containing:
+- Binaries (executable programs)
+- Configuration files
+- Dependency information
+- Metadata about versions and updates
+
+Key features provided by package management systems:
+- **Package downloading** — fetching from repositories
+- **Dependency resolution** — automatically resolving dependencies
+- **Standard binary format** — standard formats (.deb, .rpm, etc.)
+- **Quality control** — verifying package integrity
+
+### 🇯🇵 日本語
+**パッケージ管理**はLinuxシステムがソフトウェアを整理、インストール、更新、削除する方法です。**パッケージ**は以下を含むアーカイブです：
+- バイナリ（実行可能なプログラム）
+- 設定ファイル
+- 依存関係の情報
+- バージョンと更新に関するメタデータ
+
+パッケージ管理システムが提供する主な機能：
+- **パッケージのダウンロード** — リポジトリからの取得
+- **依存関係の解決** — 依存関係の自動解決
+- **標準バイナリ形式** — 標準フォーマット（.deb、.rpm など）
+- **品質管理** — パッケージの整合性の検証
+
+---
+
+### 📋 Package Managers Overview
+
+| Command | 🇮🇩 Deskripsi | 🇬🇧 Description | 🇯🇵 説明 |
+|---------|--------------|----------------|---------|
+| `dpkg` | Install, build, hapus paket Debian | Install, build, remove Debian packages | Debianパッケージの管理ツール |
+| `apt` | CLI tingkat tinggi untuk manajemen paket | High-level CLI for package management | パッケージ管理の高レベルCLI |
+| `aptitude` | Alternatif apt dengan antarmuka interaktif | Alternative to apt with interactive UI | インタラクティブUIを持つaptの代替 |
+| `snap` | Paket universal lintas distro | Universal cross-distro packages | クロスディストロのユニバーサルパッケージ |
+| `gem` | Manajer paket untuk Ruby | Package manager for Ruby | Ruby用パッケージマネージャー |
+| `pip` | Manajer paket untuk Python | Package manager for Python | Python用パッケージマネージャー |
+| `git` | Sistem kontrol versi terdistribusi | Distributed version control system | 分散バージョン管理システム |
+
+---
+
+## 2. ⚡ `apt` — Advanced Package Manager
+
+### 🇮🇩 Bahasa Indonesia
+`apt` (Advanced Package Tool) adalah manajer paket tingkat tinggi untuk distribusi berbasis Debian (Ubuntu, Kali, Parrot, dll.). `apt` mempermudah instalasi dengan **menyelesaikan dependensi secara otomatis** — tidak perlu mengunduh setiap dependensi secara manual.
+
+### 🇬🇧 English
+`apt` (Advanced Package Tool) is the high-level package manager for Debian-based distributions (Ubuntu, Kali, Parrot, etc.). `apt` simplifies installation by **automatically resolving dependencies** — no need to manually download each dependency.
+
+### 🇯🇵 日本語
+`apt`（Advanced Package Tool）はDebian系ディストリビューション（Ubuntu、Kali、Parrotなど）用の高レベルパッケージマネージャーです。`apt` は**依存関係を自動的に解決**することでインストールを簡略化します — 各依存関係を手動でダウンロードする必要はありません。
+
+```bash
+# Update package list (always do this before installing)
+$ sudo apt update
+
+# Upgrade all installed packages
+$ sudo apt upgrade
+
+# Install a package
+$ sudo apt install git
+
+# Install multiple packages at once
+$ sudo apt install git curl wget vim
+
+# Install without confirmation prompt
+$ sudo apt install impacket-scripts -y
+
+# Remove a package (keep config files)
+$ sudo apt remove git
+
+# Remove a package AND its config files
+$ sudo apt purge git
+
+# Remove unused dependencies
+$ sudo apt autoremove
+
+# Search for a package
+$ sudo apt search impacket
+
+# Show package details
+$ sudo apt show git
+```
+
+---
+
+## 3. 🔍 `apt-cache` — Search & View Package Info
+
+### 🇮🇩 Bahasa Indonesia
+`apt-cache` digunakan untuk **mencari dan melihat informasi paket** dari database lokal APT (APT cache). Database ini memungkinkan kita melihat informasi paket secara **offline** tanpa perlu terhubung ke repositori.
+
+### 🇬🇧 English
+`apt-cache` is used to **search and view package information** from the local APT database (APT cache). This database allows us to view package information **offline** without connecting to the repositories.
+
+### 🇯🇵 日本語
+`apt-cache` はローカルAPTデータベース（APTキャッシュ）から**パッケージ情報を検索・表示**するために使います。このデータベースにより、リポジトリに接続しなくても**オフラインで**パッケージ情報を確認できます。
+
+```bash
+# Search for packages by name/description
+$ apt-cache search impacket
+
+impacket-scripts - Links to useful impacket scripts examples
+python3-impacket - Python3 module to easily build and dissect network protocols
+
+# Show detailed information about a package
+$ apt-cache show impacket-scripts
+
+Package: impacket-scripts
+Version: 1.4
+Architecture: all
+Depends: python3-impacket (>= 0.9.20), python3-ldap3 (>= 2.5.0)
+...
+
+# List all installed packages
+$ apt list --installed
+
+# List packages that can be upgraded
+$ apt list --upgradable
+```
+
+> 💡 **Pentesting note:** Use `apt-cache search` to discover tools already available in your distro's repositories before downloading from external sources.
+
+---
+
+## 4. 📦 `dpkg` — Install .deb Packages Directly
+
+### 🇮🇩 Bahasa Indonesia
+`dpkg` adalah **backend tingkat rendah** dari sistem manajemen paket Debian. Berbeda dengan `apt`, `dpkg` tidak menyelesaikan dependensi secara otomatis — kamu harus menangani dependensi sendiri. Digunakan untuk menginstal file `.deb` yang diunduh secara manual.
+
+### 🇬🇧 English
+`dpkg` is the **low-level backend** of the Debian package management system. Unlike `apt`, `dpkg` does not automatically resolve dependencies — you must handle them yourself. Used to install `.deb` files downloaded manually.
+
+### 🇯🇵 日本語
+`dpkg` はDebianパッケージ管理システムの**低レベルバックエンド**です。`apt` とは異なり、`dpkg` は依存関係を自動的に解決しません — 自分で対処する必要があります。手動でダウンロードした `.deb` ファイルのインストールに使います。
+
+```bash
+# Step 1: Download the .deb package manually
+$ wget http://archive.ubuntu.com/ubuntu/pool/main/s/strace/strace_4.21-1ubuntu1_amd64.deb
+
+# Step 2: Install the .deb package
+$ sudo dpkg -i strace_4.21-1ubuntu1_amd64.deb
+
+(Reading database ... 154680 files and directories currently installed.)
+Preparing to unpack strace_4.21-1ubuntu1_amd64.deb ...
+Unpacking strace (4.21-1ubuntu1) ...
+Setting up strace (4.21-1ubuntu1) ...
+
+# Step 3: Verify the installation
+$ strace -h
+
+# Other useful dpkg commands
+$ dpkg -l                        # list all installed packages
+$ dpkg -l | grep strace          # check if a specific package is installed
+$ dpkg -r strace                 # remove a package
+$ dpkg --get-selections          # list all package selections
+```
+
+| Flag | 🇮🇩 Fungsi | 🇬🇧 Function | 🇯🇵 機能 |
+|------|-----------|-------------|---------|
+| `-i` | Install paket .deb | Install a .deb package | .debパッケージをインストール |
+| `-r` | Hapus paket | Remove a package | パッケージを削除 |
+| `-l` | Daftar semua paket terinstal | List all installed packages | インストール済みパッケージを一覧表示 |
+| `-s` | Tampilkan status paket | Show package status | パッケージのステータスを表示 |
+| `-L` | Daftar file dari paket | List files from a package | パッケージのファイルを一覧表示 |
+
+> ⚠️ **`apt` vs `dpkg`:** Prefer `apt` for installing packages — it handles dependencies automatically. Use `dpkg` only when installing a standalone `.deb` file that is not in a repository.
+
+---
+
+## 5. 🔧 `git` — Clone Repositories from GitHub
+
+### 🇮🇩 Bahasa Indonesia
+`git` adalah **sistem kontrol versi terdistribusi** yang juga digunakan untuk mengunduh tools dan script langsung dari GitHub. Dalam konteks cybersecurity, banyak tools pentesting didistribusikan melalui GitHub dan diinstal menggunakan `git clone`.
+
+### 🇬🇧 English
+`git` is a **distributed version control system** also used to download tools and scripts directly from GitHub. In the cybersecurity context, many pentesting tools are distributed via GitHub and installed using `git clone`.
+
+### 🇯🇵 日本語
+`git` は**分散バージョン管理システム**であり、GitHubから直接ツールやスクリプトをダウンロードするためにも使われます。サイバーセキュリティの文脈では、多くのペンテストツールがGitHubを通じて配布されており、`git clone` を使ってインストールします。
+
+```bash
+# Install git first (if not already installed)
+$ sudo apt install git -y
+
+# Clone a repository into a specific directory
+$ mkdir ~/nishang/ && git clone https://github.com/samratashok/nishang.git ~/nishang
+
+Cloning into '/home/user/nishang/'...
+remote: Enumerating objects: 15, done.
+remote: Total 1691 (delta 4), reused 6 (delta 2), pack-reused 1676
+Receiving objects: 100% (1691/1691), 7.84 MiB | 4.86 MiB/s, done.
+
+# Clone to current directory
+$ git clone https://github.com/username/repo.git
+
+# Clone a specific branch
+$ git clone -b main https://github.com/username/repo.git
+
+# Update an already-cloned repository
+$ cd ~/nishang && git pull
+```
+
+> 💡 **Pentesting note:** Before cloning tools, always create a dedicated directory (e.g., `~/tools/`) to keep your environment organized.
+
+---
+
+## 6. 🔵 `snap` — Universal Snap Packages
+
+### 🇮🇩 Bahasa Indonesia
+`snap` adalah sistem packaging yang **tidak bergantung pada distribusi** (distro-agnostic). Paket snap berjalan dalam sandbox terisolasi dan dapat diinstal di berbagai distro Linux tanpa khawatir kompatibilitas.
+
+### 🇬🇧 English
+`snap` is a packaging system that is **distro-agnostic**. Snap packages run in an isolated sandbox and can be installed across various Linux distributions without worrying about compatibility.
+
+### 🇯🇵 日本語
+`snap` は**ディストリビューションに依存しない**パッケージングシステムです。Snapパッケージは隔離されたサンドボックスで動作し、互換性を気にせず様々なLinuxディストリビューションにインストールできます。
+
+```bash
+# Install a snap package
+$ sudo snap install vlc
+
+# List installed snap packages
+$ snap list
+
+# Update all snap packages
+$ sudo snap refresh
+
+# Remove a snap package
+$ sudo snap remove vlc
+
+# Search for snap packages
+$ snap find "video player"
+```
+
+---
+
+## 7. 🐍 `pip` — Python Package Manager
+
+### 🇮🇩 Bahasa Indonesia
+`pip` adalah **manajer paket Python** yang direkomendasikan untuk menginstal library dan tools Python yang tidak tersedia di repositori Debian. Sangat umum digunakan dalam pengembangan script dan tools cybersecurity berbasis Python.
+
+### 🇬🇧 English
+`pip` is the **Python package manager** recommended for installing Python libraries and tools not available in the Debian archive. Widely used in developing Python-based cybersecurity scripts and tools.
+
+### 🇯🇵 日本語
+`pip` はDebianアーカイブにないPythonライブラリやツールをインストールするために推奨される**Pythonパッケージマネージャー**です。Pythonベースのサイバーセキュリティスクリプトやツールの開発に広く使われています。
+
+```bash
+# Install a Python package
+$ pip install requests
+
+# Install a specific version
+$ pip install requests==2.28.0
+
+# Install from requirements file
+$ pip install -r requirements.txt
+
+# List installed packages
+$ pip list
+
+# Upgrade a package
+$ pip install --upgrade requests
+
+# Uninstall a package
+$ pip uninstall requests
+
+# Show package details
+$ pip show requests
+```
+
+---
+
+## 8. 💎 `gem` — Ruby Package Manager
+
+### 🇮🇩 Bahasa Indonesia
+`gem` adalah **manajer paket untuk Ruby** (RubyGems). Digunakan untuk menginstal library dan tools berbasis Ruby. Salah satu tools pentesting populer berbasis Ruby adalah `evil-winrm`.
+
+### 🇬🇧 English
+`gem` is the **package manager for Ruby** (RubyGems). Used to install Ruby-based libraries and tools. One popular Ruby-based pentesting tool is `evil-winrm`.
+
+### 🇯🇵 日本語
+`gem` は**Ruby用パッケージマネージャー**（RubyGems）です。Rubyベースのライブラリやツールのインストールに使います。人気のRubyベースのペンテストツールの一つが `evil-winrm` です。
+
+```bash
+# Install a gem package
+$ gem install evil-winrm
+
+# List installed gems
+$ gem list
+
+# Update a gem
+$ gem update evil-winrm
+
+# Uninstall a gem
+$ gem uninstall evil-winrm
+
+# Show gem info
+$ gem info evil-winrm
+```
+
+---
+
+## 9. 📂 Repositories & Package Sources
+
+### 🇮🇩 Bahasa Indonesia
+Repositori adalah **server yang menyimpan paket-paket perangkat lunak**. Sistem Linux menggunakan file konfigurasi untuk mengetahui dari mana harus mengunduh paket. Repositori dapat diberi label: `stable`, `testing`, atau `unstable`.
+
+### 🇬🇧 English
+Repositories are **servers that store software packages**. Linux systems use configuration files to know where to download packages from. Repositories can be labeled: `stable`, `testing`, or `unstable`.
+
+### 🇯🇵 日本語
+リポジトリは**ソフトウェアパッケージを保存するサーバー**です。Linuxシステムはどこからパッケージをダウンロードするかを設定ファイルで管理します。リポジトリには `stable`、`testing`、`unstable` のラベルが付けられます。
+
+```bash
+# View repository sources (Parrot OS example)
+$ cat /etc/apt/sources.list.d/parrot.list
+
+# parrot repository
+deb http://htb.deb.parrot.sh/parrot/ rolling main contrib non-free
+deb http://htb.deb.parrot.sh/parrot/ rolling-security main contrib non-free
+
+# View repository sources (Ubuntu/Debian)
+$ cat /etc/apt/sources.list
+
+# After adding a new repo, always update the package list
+$ sudo apt update
+```
+
+### 🔑 Key System Files
+
+| File | 🇮🇩 Isi | 🇬🇧 Contents | 🇯🇵 内容 |
+|------|--------|-------------|---------|
+| `/etc/apt/sources.list` | Daftar repositori utama | Main repository list | メインリポジトリリスト |
+| `/etc/apt/sources.list.d/` | Repositori tambahan (per file) | Additional repos (per file) | 追加リポジトリ（ファイルごと） |
+| `/var/cache/apt/archives/` | Cache paket yang diunduh | Cache of downloaded packages | ダウンロード済みパッケージのキャッシュ |
+| `/var/lib/dpkg/info/` | Info paket terinstal | Installed package info | インストール済みパッケージ情報 |
+
+---
+
+## 📊 Command Summary Table
+
+| Command | 🇮🇩 Fungsi | 🇬🇧 Function | 🇯🇵 機能 | Needs sudo? |
+|---------|-----------|-------------|---------|------------|
+| `apt update` | Perbarui daftar paket | Update package list | パッケージリストを更新 | ✅ |
+| `apt upgrade` | Upgrade semua paket | Upgrade all packages | 全パッケージをアップグレード | ✅ |
+| `apt install` | Install paket | Install package | パッケージをインストール | ✅ |
+| `apt remove` | Hapus paket | Remove package | パッケージを削除 | ✅ |
+| `apt-cache search` | Cari paket | Search packages | パッケージを検索 | ❌ |
+| `apt-cache show` | Tampilkan info paket | Show package info | パッケージ情報を表示 | ❌ |
+| `dpkg -i` | Install file .deb | Install .deb file | .debファイルをインストール | ✅ |
+| `dpkg -l` | Daftar paket terinstal | List installed packages | インストール済みパッケージを一覧表示 | ❌ |
+| `git clone` | Kloning repositori | Clone repository | リポジトリをクローン | ❌ |
+| `snap install` | Install snap package | Install snap package | Snapパッケージをインストール | ✅ |
+| `pip install` | Install paket Python | Install Python package | Pythonパッケージをインストール | ❌ |
+| `gem install` | Install paket Ruby | Install Ruby package | Rubyパッケージをインストール | ❌ |
+
+---
+
+## 🔗 Practical Workflow Example
+
+```bash
+# ── SCENARIO: Set up a pentesting environment ────────────────
+
+# 1. Update package list first (always!)
+$ sudo apt update
+
+# 2. Install common tools from apt
+$ sudo apt install git curl wget nmap -y
+
+# 3. Install a Python-based tool (impacket)
+$ sudo apt install python3-impacket -y
+
+# 4. Clone a tool from GitHub that isn't in apt
+$ mkdir ~/tools && git clone https://github.com/samratashok/nishang.git ~/tools/nishang
+
+# 5. Install a Python package for scripting
+$ pip install requests beautifulsoup4
+
+# 6. Install a Ruby-based tool
+$ gem install evil-winrm
+
+# 7. Install a tool manually via dpkg
+$ wget http://example.com/tool_1.0_amd64.deb
+$ sudo dpkg -i tool_1.0_amd64.deb
+
+# 8. Fix any broken dependencies after dpkg install
+$ sudo apt install -f
+```
+
+---
+
+## 🧠 Quick Reference Cheatsheet
+
+```bash
+# ── APT (Debian/Ubuntu/Kali/Parrot) ─────────────────────────
+sudo apt update                          # refresh package list
+sudo apt upgrade                         # upgrade all packages
+sudo apt install <package> -y            # install package
+sudo apt remove <package>                # remove package
+sudo apt purge <package>                 # remove + config files
+sudo apt autoremove                      # remove unused deps
+apt-cache search <keyword>               # search packages
+apt-cache show <package>                 # show package info
+apt list --installed                     # list installed packages
+
+# ── DPKG (low-level .deb) ────────────────────────────────────
+sudo dpkg -i <file>.deb                  # install .deb file
+dpkg -l                                  # list installed packages
+dpkg -l | grep <name>                    # check if installed
+sudo dpkg -r <package>                   # remove package
+sudo apt install -f                      # fix broken deps after dpkg
+
+# ── GIT ──────────────────────────────────────────────────────
+git clone <url>                          # clone repository
+git clone <url> ~/tools/name             # clone to specific dir
+git pull                                 # update cloned repo
+
+# ── PIP (Python) ─────────────────────────────────────────────
+pip install <package>                    # install Python package
+pip install -r requirements.txt          # install from file
+pip list                                 # list installed packages
+pip uninstall <package>                  # remove package
+
+# ── GEM (Ruby) ───────────────────────────────────────────────
+gem install <package>                    # install Ruby gem
+gem list                                 # list installed gems
+gem uninstall <package>                  # remove gem
+
+# ── SNAP ─────────────────────────────────────────────────────
+sudo snap install <package>              # install snap
+snap list                                # list snaps
+sudo snap refresh                        # update all snaps
+sudo snap remove <package>               # remove snap
+
+# ── OPTIONAL EXERCISE ────────────────────────────────────────
+# Search for "evil-winrm" on GitHub and try all install methods:
+# Method 1: gem install evil-winrm
+# Method 2: git clone https://github.com/Hackplayers/evil-winrm.git
+# Method 3: sudo apt install evil-winrm (if available in repo)
+```
+
+---
+
+> 📚 **References:**
+> - [HackTheBox Academy - Linux Fundamentals](https://academy.hackthebox.com)
+> - `man apt`, `man dpkg`, `man git`, `man pip`
+> - [Debian Package Management Documentation](https://www.debian.org/doc/manuals/debian-reference/ch02.en.html)
+
+> 🔖 **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)  
+> 💬 **Feedback & Contributions welcome!** Open an issue or PR if you spot any errors.
