@@ -1,9 +1,9 @@
-# 🔐 LearnCybersecurity
+#  LearnCybersecurity
 Ayo belajar CyberSecurity | サイバーセキュリティを勉強しよう
 
 ---
 
-## 📌 About This Repository
+##  About This Repository
 
 This repository contains my personal notes and summaries while learning Cybersecurity, especially in the field of Offensive Security.
 
@@ -22,21 +22,21 @@ The goal is simple:
 
 ---
 
-## 🧠 Focus Area
+##  Focus Area
 
-1. 🔴 Offensive Security
+1.  Offensive Security
 
-2. 🌐 Web Exploitation
+2.  Web Exploitation
 
-3. 🖥️ Linux Privilege Escalation
+3.  Linux Privilege Escalation
 
-4. 📡 Networking & Protocol Analysis
+4.  Networking & Protocol Analysis
 
-5. 🛠️ Security Tools (Nmap, Burp Suite, etc.)
+5.  Security Tools (Nmap, Burp Suite, etc.)
 
-6. 🧩 CTF & Hands-on Labs
+6.  CTF & Hands-on Labs
 
-## 📚 Contents
+##  Contents
 ```bash
 LearnCybersecurity/
 │
@@ -49,7 +49,7 @@ LearnCybersecurity/
 ```
 ---
 
-## 🎯 Goals
+##  Goals
 
 1. Make cybersecurity easier to understand
 
@@ -67,7 +67,7 @@ LearnCybersecurity/
 
 ---
 
-## 🛠️ Learning Style
+##  Learning Style
 
 - Simple explanations
 
@@ -80,7 +80,7 @@ LearnCybersecurity/
 ---
 
 
-## 🚀 Roadmap
+##  Roadmap
 
 - Add Web Security notes
 
@@ -92,7 +92,7 @@ LearnCybersecurity/
 
 ---
 
-## ⚠️ Disclaimer
+##  Disclaimer
 
 This repository is for educational purposes only.
 All techniques should be used responsibly and legally.
@@ -101,6 +101,6 @@ All techniques should be used responsibly and legally.
 違法行為には絶対に使用しないでください。
 
 ---
-## 👤 Author
+##  Author
 
 GitHub: https://github.com/Kodokthegr3at
