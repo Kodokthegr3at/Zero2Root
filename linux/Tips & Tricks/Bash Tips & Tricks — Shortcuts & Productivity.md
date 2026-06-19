@@ -4,6 +4,10 @@
 > 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at
 
 ---
+<img width="1920" height="1080" alt="Desain tanpa judul (1)" src="https://github.com/user-attachments/assets/585dfc2d-5330-4522-a947-4f6a6e2f326c" />
+<img width="2248" height="1260" alt="image" src="https://github.com/user-attachments/assets/55ef2804-e2d6-4051-a231-e8ae6c1414b8" />
+
+
 
 ## 📖 Daftar Isi / Table of Contents / 目次
 
