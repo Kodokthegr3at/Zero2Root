@@ -521,7 +521,9 @@ dir /s /b *password*           :: hunt for files
 
 ---
 
-> 📚 **References:**
+> 📚 **References & Book Sources:**
+> - Peter Kim — *The Hacker Playbook 3: Practical Guide To Penetration Testing* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
+> - Georgia Weidman — *Penetration Testing: A Hands-On Introduction to Hacking* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
 > - [HackTheBox Academy - Windows Fundamentals](https://academy.hackthebox.com)
 > - `help`, `<command> /?`, Microsoft Docs — [Windows Commands Reference](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands)
 > - Living Off The Land Binaries (LOLBAS) project — for advanced post-exploitation

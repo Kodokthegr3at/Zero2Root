@@ -1280,15 +1280,18 @@ ipconfig /all; route print; netstat -ano; arp -a; nslookup; tracert
 
 ---
 
-> 📚 **References:**
+> 📚 **References & Book Sources:**
+> - James Kurose & Keith Ross — *Computer Networking: A Top-Down Approach* (`~/Documents/Books/CyberSec/Networking/computernetworking.pdf`)
+> - William Stallings — *Network Security Essentials: Applications and Standards (4th Edition)* (`~/Documents/Books/CyberSec/Networking/Network-security-essentials-4th-edition-william-stallings.pdf`)
+> - Matthew Gast — *802.11 Wireless Networks: The Definitive Guide* (`~/Documents/Books/CyberSec/Networking/802_11_Wireless_Networks__The_Definitive_Guide__O__039_Reilly_Networking_.pdf`)
+> - Christian Benvenuti — *Understanding Linux Network Internals* (`~/Documents/Books/CyberSec/Networking/Understanding Linux Network Internals (2005).pdf`)
+> - W. Richard Stevens — *UNIX Network Programming (Volume 1, 3rd Edition)* (`~/Documents/Books/CyberSec/Networking/UNIX Network Programming Volume 1, 3rd edition - W. Richard Stevens.pdf`)
 > - [RFC 793 — Transmission Control Protocol](https://www.rfc-editor.org/rfc/rfc793)
 > - [RFC 768 — User Datagram Protocol](https://www.rfc-editor.org/rfc/rfc768)
 > - [HackTheBox Academy — Network Fundamentals](https://academy.hackthebox.com)
 > - [Nmap Official Documentation](https://nmap.org/book/man.html)
 > - [Wireshark Display Filters](https://www.wireshark.org/docs/wsug_html_chunked/ChWorkBuildDisplayFilterSection.html)
 > - [IANA Port Number Registry](https://www.iana.org/assignments/service-names-port-numbers)
-> - [PayloadsAllTheThings — Network](https://github.com/swisskyrepo/PayloadsAllTheThings)
-> - [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/)
 
 > 🔖 **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)  
 > 💬 **Feedback & Contributions welcome!** Open an issue or PR if you spot any errors.

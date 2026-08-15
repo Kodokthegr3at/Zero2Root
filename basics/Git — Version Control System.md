@@ -831,10 +831,12 @@ gitleaks detect --source .                # automated secret scan
 
 ---
 
-> 📚 **References:**
+> 📚 **References & Book Sources:**
+> - Scott Chacon & Ben Straub — *Pro Git (2nd Edition)* (`https://git-scm.com/book/en/v2`)
+> - Peter Kim — *The Hacker Playbook 3: Practical Guide To Penetration Testing* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
+> - Dafydd Stuttard & Marcus Pinto — *The Web Application Hacker's Handbook (2nd Edition)* (`~/Documents/Books/CyberSec/Web App/`)
 > - [HackTheBox Academy - Linux Fundamentals](https://academy.hackthebox.com)
 > - `man git`, `git help <command>`
-> - [Pro Git Book (free)](https://git-scm.com/book/en/v2)
 > - [GitTools — Dumper & Extractor for exposed .git](https://github.com/internetwache/GitTools)
 > - [TruffleHog — Secret Scanner](https://github.com/trufflesecurity/trufflehog)
 > - [Gitleaks — Secret Scanner](https://github.com/gitleaks/gitleaks)

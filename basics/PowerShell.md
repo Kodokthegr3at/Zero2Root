@@ -594,7 +594,9 @@ Get-Content (Get-PSReadlineOption).HistorySavePath   # PS command history
 
 ---
 
-> 📚 **References:**
+> 📚 **References & Book Sources:**
+> - Peter Kim — *The Hacker Playbook 3: Practical Guide To Penetration Testing* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
+> - Georgia Weidman — *Penetration Testing: A Hands-On Introduction to Hacking* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
 > - [HackTheBox Academy - Windows Fundamentals](https://academy.hackthebox.com)
 > - `Get-Help <cmdlet> -Full`, Microsoft Docs — [PowerShell Documentation](https://learn.microsoft.com/en-us/powershell/)
 > - PowerSploit, Empire, Nishang — common offensive PowerShell frameworks
