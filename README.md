@@ -6,6 +6,18 @@
 
 ---
 
+## 🚀 Start Here
+
+| Document | Purpose |
+|:---------|:--------|
+| **[ROADMAP.md](ROADMAP.md)** | **Master learning path** — 71 lessons (`LC-001`→`LC-071`), 9 phases, prerequisites, study tracks |
+| **[BOOKS.md](BOOKS.md)** | Local PDF catalog at `~/Documents/Books/` mapped to each lesson |
+| **[curriculum.json](curriculum.json)** | Machine-readable curriculum manifest (IDs, paths, book chapters) |
+
+**Recommended entry:** open [ROADMAP.md](ROADMAP.md) → start **LC-001** → read linked book chapters from [BOOKS.md](BOOKS.md) → open the lesson file (each has a `Curriculum ID` block at the top).
+
+---
+
 ## 📖 About This Repository / Tentang Repositori / このリポジトリについて
 
 ### 🇮🇩 Bahasa Indonesia
@@ -62,32 +74,41 @@ LearnCybersecurity/
 
 ### 2. 🐧 Linux Fundamentals & Security (`linux/`) — HTB Academy Module 18 Standard
 
-| # | File | 🇮🇩 Bahasa Indonesia | 🇬🇧 English | 🇯🇵 日本語 |
-|---|:-----|:-------------------|:------------|:----------|
-| **01** | [01. Linux Structure...](file:///home/kodok/Documents/LearnCybersecurity/linux/01.%20Linux%20Structure%20%E2%80%94%20History,%20Philosophy,%20Architecture%20&%20Filesystem.md) | Sejarah, filosofi Unix, kernel vs user space | History, Unix philosophy, kernel space & FHS | Linuxの歴史、Unix哲学、カーネル空間とFHS |
-| **02** | [02. Linux Distributions...](file:///home/kodok/Documents/LearnCybersecurity/linux/02.%20Linux%20Distributions%20%28Distros%29.md) | Keluarga distro (Debian, RHEL, Arch) & pentest distro | Distro families (Debian, RedHat, Arch) & security distros | ディストリビューション系統とペンテスト用OS |
-| **03** | [03. Introduction to Shell.md](file:///home/kodok/Documents/LearnCybersecurity/linux/03.%20Introduction%20to%20Shell.md) | Shell basics, built-ins, dan rbash breakout | Shell fundamentals, built-ins & rbash breakouts | シェルの基本、ビルトインと制限シェル脱出 |
-| **04** | [04. Prompt Description...](file:///home/kodok/Documents/LearnCybersecurity/linux/04.%20Prompt%20Description%20&%20PS1%20Customization.md) | Kustomisasi prompt Bash `$PS1` dan format escape | PS1 customization, color codes & terminal security | PS1プロンプトのカスタマイズとエスケープシーケンス |
-| **05** | [05. Getting Help...](file:///home/kodok/Documents/LearnCybersecurity/linux/05.%20Getting%20Help%20%E2%80%94%20man,%20--help,%20apropos.md) | Sistem bantuan, `man`, section nomor & GTFOBins pager | Linux documentation, `man` sections & pager escapes | マニュアル参照、manセクションとページャー脱出 |
-| **06** | [06. System Information...](file:///home/kodok/Documents/LearnCybersecurity/linux/06.%20System%20Information%20%E2%80%94%20Kernel,%20Hardware%20&%20Environment.md) | Identifikasi kernel, CPU, RAM, disk, IP & rekon lokal | OS & kernel telemetry, hardware, sockets & local recon | システム情報、ハードウェア、ソケットとローカル偵察 |
-| **07** | [07. Navigation...](file:///home/kodok/Documents/LearnCybersecurity/linux/07.%20Navigation%20%E2%80%94%20Moving%20Through%20the%20Linux%20Filesystem.md) | Navigasi direktori (`pwd`, `cd`, `ls -la`) | Directory traversal, relative vs absolute paths | ディレクトリ移動と相対パス・絶対パスの概念 |
-| **08** | [08. Working with Files...](file:///home/kodok/Documents/LearnCybersecurity/linux/08.%20Working%20with%20Files%20&%20Directories.md) | Manajemen file, wildcard injection & secure shred | File manipulation, wildcard exploits & secure wipe | ファイル操作、ワイルドカード悪用と完全消去 |
-| **09** | [09. Editing Files...](file:///home/kodok/Documents/LearnCybersecurity/linux/09.%20Editing%20Files%20%E2%80%94%20Nano%20&%20Vim.md) | Editor terminal (Nano & Vim) dan shell escape | Terminal editors (Nano, Vim modes) & shell breakouts | ターミナルエディタ（Nano / Vim）とシェル起動 |
-| **10** | [10. Find Files & Directories.md](file:///home/kodok/Documents/LearnCybersecurity/linux/10.%20Find%20Files%20&%20Directories.md) | Pencarian file, filter & pencarian SUID/SGID PrivEsc | File search, filtering & SUID/PrivEsc hunting | 高度なファイル探索とSUID権限昇格ベクトルの特定 |
-| **11** | [11. File Descriptors...](file:///home/kodok/Documents/LearnCybersecurity/linux/11.%20File%20Descriptors%20&%20Redirections.md) | Redireksi I/O, pipe, dan reverse shell `/dev/tcp` | I/O redirection, pipes & reverse shell mechanics | I/Oリダイレクト、パイプとリバースシェル構造 |
-| **12** | [12. Filter Contents...](file:///home/kodok/Documents/LearnCybersecurity/linux/12.%20Filter%20Contents%20%E2%80%94%20Output%20Filtering%20&%20Text%20Processing.md) | Filter teks (`grep`, `awk`, `sed`) & log forensics | Text processing pipelines, forensic log queries & GTFOBins | テキスト処理、ログフォレンジクスとGTFOBins |
-| **13** | [13. Regular Expressions (RegEx).md](file:///home/kodok/Documents/LearnCybersecurity/linux/13.%20Regular%20Expressions%20%28RegEx%29.md) | Regex patterns, ReDoS vulnerability & threat patterns | RegEx syntax, ReDoS backtracking & IOC signatures | 正規表現の文法、ReDoS脆弱性と脅威検知パターン |
-| **14** | [14. User Management.md](file:///home/kodok/Documents/LearnCybersecurity/linux/14.%20User%20Management.md) | Manajemen user/grup, `/etc/shadow`, sudo audit | User accounts, shadow hashes & sudo privilege checks | ユーザー管理、パスワードハッシュとsudo権限監査 |
-| **15** | [15. Permission Management.md](file:///home/kodok/Documents/LearnCybersecurity/linux/15.%20Permission%20Management.md) | Izin file (rwx, oktal), SUID/SGID, dan Sticky Bit | File permissions, octal modes, SUID/SGID & Sticky Bit | パーミッション管理、8進数表記、SUID/SGID |
-| **16** | [16. Package Management.md](file:///home/kodok/Documents/LearnCybersecurity/linux/16.%20Package%20Management.md) | Paket manajer (`apt`, `dpkg`, `pip`, `gem`, `snap`) | Package management workflows & third-party repos | パッケージ管理システムと外部リポジトリ設定 |
-| **17** | [17. Service and Process...](file:///home/kodok/Documents/LearnCybersecurity/linux/17.%20Service%20and%20Process%20Management.md) | Manajemen `systemd`, `systemctl`, `journalctl`, sinyal kill | Systemd services, background jobs & process monitoring | Systemdサービス管理、プロセス監視とシグナル制御 |
-| **18** | [18. Task Scheduling.md](file:///home/kodok/Documents/LearnCybersecurity/linux/18.%20Task%20Scheduling.md) | Penjadwalan Cron & Systemd Timer, persistensi malware | Crontab syntax, systemd timers & persistence auditing | Cronタスク設定、Systemdタイマーと常駐メカニズム |
-| **19** | [19. Working with Web Services.md](file:///home/kodok/Documents/LearnCybersecurity/linux/19.%20Working%20with%20Web%20Services.md) | Apache2, Nginx, Python/PHP server, vHosts & payload staging | Apache, Nginx, Python web servers, vHosts & payload hosting | Webサーバー設定、軽量HTTPサーバーとペイロード配信 |
-| **20** | [20. Backup and Restore.md](file:///home/kodok/Documents/LearnCybersecurity/linux/20.%20Backup%20and%20Restore.md) | `tar`, `rsync`, `scp`, `gpg`, tar wildcard injection privesc | `tar`, `rsync`, `scp`, `gpg` & tar wildcard privilege escalation | バックアップ管理、rsync/scpとtar悪用権限昇格 |
-| **21** | [21. System Logs.md](file:///home/kodok/Documents/LearnCybersecurity/linux/21.%20System%20Logs.md) | `/var/log`, `journalctl`, `dmesg`, log poisoning & anti-forensics | System logs, auth telemetry, log poisoning & evasion | ログ調査、Syslog/journalctlとログポイズニング |
-| **22** | [22. Linux Hardening & Security.md](file:///home/kodok/Documents/LearnCybersecurity/linux/22.%20Linux%20Hardening%20&%20Security.md) | Hardening Linux, SSH hardening, UFW firewall, fail2ban & sysctl | Linux OS hardening, SSH securing, UFW, fail2ban & kernel sysctl | Linuxセキュリティ堅牢化、SSH設定、UFW、fail2banとカーネル設定 |
-| 💡 | [Bash Tips & Tricks...](file:///home/kodok/Documents/LearnCybersecurity/linux/Tips%20&%20Tricks/Bash%20Tips%20&%20Tricks%20%E2%80%94%20Shortcuts%20&%20Productivity.md) | Pintasan keyboard bash, riwayat perintah & produktivitas | Bash shortcuts, history expansion & terminal productivity | Bashショートカットキーと生産性向上テクニック |
-| 💡 | [Neovim — Tips & Tricks.md](file:///home/kodok/Documents/LearnCybersecurity/linux/Tips%20&%20Tricks/Neovim%20%E2%80%94%20Tips%20&%20Tricks.md) | Navigasi cepat Neovim, modal editing & konfigurasi | Neovim productivity, keymaps & modal editing workflow | Neovimの基本操作、キーマップと設定テクニック |
+Numbering follows HTB Academy section order (30 sections). All topics documented.
+
+| # | Section | File | 🇮🇩 Bahasa Indonesia | 🇬🇧 English | 🇯🇵 日本語 |
+|---|:--------|:-----|:-------------------|:------------|:----------|
+| **01** | 1 · Introduction | [01. Linux Structure...](file:///home/kodok/Documents/LearnCybersecurity/linux/01.%20Linux%20Structure%20%E2%80%94%20History,%20Philosophy,%20Architecture%20&%20Filesystem.md) | Sejarah, filosofi Unix, kernel vs user space | History, Unix philosophy, kernel space & FHS | Linuxの歴史、Unix哲学、カーネル空間とFHS |
+| **02** | 1 · Introduction | [02. Linux Distributions...](file:///home/kodok/Documents/LearnCybersecurity/linux/02.%20Linux%20Distributions%20%28Distros%29.md) | Keluarga distro (Debian, RHEL, Arch) & pentest distro | Distro families (Debian, RedHat, Arch) & security distros | ディストリビューション系統とペンテスト用OS |
+| **03** | 1 · Introduction | [03. Introduction to Shell.md](file:///home/kodok/Documents/LearnCybersecurity/linux/03.%20Introduction%20to%20Shell.md) | Shell basics, built-ins, dan rbash breakout | Shell fundamentals, built-ins & rbash breakouts | シェルの基本、ビルトインと制限シェル脱出 |
+| **04** | 2 · The Shell | [04. Prompt Description...](file:///home/kodok/Documents/LearnCybersecurity/linux/04.%20Prompt%20Description%20&%20PS1%20Customization.md) | Kustomisasi prompt Bash `$PS1` dan format escape | PS1 customization, color codes & terminal security | PS1プロンプトのカスタマイズとエスケープシーケンス |
+| **05** | 2 · The Shell | [05. Getting Help...](file:///home/kodok/Documents/LearnCybersecurity/linux/05.%20Getting%20Help%20%E2%80%94%20man,%20--help,%20apropos.md) | Sistem bantuan, `man`, section nomor & GTFOBins pager | Linux documentation, `man` sections & pager escapes | マニュアル参照、manセクションとページャー脱出 |
+| **06** | 2 · The Shell | [06. System Information...](file:///home/kodok/Documents/LearnCybersecurity/linux/06.%20System%20Information%20%E2%80%94%20Kernel,%20Hardware%20&%20Environment.md) | Identifikasi kernel, CPU, RAM, disk, IP & rekon lokal | OS & kernel telemetry, hardware, sockets & local recon | システム情報、ハードウェア、ソケットとローカル偵察 |
+| **07** | 3 · Workflow | [07. Navigation...](file:///home/kodok/Documents/LearnCybersecurity/linux/07.%20Navigation%20%E2%80%94%20Moving%20Through%20the%20Linux%20Filesystem.md) | Navigasi direktori (`pwd`, `cd`, `ls -la`) | Directory traversal, relative vs absolute paths | ディレクトリ移動と相対パス・絶対パスの概念 |
+| **08** | 3 · Workflow | [08. Working with Files...](file:///home/kodok/Documents/LearnCybersecurity/linux/08.%20Working%20with%20Files%20&%20Directories.md) | Manajemen file, wildcard injection & secure shred | File manipulation, wildcard exploits & secure wipe | ファイル操作、ワイルドカード悪用と完全消去 |
+| **09** | 3 · Workflow | [09. Editing Files...](file:///home/kodok/Documents/LearnCybersecurity/linux/09.%20Editing%20Files%20%E2%80%94%20Nano%20&%20Vim.md) | Editor terminal (Nano & Vim) dan shell escape | Terminal editors (Nano, Vim modes) & shell breakouts | ターミナルエディタ（Nano / Vim）とシェル起動 |
+| **10** | 3 · Workflow | [10. Find Files & Directories.md](file:///home/kodok/Documents/LearnCybersecurity/linux/10.%20Find%20Files%20&%20Directories.md) | Pencarian file, filter & pencarian SUID/SGID PrivEsc | File search, filtering & SUID/PrivEsc hunting | 高度なファイル探索とSUID権限昇格ベクトルの特定 |
+| **11** | 3 · Workflow | [11. File Descriptors...](file:///home/kodok/Documents/LearnCybersecurity/linux/11.%20File%20Descriptors%20&%20Redirections.md) | Redireksi I/O, pipe, dan reverse shell `/dev/tcp` | I/O redirection, pipes & reverse shell mechanics | I/Oリダイレクト、パイプとリバースシェル構造 |
+| **12** | 3 · Workflow | [12. Filter Contents...](file:///home/kodok/Documents/LearnCybersecurity/linux/12.%20Filter%20Contents%20%E2%80%94%20Output%20Filtering%20&%20Text%20Processing.md) | Filter teks (`grep`, `awk`, `sed`) & log forensics | Text processing pipelines, forensic log queries & GTFOBins | テキスト処理、ログフォレンジクスとGTFOBins |
+| **13** | 3 · Workflow | [13. Regular Expressions (RegEx).md](file:///home/kodok/Documents/LearnCybersecurity/linux/13.%20Regular%20Expressions%20%28RegEx%29.md) | Regex patterns, ReDoS vulnerability & threat patterns | RegEx syntax, ReDoS backtracking & IOC signatures | 正規表現の文法、ReDoS脆弱性と脅威検知パターン |
+| **14** | 3 · Workflow | [14. Permission Management.md](file:///home/kodok/Documents/LearnCybersecurity/linux/14.%20Permission%20Management.md) | Izin file (rwx, oktal), SUID/SGID, dan Sticky Bit | File permissions, octal modes, SUID/SGID & Sticky Bit | パーミッション管理、8進数表記、SUID/SGID |
+| **15** | 4 · System Management | [15. User Management.md](file:///home/kodok/Documents/LearnCybersecurity/linux/15.%20User%20Management.md) | Manajemen user/grup, `/etc/shadow`, sudo audit | User accounts, shadow hashes & sudo privilege checks | ユーザー管理、パスワードハッシュとsudo権限監査 |
+| **16** | 4 · System Management | [16. Package Management.md](file:///home/kodok/Documents/LearnCybersecurity/linux/16.%20Package%20Management.md) | Paket manajer (`apt`, `dpkg`, `pip`, `gem`, `snap`) | Package management workflows & third-party repos | パッケージ管理システムと外部リポジトリ設定 |
+| **17** | 4 · System Management | [17. Service and Process...](file:///home/kodok/Documents/LearnCybersecurity/linux/17.%20Service%20and%20Process%20Management.md) | Manajemen `systemd`, `systemctl`, `journalctl`, sinyal kill | Systemd services, background jobs & process monitoring | Systemdサービス管理、プロセス監視とシグナル制御 |
+| **18** | 4 · System Management | [18. Task Scheduling.md](file:///home/kodok/Documents/LearnCybersecurity/linux/18.%20Task%20Scheduling.md) | Penjadwalan Cron & Systemd Timer, persistensi malware | Crontab syntax, systemd timers & persistence auditing | Cronタスク設定、Systemdタイマーと常駐メカニズム |
+| **19** | 4 · System Management | [19. Network Services.md](file:///home/kodok/Documents/LearnCybersecurity/linux/19.%20Network%20Services.md) | DNS, DHCP, NFS, Samba & audit listener | DNS, DHCP, NFS, Samba & listener audit | DNS/DHCP/NFS/Sambaとlisten監査 |
+| **20** | 4 · System Management | [20. Working with Web Services.md](file:///home/kodok/Documents/LearnCybersecurity/linux/20.%20Working%20with%20Web%20Services.md) | Apache2, Nginx, Python/PHP server, vHosts & payload staging | Apache, Nginx, Python web servers, vHosts & payload hosting | Webサーバー設定、軽量HTTPサーバーとペイロード配信 |
+| **21** | 4 · System Management | [21. Backup and Restore.md](file:///home/kodok/Documents/LearnCybersecurity/linux/21.%20Backup%20and%20Restore.md) | `tar`, `rsync`, `scp`, `gpg`, tar wildcard injection privesc | `tar`, `rsync`, `scp`, `gpg` & tar wildcard privilege escalation | バックアップ管理、rsync/scpとtar悪用権限昇格 |
+| **22** | 4 · System Management | [22. File System Management.md](file:///home/kodok/Documents/LearnCybersecurity/linux/22.%20File%20System%20Management.md) | Partisi, LVM, mount, fstab, ext4/XFS & fsck | Disk partitioning, LVM, mounts & filesystem health | パーティション、LVM、マウントとFS管理 |
+| **23** | 4 · System Management | [23. Containerization.md](file:///home/kodok/Documents/LearnCybersecurity/linux/23.%20Containerization.md) | Docker, Podman, namespaces, cgroups & container security | Docker/Podman workflow & container hardening | Docker/Podmanとコンテナセキュリティ |
+| **24** | 5 · Linux Networking | [24. Linux Networking — Interfaces & Routing.md](file:///home/kodok/Documents/LearnCybersecurity/linux/24.%20Linux%20Networking%20%E2%80%94%20Interfaces%20&%20Routing.md) | `ip`, NetworkManager, netplan & static routing | Interface config, NM, netplan & routing | インターフェース設定とルーティング |
+| **25** | 5 · Linux Networking | [25. Linux Networking — Diagnostics & Packet Analysis.md](file:///home/kodok/Documents/LearnCybersecurity/linux/25.%20Linux%20Networking%20%E2%80%94%20Diagnostics%20&%20Packet%20Analysis.md) | `ping`, `ss`, `tcpdump`, ARP & layered troubleshooting | Reachability, socket audit & packet capture | 疎通診断、ssとtcpdump |
+| **26** | 6 · Linux Hardening | [26. Linux Security...](file:///home/kodok/Documents/LearnCybersecurity/linux/26.%20Linux%20Security%20%E2%80%94%20Threat%20Model%20&%20Hardening%20Theory.md) | Threat model, DAC/MAC/RBAC, SSH, fail2ban & sysctl | Linux security theory, access control & host hardening | Linuxセキュリティ理論とアクセス制御 |
+| **27** | 6 · Linux Hardening | [27. Firewall Setup.md](file:///home/kodok/Documents/LearnCybersecurity/linux/27.%20Firewall%20Setup.md) | iptables, nftables, UFW & firewalld allowlists | Host firewall rules & zone design | iptables/nft/UFW/firewalld |
+| **28** | 6 · Linux Hardening | [28. System Logs.md](file:///home/kodok/Documents/LearnCybersecurity/linux/28.%20System%20Logs.md) | `/var/log`, `journalctl`, `dmesg`, log poisoning & anti-forensics | System logs, auth telemetry, log poisoning & evasion | ログ調査、Syslog/journalctlとログポイズニング |
+| **29** | 7 · Solaris | [29. Solaris...](file:///home/kodok/Documents/LearnCybersecurity/linux/29.%20Solaris%20%E2%80%94%20Linux%20Distributions%20vs%20Solaris.md) | SMF, IPS/pkg, ZFS, Zones vs Linux | Solaris vs Linux architecture & admin deltas | SolarisとLinuxの比較 |
+| **30** | 8 · Tips & Tricks | [30. Shortcuts — Bash Tips & Tricks.md](file:///home/kodok/Documents/LearnCybersecurity/linux/30.%20Shortcuts%20%E2%80%94%20Bash%20Tips%20&%20Tricks.md) | Pintasan keyboard bash, riwayat perintah & produktivitas | Bash shortcuts, history expansion & terminal productivity | Bashショートカットキーと生産性向上テクニック |
+| 💡 | Bonus | [Neovim — Tips & Tricks.md](file:///home/kodok/Documents/LearnCybersecurity/linux/Tips%20&%20Tricks/Neovim%20%E2%80%94%20Tips%20&%20Tricks.md) | Navigasi cepat Neovim, modal editing & konfigurasi | Neovim productivity, keymaps & modal editing workflow | Neovimの基本操作、キーマップと設定テクニック |
 
 ---
 

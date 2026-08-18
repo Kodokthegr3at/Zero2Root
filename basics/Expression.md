@@ -1,10 +1,16 @@
 # 🧮 Expression — Syntax, Types & Evaluation
 
-> **LearnCybersecurity** | Basics & Programming Fundamentals Series  
-> 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at
+> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
 
 ---
 
+
+<!-- LC-CURRICULUM-START -->
+> **Curriculum ID:** `LC-001` | **Phase 0:** Foundations  
+> **Est. study:** 2-3h | **Level:** Beginner  
+> **Prerequisites:** -  
+> **Book map:** K. N. King Â C Programming Ch.2-5; Friedl Â Mastering Regular Expressions Ch.1-4; Sweigart Â Automate the Boring Stuff Ch.1-6
+<!-- LC-CURRICULUM-END -->
 ## 📖 Daftar Isi / Table of Contents / 目次
 
 | # | Topic | Bahasa Indonesia | English | 日本語 |
@@ -19,7 +25,7 @@
 | 8 | Bitwise Expression | Operasi level bit & manipulasi biner | Bit-level operations & binary manipulation | ビット単位の演算と操作 |
 | 9 | Cast Expression | Konversi tipe data (widening/narrowing) | Data type conversion (widening/narrowing) | データ型変換（拡大・縮小キャスト） |
 | 10 | Object Creation Expression | Alokasi memori & pembuatan objek | Memory allocation & object instantiation | メモリ確保とオブジェクト生成 |
-| 11 | Security Note | Risiko keamanan & eksploitasi ekspresi | Expression security risks & exploitation | 式のセキュリティリスクと脆弱性 |
+| 11 | Security Note | Risiko & pertahanan ekspresi | Expression risks & defensive controls | 式のリスクと防御コントロール |
 | 12 | Summary & Cheatsheet | Tabel ringkasan & cheatsheet cepat | Summary table & quick cheatsheet | 要約表とクイックチートシート |
 
 ---
@@ -31,15 +37,39 @@
 
 Dalam pemrograman sistem (C/C++) dan bahasa modern (Java, Python), urutan evaluasi mengikuti aturan **presedensi operator** (BODMAS/PEMDAS). Operasi perkalian, pembagian, dan modulo dievaluasi lebih dulu sebelum penjumlahan dan pengurangan, kecuali diatur eksplisit menggunakan tanda kurung `()`.
 
+Secara formal (K. N. King), ekspresi aritmetika bilangan bulat dapat ditulis:
+
+$$
+E ::= n \mid (E) \mid E \;+\; E \mid E \;-\; E \mid E \;\times\; E \mid E \;/\; E \mid E \bmod E
+$$
+
+dengan evaluasi mengikuti asosiatif kiri dan prioritas \(\times,/,\% \;>\; +,-\). Integer overflow pada tipe lebar \(w\) bit terjadi ketika hasil berada di luar \(\bigl[-2^{w-1},\,2^{w-1}-1\bigr]\) (signed two's complement) atau \(\bigl[0,\,2^{w}-1\bigr]\) (unsigned) — sering memicu alokasi buffer yang salah ukuran di C.
+
 ### 🇬🇧 English
 An **Arithmetic Expression** is an expression that evaluates to a numeric value through standard mathematical operations such as addition (`+`), subtraction (`-`), multiplication (`*`), division (`/`), and remainder or modulo (`%`).
 
 In system programming (C/C++) and modern languages (Java, Python), the evaluation order strictly adheres to **operator precedence** (BODMAS/PEMDAS). Multiplication, division, and modulo operations take precedence over addition and subtraction, unless explicitly grouped using parentheses `()`.
 
+Formally (per K. N. King), integer arithmetic expressions can be described by the grammar:
+
+$$
+E ::= n \mid (E) \mid E \;+\; E \mid E \;-\; E \mid E \;\times\; E \mid E \;/\; E \mid E \bmod E
+$$
+
+evaluated left-associatively with precedence \(\times,/,\% \;>\; +,-\). Integer overflow on a \(w\)-bit type occurs when a result leaves \(\bigl[-2^{w-1},\,2^{w-1}-1\bigr]\) (signed) or \(\bigl[0,\,2^{w}-1\bigr]\) (unsigned) — a common root cause of undersized buffer allocations in C.
+
 ### 🇯🇵 日本語
 **算術式**（Arithmetic Expression）は、加算（`+`）、減算（`-`）、乗算（`*`）、除算（`/`）、剰余（`%`）などの基本的な数学演算を通じて数値を算出する式です。
 
 システムプログラミング（C/C++）や現代的な言語（Java、Python）では、評価順序は**演算子の優先順位**（BODMAS/PEMDAS）に従います。乗算、除算、剰余は、丸括弧 `()` で明示的にグループ化されていない限り、加算や減算よりも優先して評価されます。
+
+形式的には（K. N. King）、整数算術式は次の文法で表せます：
+
+$$
+E ::= n \mid (E) \mid E \;+\; E \mid E \;-\; E \mid E \;\times\; E \mid E \;/\; E \mid E \bmod E
+$$
+
+左結合で、優先順位は \(\times,/,\% \;>\; +,-\) です。幅 \(w\) ビットの整数オーバーフローは結果が \(\bigl[-2^{w-1},\,2^{w-1}-1\bigr]\)（符号付き）または \(\bigl[0,\,2^{w}-1\bigr]\)（符号なし）を外れたときに発生し、Cでのバッファ確保ミスの典型的な原因になります。
 
 ```java
 // ── Java Example ─────────────────────────────────────────────
@@ -456,34 +486,40 @@ public class TargetHost {
 
 ---
 
-## 11. 🔐 Security Note — Expression Security Risks & Exploits
+## 11. 🔐 Security Note — Expression Risks & Defensive Controls
 
 ### 🇮🇩 Bahasa Indonesia
-Pemahaman tentang evaluasi ekspresi sangat krusial dalam offensive dan defensive cybersecurity. Kesalahan interpretasi ekspresi oleh program sering memicu kerentanan kritis:
+Pemahaman evaluasi ekspresi krusial untuk **audit & hardening**. Input tidak tepercaya yang dievaluasi sebagai kode sering memicu kerentanan; fokus di bawah adalah **deteksi + mitigasi**:
 
-1. **Expression Language (EL) Injection / OGNL Injection**: Framework web seperti Spring (SpEL) atau Apache Struts (OGNL) yang mengevaluasi ekspresi masukan pengguna secara dinamis dapat dieksploitasi untuk Remote Code Execution (RCE). Contoh: `${T(java.lang.Runtime).getRuntime().exec('id')}`.
-2. **Regular Expression Denial of Service (ReDoS)**: Pola RegEx dengan *catastrophic backtracking* (misal `(a+)+$`) dapat menyebabkan konsumsi CPU 100% dan melumpuhkan server ketika memproses string berbahaya (*The Web Application Hacker's Handbook*).
-3. **Type Juggling & Type Coercion**: Perbandingan `==` pada bahasa dinamis (PHP/JavaScript) mengonversi tipe secara otomatis (`"0e123" == "0e456"` menghasilkan `true`), memungkinkan bypass otentikasi login atau verifikasi token.
-4. **Integer Overflow & Arithmetic Truncation**: Melakukan aritmatika yang melampaui batas tipe data (misal `MAX_INT + 1`) membungkus nilai ke negatif, sering memicu *buffer overflow* saat mengalokasikan ukuran memori di C/C++.
-5. **Bash Arithmetic Expansion Injection**: Di Bash, ekspresi `$(( ... ))` mengevaluasi variabel secara rekursif, yang dapat memicu eksekusi perintah jika input user tidak disanitasi.
+1. **Expression Language (EL) / OGNL Injection**: Jangan evaluasi ekspresi dari input pengguna. Gunakan allowlist template, matikan evaluasi dinamis (SpEL/OGNL) pada data request, dan sandbox interpreter jika wajib ada.
+2. **ReDoS**: Hindari nested quantifiers catastrophik; tetapkan timeout/engine linear-time; uji pola dengan fuzzer panjang (*Mastering Regular Expressions* / WAHH).
+3. **Type Juggling**: Pakai perbandingan ketat (`===` / typed compares); validasi tipe di boundary API; jangan bandingkan hash string dengan `==`.
+4. **Integer Overflow (C)**: Gunakan tipe lebar cukup, cek sebelum alokasi (`size_t` overflow checks), enable sanitizer (`-fsanitize=undefined,integer`), dan ikuti disiplin K. N. King untuk batas tipe.
+5. **Bash / eval surfaces**: Jangan `eval` atau `$((...))` atas input mentah; quote variabel; prefer parser terstruktur.
+
+**Defense checklist:** never `eval` untrusted input · strict equality · regex complexity budgets · checked arithmetic · WAF/SAST rules for SpEL/OGNL · unit tests for boundary values \(0, 2^{w}-1, -2^{w-1}\).
 
 ### 🇬🇧 English
-Mastery of expression evaluation mechanics is essential in both offensive and defensive cybersecurity. Vulnerabilities frequently emerge when untrusted user input is evaluated as code:
+Expression evaluation literacy matters for **audit and hardening**. Untrusted input evaluated as code creates critical bugs; prioritize **detection and mitigation**:
 
-1. **Expression Language (EL) / OGNL Injection**: Web frameworks like Spring (SpEL) or Apache Struts (OGNL) that dynamically evaluate user input as expressions can lead to complete Remote Code Execution (RCE). Example: `${T(java.lang.Runtime).getRuntime().exec('id')}`.
-2. **Regular Expression Denial of Service (ReDoS)**: Regex patterns prone to *catastrophic backtracking* (e.g., `(a+)+$`) cause exponential computational complexity, freezing server CPU cores when parsing crafted malicious input (*The Web Application Hacker's Handbook*).
-3. **Type Juggling & Loose Comparison Bypass**: Loose equality (`==`) in dynamic languages (PHP/JavaScript) performs automatic type coercion (`"0e123" == "0e456"` evaluates to `true`), bypassing password hashes or token checks.
-4. **Integer Overflow & Arithmetic Truncation**: Arithmetic exceeding data type boundaries (e.g., `INT_MAX + 1`) wraps around, frequently leading to undersized memory buffer allocations and Heap/Stack Overflows in C/C++.
-5. **Bash Arithmetic Expansion Injection**: Bash `$(( ... ))` evaluations recursively expand variables, enabling arbitrary command execution when handling unsanitized parameters.
+1. **EL / OGNL Injection**: Never evaluate user-supplied expressions. Disable dynamic SpEL/OGNL on request data; allowlist templates; sandbox only if unavoidable.
+2. **ReDoS**: Avoid catastrophic nested quantifiers; enforce match timeouts or linear-time engines; fuzz long adversarial strings (*Mastering Regular Expressions* / WAHH).
+3. **Type Juggling**: Prefer strict equality (`===`); validate types at API boundaries; never compare password hashes with loose `==`.
+4. **Integer Overflow (C)**: Widen types, check before allocation, enable `-fsanitize=undefined,integer`, and follow K. N. King type-width discipline.
+5. **Shell arithmetic / eval**: Do not `eval` or expand `$((...))` on raw input; quote expansions; prefer structured parsers.
+
+**Defense checklist:** no `eval` on untrusted input · strict equality · regex complexity budgets · checked arithmetic · SAST/WAF for expression languages · boundary tests for \(0, 2^{w}-1, -2^{w-1}\).
 
 ### 🇯🇵 日本語
-式の評価メカニズムの理解は、オフェンシブ・ディフェンシブ双方のサイバーセキュリティにおいて極めて重要です。信頼できないユーザー入力が式として評価されると、重大な脆弱性が発生します：
+式評価の理解は**監査と堅牢化**に不可欠です。信頼できない入力をコードとして評価すると重大な欠陥になります。重点は**検知と緩和**です：
 
-1. **式言語（EL）インジェクション / OGNL インジェクション**: Spring（SpEL）や Apache Struts（OGNL）などのWebフレームワークで、入力が動的に評価されるとリモートコード実行（RCE）につながります。例：`${T(java.lang.Runtime).getRuntime().exec('id')}`。
-2. **正規表現サービス拒否（ReDoS）**: 破滅的バックトラッキングを引き起こす正規表現パターン（例：`(a+)+$`）は、悪意のある入力を処理する際にCPU使用率を100%に枯渇させ、サービスを停止させます（『The Web Application Hacker's Handbook』参照）。
-3. **Type Juggling（型の自動変換バイパス）**: 動的型付け言語（PHPやJavaScript）の曖昧な比較（`==`）では、自動的な型変換により `"0e123" == "0e456"` が `true` と評価され、ハッシュや認証チェックがバイパスされる危険があります。
-4. **整数オーバーフローと切り捨て**: 許容範囲を超える演算（`INT_MAX + 1`）によるラップアラウンドは、C/C++でのバッファ確保サイズ不足やメモリ破壊攻撃を引き起こします。
-5. **Bash算術展開インジェクション**: Bashの `$(( ... ))` 評価は変数を再帰的に展開するため、未検証のパラメータからコマンド実行が発生するリスクがあります。
+1. **EL / OGNL インジェクション**: ユーザー入力の式評価を禁止。動的SpEL/OGNLを無効化し、テンプレートを許可リスト化、やむを得ない場合のみサンドボックス化。
+2. **ReDoS**: 破滅的な入れ子量指定子を避け、タイムアウトや線形時間エンジンを使い、長い敵対文字列で検証（『Mastering Regular Expressions』等）。
+3. **Type Juggling**: 厳密比較（`===`）と境界での型検証。ハッシュ比較に曖昧な `==` を使わない。
+4. **整数オーバーフロー（C）**: 十分な幅の型、確保前チェック、`-fsanitize=undefined,integer`、K. N. King の型幅規律。
+5. **シェル算術 / eval**: 生入力に対する `eval` や `$((...))` を避け、クォートし、構造化パーサを優先。
+
+**防御チェックリスト:** 信頼できない入力の `eval` 禁止 · 厳密比較 · 正規表現複雑度上限 · 検査付き算術 · 式言語向け SAST/WAF · 境界値 \(0, 2^{w}-1, -2^{w-1}\) のテスト。
 
 ---
 
@@ -506,10 +542,11 @@ Mastery of expression evaluation mechanics is essential in both offensive and de
 
 > 📚 **References & Book Sources:**
 > - K. N. King — *C Programming: A Modern Approach (2nd Edition)* (`~/Documents/Books/Programming/C /`)
-> - Al Sweigart — *Automate the Boring Stuff with Python* (`~/Documents/Books/Programming/Python/`)
-> - Jeffrey E.F. Friedl — *Mastering Regular Expressions (3rd Edition)* (`~/Documents/Books/Linux/`)
+> - Al Sweigart — *Automate the Boring Stuff with Python (2nd Edition)* (`~/Documents/Books/Programming/Python/`)
+> - Jeffrey E.F. Friedl — *Mastering Regular Expressions (3rd Edition)* (`~/Documents/Books/CyberSec/Linux/`)
 > - Dafydd Stuttard & Marcus Pinto — *The Web Application Hacker's Handbook (2nd Edition)* (`~/Documents/Books/CyberSec/Web App/`)
 > - Scott Meyers — *Effective Modern C++* (`~/Documents/Books/Programming/ C++/`)
 
+> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026  
 > 🔖 **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)  
 > 💬 **Feedback & Contributions welcome!** Open an issue or PR if you spot any errors.

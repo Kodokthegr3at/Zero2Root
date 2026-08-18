@@ -1,159 +1,312 @@
-# 🌐 OSINT — Open Source Intelligence Framework & Techniques
+# 🔎 OSINT — Open Source Intelligence Framework & Techniques
 
 > **LearnCybersecurity** | Intelligence & Reconnaissance Series  
-> 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at
+> 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at  
+> 📚 Primary refs: Bazzell / community handbooks & *Open Source Intelligence Methods and Tools* — `~/Documents/Books/CyberSec/OSINT/`  
+> ⚠️ Hanya sumber **legal & publik**; hormati hukum, ToS, dan etika investigasi.
 
 ---
 
+
+<!-- LC-CURRICULUM-START -->
+> **Curriculum ID:** `LC-069` | **Phase 7:** Specialized  
+> **Est. study:** 5h | **Level:** Intermediate  
+> **Prerequisites:** LC-058  
+> **Book map:** Akhgar et al. Â Open Source Intelligence Methods and Tools
+<!-- LC-CURRICULUM-END -->
 ## 📖 Daftar Isi / Table of Contents / 目次
 
 | # | Topic | Bahasa Indonesia | English | 日本語 |
 |---|-------|-----------------|---------|--------|
-| 1 | OSINT Cycle | Siklus intelijen 6 tahap | The 6-Phase Intelligence Lifecycle | OSINTインテリジェンスサイクル |
-| 2 | OPSEC & Personas | Anonimitas, sock puppets, VPN/Tor | Researcher OPSEC & Sock Puppets | 調査員のOPSEC（運用セキュリティ） |
-| 3 | Domain & Infrastructure | Rekon domain, IP, BGP & CDN | Infrastructure, DNS & ASN Reconnaissance | ドメイン・インフラ・ASN調査 |
-| 4 | SOCMINT & People | SOCMINT, username & geolokasi | Social Media Intelligence & Geolocation | 人物調査・SOCMINT・画像位置特定 |
-| 5 | Threat Intel & Breaches | Database kebocoran data & DeHashed | Breach Databases, Leaks & Threat Intel | 漏洩データベースと脅威インテリジェンス |
-| 6 | Automated Frameworks | Recon-ng, SpiderFoot, theHarvester | Automated OSINT Tool Suites | OSINT自動化フレームワーク |
-| 7 | Cheatsheet | Referensi cepat tool & link OSINT | Comprehensive OSINT Cheatsheet | OSINTツール・コマンドチートシート |
+| 1 | What is OSINT | Definisi & batas | OSINT definition | OSINTとは |
+| 2 | Intelligence Cycle | Siklus intelijen | Intel cycle | インテリジェンス循環 |
+| 3 | Planning & Direction | Perencanaan | Planning | 計画 |
+| 4 | Collection Disciplines | Koleksi legal | Collection | 合法的収集 |
+| 5 | Processing & Analysis | Olah & analisis | Process & analyze | 処理と分析 |
+| 6 | Geolocation Skills | Verifikasi lokasi | Geolocation verify | 位置検証 |
+| 7 | OPSEC for Investigators | OPSEC peneliti | Investigator OPSEC | 調査側OPSEC |
+| 8 | Sock Puppets Ethics | Persona & etika | Sock puppet ethics | ソックパペット倫理 |
+| 9 | Legal & Ethical Bounds | Hukum & etika | Legal bounds | 法的境界 |
+| 10 | Cheatsheet | Workflow cepat | Workflow sheet | チートシート |
 
 ---
 
-## 1. 🔄 The 6-Phase OSINT Intelligence Cycle
+## 1. 📘 What OSINT Is (and Is Not)
 
 ### 🇮🇩 Bahasa Indonesia
-**Open Source Intelligence (OSINT)** adalah proses pengumpulan, pemrosesan, dan analisis data yang tersedia secara publik dari berbagai sumber terbuka untuk menghasilkan intelijen yang dapat ditindaklanjuti (*actionable intelligence*). OSINT mengikuti siklus terstruktur 6 tahap:
+**Open Source Intelligence (OSINT)** adalah intelijen yang dikumpulkan dari informasi **tersedia secara publik / sah** lalu diproses menjadi insight yang dapat ditindaklanjuti.
 
-1. **Planning & Direction**: Menentukan tujuan investigasi, batasan ruang lingkup, dan persyaratan OPSEC.
-2. **Collection**: Mengumpulkan data mentah secara sistematis dari mesin pencari, media sosial, domain registry, sertifikat SSL, dan arsip publik.
-3. **Processing**: Membersihkan, menyaring, mendekode, dan menormalkan data ke dalam format terstruktur.
-4. **Analysis & Production**: Menghubungkan titik-titik informasi (*correlation*), mengidentifikasi pola, dan membangun peta relasi antar-entitas.
-5. **Dissemination**: Menyajikan laporan temuan intelijen dalam bentuk dokumen teknis atau visualisasi grafik.
-6. **Feedback**: Mengevaluasi keakuratan intelijen dan menyempurnakan strategi pengumpulan data berikutnya.
+$$
+\mathsf{OSINT} = \mathsf{Collect}_{\text{legal public}} \rightarrow \mathsf{Process} \rightarrow \mathsf{Analyze} \rightarrow \mathsf{Disseminate}
+$$
+
+| OSINT | Bukan OSINT |
+|:---|:---|
+| Berita, situs resmi, filings | Akses akun tanpa izin |
+| Metadata yang dipublikasikan | Hack / phishing untuk data |
+| Satelit/peta publik | Melanggar paywall dengan credential curian |
+| Postingan publik | Doxxing / pelecehan |
 
 ### 🇬🇧 English
-**Open Source Intelligence (OSINT)** is the systematic discipline of collecting, processing, and analyzing publicly available information from overt sources to produce actionable intelligence. OSINT follows a rigorous 6-phase lifecycle:
+OSINT quality depends less on “secret tools” and more on **tradecraft**: clear questions, source criticism, correlation, and documentation. Tools change; the intelligence cycle does not.
 
-1. **Planning & Direction**: Defining objectives, scope boundaries, legal considerations, and strict OPSEC posture.
-2. **Collection**: Systematically harvesting raw data from search engines, social networks, DNS registries, SSL transparency logs, and public archives.
-3. **Processing**: Sanitizing, decoding, deduplicating, and formatting collected data into structured tables or graphs.
-4. **Analysis & Production**: Correlating data points, synthesizing intelligence, and identifying underlying adversary infrastructure or personnel patterns.
-5. **Dissemination**: Publishing structured technical reports and relational entity graphs.
-6. **Feedback**: Evaluating intelligence fidelity and updating investigative requirements.
+### 日本語
+OSINTの本質はツール名ではなく、問い・批判的検証・相関・文書化です。
 
-### 🇯🇵 日本語
-**OSINT（オープンソース・インテリジェンス）**は、公開されている合法的な情報源（検索エンジン、SNS、DNSレコード、証明書ログなど）からデータを収集・処理・分析し、実用的なインテリジェンスを導き出す手法です。6つの段階からなる標準サイクルに従います：
+---
 
-1. **計画と方針決定**: 調査対象、範囲、法的制約、およびOPSEC（運用セキュリティ）要件の策定。
-2. **情報収集**: 公開ソースからの系統的な生データ収集。
-3. **データ処理**: データの正規化、重複排除、構造化。
-4. **分析と統合**: データの関連付け、パターン認識、相関関係の可視化。
-5. **報告と共有**: 構造化されたレポートやグラフによる調査結果の提供。
-6. **評価とフィードバック**: インテリジェンスの正確性評価と収集計画の改善。
+## 2. 🔄 The Intelligence Cycle
 
 ```
-  ┌────────────────────────────────────────────────────────┐
-  │                 OSINT INTELLIGENCE CYCLE               │
-  ├───────────────────┬────────────────────────────────────┤
-  │ 1. Planning       │ Menentukan sasaran, batasan, OPSEC │
-  │ 2. Collection     │ Mengumpulkan raw data dari web     │
-  │ 3. Processing     │ Normalisasi data, decoding, filter │
-  │ 4. Analysis       │ Menghubungkan pola, korelasi graph │
-  │ 5. Dissemination  │ Laporan intelijen terstruktur      │
-  │ 6. Feedback       │ Evaluasi akurasi hasil intelijen   │
-  └───────────────────┴────────────────────────────────────┘
+        ┌──────────── Direction / Requirements ────────────┐
+        │                                                  │
+        ▼                                                  │
+   Collection ──▶ Processing ──▶ Analysis ──▶ Dissemination ┘
+        ▲                         │
+        └────── Feedback / gaps ──┘
 ```
 
+| Fase | Pertanyaan kunci | Output |
+|:---|:---|:---|
+| **Direction** | Apa yang harus dijawab? Siapa konsumen? | PIR (Priority Intelligence Requirements) |
+| **Collection** | Sumber mana yang legal & relevan? | Raw data + provenance |
+| **Processing** | Bagaimana menormalkan & menyimpan? | Structured dataset |
+| **Analysis** | Apa yang berarti / tidak pasti? | Assessment + confidence |
+| **Dissemination** | Bagaimana melapor tanpa overclaim? | Report / brief |
+| **Feedback** | Apa yang masih bolong? | New PIRs |
+
+### Confidence language (disiplin)
+Hindari absolutisme. Gunakan skala:
+
+$$
+\mathsf{Confidence} \in \{\mathsf{low},\;\mathsf{moderate},\;\mathsf{high}\}
+$$
+
+serta pisahkan **fakta teramati** vs **inferensi**.
+
 ---
 
-## 2. 🥷 Researcher OPSEC & Sock Puppet Architecture
+## 3. 🎯 Planning & Direction — Good Questions
 
-### 🇮🇩 Bahasa Indonesia
-Investigator OSINT wajib menjaga **Operational Security (OPSEC)** agar jejak digital pribadi tidak bocor ke target yang sedang diinvestigasi:
-- **Sock Puppets (Identitas Anonim)**: Profil media sosial buatan yang memiliki riwayat kredibel, email burner, nomor virtual VoIP (bukan nomor pribadi), dan foto profil wajah hasil AI (*Generated Photos* / *ThisPersonDoesNotExist*).
-- **Environment Isolation**: Menggunakan dedicated virtual machine (Whonix / Tails) dengan browser bersih tanpa ekstensi personal, dipasangkan dengan multi-hop VPN atau jaringan Tor.
-- **Canary & Fingerprint Prevention**: Jangan pernah mengeklik tautan yang dikirim langsung oleh target tanpa sandbox, untuk mencegah *IP grabber* atau browser fingerprinting (Canvas/WebGL).
+PIR yang buruk: “Cari semua tentang X.”  
+PIR yang baik:
+
+1. Apakah organisasi $X$ mengoperasikan ASN / rentang IP publik sendiri?
+2. Domain mana yang terhubung ke merek $X$ menurut WHOIS/CT logs (data publik)?
+3. Apakah ada lowongan yang mengungkapkan stack teknologi (OSINT teknis defensif)?
+
+$$
+\mathsf{GoodPIR} \iff \mathsf{Answerable} \land \mathsf{TimeBound} \land \mathsf{DecisionLinked}
+$$
+
+**Collection plan:** sumber → metode → legal check → storage → analyst.
 
 ---
 
-## 3. 🌍 Infrastructure, DNS & ASN Reconnaissance
+## 4. 📚 Collection Disciplines (Legal Sources)
 
-```bash
-# ── WHOIS & ASN EXPLORATION ──────────────────────────────────
-whois target.com
-whois -h whois.radb.net -- "-i origin AS13335" # Temukan IP prefixes milik target ASN
+### 4.1 Kategori sumber
+| Kategori | Contoh | Catatan |
+|:---|:---|:---|
+| **Official** | Regulator, company filings, gov portals | Tinggi kredibilitas; cek update |
+| **Media** | Berita, wawancara | Bias & kesalahan mungkin |
+| **Technical public** | DNS, CT logs, public BGP, public paste (cek ToS) | Rate-limit; jangan abuse |
+| **Social / UGC** | Postingan publik | Konteks mudah hilang; arsipkan |
+| **Imagery** | Maps, Street View, satelit publik | Etika lokasi sensitif |
+| **Academic / papers** | Prosiding, preprint | Verifikasi versi |
 
-# ── CERTIFICATE TRANSPARENCY SUBDOMAIN DISCOVERY ─────────────
-curl -s "https://crt.sh/?q=%25.target.com&output=json" | jq -r '.[].name_value' | sort -u
+### 4.2 Provenance record (wajib)
+Untuk tiap artefak catat:
 
-# ── REVERSE IP & SHARED HOSTING LOOKUP ───────────────────────
-dig +short target.com
-curl -s "https://api.hackertarget.com/reverseiplookup/?q=93.184.216.34"
+$$
+\langle \mathsf{URL},\; \mathsf{UTC},\; \mathsf{hash},\; \mathsf{collector},\; \mathsf{tool},\; \mathsf{notes} \rangle
+$$
+
+Tanpa provenance, analisis mudah digugat.
+
+### 4.3 Source criticism
+- Siapa penulisnya? Apa insentifnya?
+- Apakah primary atau secondary?
+- Apakah bisa dikorelasikan dengan sumber independen?
+
+---
+
+## 5. 🧪 Processing & Analysis
+
+### Processing
+- Deduplikasi entity (orang, org, domain, IP).
+- Timeline construction.
+- Normalisasi nama (unicode / homoglyph awareness).
+- Tag reliability.
+
+### Analysis patterns
+| Pola | Deskripsi | Risiko kesalahan |
+|:---|:---|:---|
+| Link analysis | Hubungkan entity | False friendship / homonym |
+| Temporal | Urutan peristiwa | Timezone mistakes |
+| Geospatial | Peta & bayangan / landmark | Confirmation bias |
+| Technical correlation | DNS ↔ cert ↔ hosting | Shared hosting noise |
+
+```
+Raw captures
+    │
+    ▼
+Structured entities (graph)
+    │
+    ▼
+Hypotheses H1..Hn
+    │
+    ├─ corroborate
+    └─ falsify
+         │
+         ▼
+Assessment + confidence + gaps
 ```
 
+### Output template (ringkas)
+1. Bluf (bottom line up front)  
+2. Key judgments  
+3. Evidence summary (with links/hashes)  
+4. Alternatives considered  
+5. Gaps & next collection  
+
 ---
 
-## 4. 📸 SOCMINT & Imagery Geolocation (IMINT)
+## 6. 🗺️ Geolocation as a Verification Skill
 
-```bash
-# ── EXIF METADATA EXTRACTION ─────────────────────────────────
-exiftool sample_image.jpg | grep -iE "GPS|Camera|Model|Date|Software"
+Geolocation OSINT = **verifikasi klaim lokasi** dari foto/video publik, bukan pelacakan harassive.
 
-# ── MULTI-PLATFORM USERNAME RECONNAISSANCE ───────────────────
-# Cari username di 300+ media sosial secara paralel
-sherlock username_target
-maigret username_target --pdf --html
+### Teknik konsep (defense / verification)
+| Sinyal | Cara dipakai |
+|:---|:---|
+| Landmark | Cocokkan siluet bangunan dengan peta publik |
+| Signage / language | Petunjuk negara/kota |
+| Sun / shadow | Estimasi waktu/arah (kasar) |
+| Vegetation / climate | Konsistensi regional |
+| Infrastructure | Tiang listrik, marka jalan, setir kiri/kanan |
+| EXIF (jika ada) | Hanya jika metadata masih tertanam & legal diakses |
+
+$$
+\mathsf{LocationClaim} \models \mathsf{Corroborated}
+\iff \ge 2\ \mathsf{IndependentSignals}\ \mathsf{agree}
+$$
+
+**Etika:** jangan publikasikan alamat rumah pribadi; jangan doxx. Untuk IR/DFIR internal, ikuti kebijakan privasi organisasi.
+
+---
+
+## 7. 🛡️ OPSEC for Investigators
+
+Peneliti juga bisa menjadi target (counter-OSINT).
+
+| Risiko | Mitigasi |
+|:---|:---|
+| Kebocoran identitas nyata | Pisahkan identitas kerja investigasi |
+| Fingerprinting browser | Profil terpisah; batasi ekstensi |
+| Geo leak | VPN/policy org; jangan campur akun personal |
+| Malicious documents | Sandbox; jangan aktifkan makro sembarangan |
+| Opposing surveillance | Jangan unggah bukti ke platform acak |
+
+```
+Personal life  ≠  Investigation workspace
+     │                    │
+   private            logged, policy-bound, legal
 ```
 
-- **Reverse Image Search Engines**:
-  - **Google Lens**: Kuat untuk produk, landmark, dan lokasi wisata.
-  - **Yandex Images**: Algoritma pengenalan wajah (*facial recognition*) dan lanskap paling akurat di industri OSINT.
-  - **TinEye**: Melacak kemunculan pertama gambar di internet (*chronological history*).
-- **Shadow & Solar Geometry**:
-  - Menggunakan **SunCalc.org** untuk menghitung azimuth, panjang bayangan, dan waktu pengambilan foto berdasarkan perkiraan lokasi geografis.
+**OPSEC formula (intuisi):**
+
+$$
+\mathsf{Exposure} \propto \mathsf{Reuse}(\mathsf{Identity},\;\mathsf{Device},\;\mathsf{Payment},\;\mathsf{LanguageHabits})
+$$
+
+Minimalkan reuse antar konteks.
 
 ---
 
-## 5. 💥 Breach Databases & Threat Intelligence
+## 8. 🧦 Sock Puppets — Ethics Warning
 
-- **DeHashed / LeakCheck / HaveIBeenPwned**: Menemukan kredensial yang bocor dari insiden peretasan sebelumnya untuk memetakan password reuse atau format username karyawan.
-- **Wayback Machine & Common Crawl**:
-  ```bash
-  # Ekstraksi seluruh riwayat URL target yang pernah di-crawl di masa lalu
-  waybackurls target.com | sort -u > archive_urls.txt
-  gau target.com --subs | sort -u > all_urls.txt
-  ```
+**Sock puppet** = akun persona untuk pengumpulan. Di banyak konteks profesional:
+
+| Status | Pandangan |
+|:---|:---|
+| Akademik / hobi | Sering melanggar ToS platform |
+| LE / intel resmi | Diatur kebijakan & hukum ketat |
+| Bug bounty / pentest | Biasanya **di luar scope** tanpa izin eksplisit |
+| Wartawan | Kode etik & hukum lokal |
+
+### Peringatan keras
+- Jangan gunakan persona untuk mengelabui individu rentan, grooming, atau penipuan.
+- Jangan panen data di balik login yang memerlukan identitas palsu jika melanggar hukum/ToS.
+- Prefer **sumber benar-benar publik** tanpa autentikasi tipuan.
+- Jika organisasi Anda mengizinkan persona: dokumentasikan approval, batasan, dan retensi data.
+
+> Catatan ini **tidak** memberi resep membuat persona untuk penyusupan komunitas. Fokus: mengapa berisiko secara hukum/etika dan bagaimana menghindari ketergantungan padanya.
 
 ---
 
-## 6. 🛠️ Comprehensive OSINT CLI Cheatsheet
+## 9. ⚖️ Legal & Ethical Bounds
 
-```bash
-# ── THEHARVESTER RECONNAISSANCE ──────────────────────────────
-theHarvester -d target.com -b google,bing,linkedin,crtsh,virustotal -l 500
+| Batas | Praktik |
+|:---|:---|
+| Hukum akses komputer | Jangan bypass kontrol akses |
+| Privasi / GDPR-like | Minimasi data; tujuan jelas; retensi terbatas |
+| ToS platform | Automation agresif bisa melanggar kontrak |
+| Copyright | Jangan redistribusi konten dilindungi secara massal |
+| Safety | Jangan doxx; jangan publikasikan PII sensitif |
+| Workplace | Ikuti RoE & counsel |
 
-# ── RECON-NG FRAMEWORK WORKFLOW ──────────────────────────────
-recon-ng
-[recon-ng][default] > marketplace install all
-[recon-ng][default] > workspaces create TargetAudit
-[recon-ng][default][TargetAudit] > modules load recon/domains-hosts/hackertarget
-[recon-ng][default][TargetAudit][hackertarget] > options set SOURCE target.com
-[recon-ng][default][TargetAudit][hackertarget] > run
-[recon-ng][default][TargetAudit][hackertarget] > show hosts
+**Uji cepat etika:**
 
-# ── SPIDERFOOT OSINT ENGINE ──────────────────────────────────
-# Start local OSINT web GUI
-spiderfoot -l 127.0.0.1:5001
+$$
+\mathsf{WouldPublish?} \land \mathsf{WouldDefendInCourt?} \land \mathsf{LeastHarm?}
+$$
+
+Jika salah satu “tidak,” berhenti dan minta review hukum.
+
+---
+
+## 10. 🛠️ Workflow Cheatsheet
+
+```text
+1. Tulis PIR (1–3 pertanyaan)
+2. Legal check: publik? ToS? yurisdiksi?
+3. Collect dengan provenance (URL, UTC, hash)
+4. Process → entity graph + timeline
+5. Analyze → judgments + confidence + alternatives
+6. Report BLUF; tandai gaps
+7. Reduce data; store per retention policy
+8. Review OPSEC investigator
 ```
 
+| Kebutuhan | Arah koleksi publik (contoh kelas) |
+|:---|:---|
+| Domain footprint | DNS history publik, CT logs |
+| Org structure | Filings, press, career pages |
+| Infra hints | Job posts, public cloud docs, status pages |
+| Incident context | Vendor advisories, public timelines |
+| Image verify | Maps + landmark corroboration |
+
 ---
 
-> 📚 **References & Book Sources:**
-> - Babak Akhgar et al. — *Open Source Intelligence Methods and Tools* (`~/Documents/Books/CyberSec/OSINT/`)
-> - Christopher Hadnagy — *Social Engineering: The Science of Human Hacking (2nd Edition)* (`~/Documents/Books/CyberSec/Social Engineering/`)
-> - Peter Kim — *The Hacker Playbook 3: Practical Guide To Penetration Testing* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
-> - Michael Bazzell — *Open Source Intelligence Techniques (10th Edition)*
-> - [OSINT Framework Online Portal](https://osintframework.com/)
+## 🔐 Security Notes — Threats & Defenses
+
+| Ancaman | Mekanisme | Pertahanan |
+|:---|:---|:---|
+| Investigator dox | Counter-OSINT | Segregated personas/devices (policy) |
+| Poisoned sources | Disinfo / fake leaks | Multi-source corroboration |
+| Overcollection | Hoarding PII | Minimasi + retention |
+| ToS / legal breach | Aggressive scraping | Manual/public APIs; counsel |
+| Bias cascade | Seeing what you want | Red team the hypothesis |
+| Unsafe handling | Malicious files | Sandbox analysis |
+
+> **Tidak dibahas:** bypass paywall dengan kredensial curian, hacking akun, malware untuk koleksi, atau doxxing playbook.
+
+---
+
+> 📚 **References & Book Sources**
+> - *Open Source Intelligence Methods and Tools* — `~/Documents/Books/CyberSec/OSINT/`
+> - Tradecraft publik: intelligence cycle (ICD-style confidence language), source criticism
+> - Platform policies & local computer-crime / privacy statutes (always check current law)
 
 > 🔖 **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)  
-> 💬 **Feedback & Contributions welcome!** Open an issue or PR if you spot any errors.
+> ⚖️ OSINT legal & etis saja. Bukan lisensi untuk menyusupi sistem atau orang.

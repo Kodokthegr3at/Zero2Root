@@ -5,6 +5,13 @@
 
 ---
 
+
+<!-- LC-CURRICULUM-START -->
+> **Curriculum ID:** `LC-038` | **Phase 2:** Networking  
+> **Est. study:** 6-8h | **Level:** Beginner  
+> **Prerequisites:** LC-005  
+> **Book map:** Kurose & Ross Â Computer Networking Ch.1-2; Stallings Â Network Security Essentials Ch.2
+<!-- LC-CURRICULUM-END -->
 ## 📖 Daftar Isi / Table of Contents / 目次
 
 | # | Topic | Bahasa Indonesia | English | 日本語 |

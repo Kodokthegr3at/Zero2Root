@@ -1,10 +1,16 @@
 # 🍎 macOS File System
 
-> **LearnCybersecurity** | macOS Fundamentals Series  
-> 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at
+> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
 
 ---
 
+
+<!-- LC-CURRICULUM-START -->
+> **Curriculum ID:** `LC-007` | **Phase 0:** Foundations  
+> **Est. study:** 4-5h | **Level:** Beginner  
+> **Prerequisites:** LC-001  
+> **Book map:** Ward Â How Linux Works (Unix comparison); Apple platform guides
+<!-- LC-CURRICULUM-END -->
 ## 📖 Daftar Isi / Table of Contents / 目次
 
 | # | Topic | Bahasa Indonesia | English | 日本語 |
@@ -26,7 +32,7 @@
 | 15 | Keychain | Penyimpanan kredensial | Credential storage | 認証情報ストレージ |
 | 16 | LaunchAgents/Daemons | Persistence & startup | Persistence & startup | 永続化と起動 |
 | 17 | Volumes & APFS | Struktur volume modern | Modern volume structure | 現代のボリューム構造 |
-| 18 | Security Note | Direktori penting untuk pentest | Key dirs for pentesting | ペンテスト重要ディレクトリ |
+| 18 | Security Note | Lokasi sensitif & hardening | Sensitive locations & hardening | 機密ロケーションと堅牢化 |
 | 19 | Workflow | Navigasi & rekon praktis | Practical recon navigation | 実践的な偵察ナビゲーション |
 
 ---
@@ -1085,74 +1091,53 @@ $ mount_smbfs //user@server/share /Volumes/share
 
 ---
 
-## 18. 🔐 Security Note — Key Locations for Pentesting
+## 18. 🔐 Security Note — Sensitive Locations & Defensive Hardening
 
 ### 🇮🇩 Bahasa Indonesia
-Berikut adalah lokasi-lokasi **paling penting dari perspektif macOS pentesting**, baik untuk rekognisi, privilege escalation, credential dumping, maupun forensik:
+Lokasi berikut **bernilai tinggi** bagi penyerang *dan* defender. Gunakan untuk **audit TCC/SIP, Keychain hygiene, dan hardening LaunchAgents** pada Mac yang Anda kelola — bukan panduan eksploit PrivEsc.
 
 ### 🇬🇧 English
-Here are the **most important locations from a macOS pentesting perspective**, whether for reconnaissance, privilege escalation, credential dumping, or forensics:
+These locations are **high-value** to attackers *and* defenders. Use them for **TCC/SIP audits, Keychain hygiene, and LaunchAgent hardening** on Macs you manage — not a PrivEsc exploit guide.
 
 ### 🇯🇵 日本語
-偵察、権限昇格、認証情報ダンプ、フォレンジクスのいずれの観点からも、**macOSペンテストの観点から最も重要な場所**を以下に示します：
+以下は攻撃者*と*防御者双方にとって**高価値**です。管理下Macでの**TCC/SIP監査、キーチェーン衛生、LaunchAgent堅牢化**に使い、PrivEsc攻撃手順としては使わないでください。
 
 ```bash
-# ── CREDENTIAL HUNTING ───────────────────────────────────────────
-~/Library/Keychains/login.keychain-db          # user passwords, Wi-Fi, certs
-/Library/Keychains/System.keychain             # system-level credentials
-~/Library/Application\ Support/com.apple.TCC/TCC.db   # privacy permissions DB
-~/.ssh/id_rsa, ~/.ssh/id_ed25519                # SSH private keys
-~/.zsh_history, ~/.bash_history                  # command history
+# ── HIGH-VALUE PATHS (defender inventory) ────────────────────
+~/Library/Keychains/login.keychain-db
+/Library/Keychains/System.keychain
+# Prefer FileVault + strong login password; lock keychain when idle
 
-# Browser saved passwords (Chrome — separate from Safari/Keychain)
-~/Library/Application\ Support/Google/Chrome/Default/Login\ Data
+~/Library/Application\ Support/com.apple.TCC/TCC.db
+# Audit privacy grants; reset overly broad app permissions
 
-# 1Password / other password manager local vaults
-~/Library/Containers/com.1password.1password/
+~/.ssh/                 # private keys: mode 700/600
+~/.zsh_history          # avoid secrets on CLI
 
-# ── PRIVILEGE ESCALATION ────────────────────────────────────────────
-# Check sudo rights
-$ sudo -l
+~/Library/LaunchAgents/
+/Library/LaunchAgents/
+/Library/LaunchDaemons/
+# Inventory plist labels; alert on unsigned / unexpected jobs
 
-# Check SUID binaries
-$ find / -perm -4000 -type f 2>/dev/null
-
-# Check writable LaunchDaemons (root persistence if writable!)
-$ find /Library/LaunchDaemons -writable 2>/dev/null
-
-# Check for outdated/vulnerable software via system_profiler
-$ system_profiler SPApplicationsDataType | grep -A 3 "Version"
-
-# Check admin group members
-$ dscl . -read /Groups/admin GroupMembership
-
-# Check if current user can escalate via sudoers misconfig
-$ sudo cat /etc/sudoers
-$ sudo cat /etc/sudoers.d/*
-
-# ── PERSISTENCE LOCATIONS ────────────────────────────────────────────
-~/Library/LaunchAgents/                     # user-level persistence
-/Library/LaunchAgents/                      # system-level (all users)
-/Library/LaunchDaemons/                     # root-level daemon persistence
-~/Library/Application\ Support/com.apple.backgroundtaskmanagementagent/  # background task DB
-
-# Login items
-$ osascript -e 'tell application "System Events" to get the name of every login item'
-
-# ── LOG ANALYSIS (forensics) ──────────────────────────────────────────
-$ log show --predicate 'eventMessage contains "authentication"' --last 1d
-$ log show --predicate 'process == "sudo"' --last 1d
-/var/log/install.log                        # software install history
-~/Library/Logs/DiagnosticReports/           # crash reports
-
-# ── FORENSIC ARTIFACTS ──────────────────────────────────────────────
-/.fseventsd/                                # filesystem event history
-~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV2  # downloaded file history
-.DS_Store                                    # per-folder Finder metadata, reveals file listings
-~/Library/Safari/History.db                  # browsing history
-~/Library/Messages/chat.db                    # iMessage history
-~/Library/Application\ Support/com.apple.sharedfilelist/  # recent files
+# Platform protections (verify enabled)
+csrutil status          # SIP
+spctl --status          # Gatekeeper
+fdesetup status         # FileVault
 ```
+
+### 🛡️ Defensive Hardening Focus
+
+| Control | 🇮🇩 | 🇬🇧 | 🇯🇵 |
+|---------|----|----|----|
+| FileVault | Enkripsi disk penuh | Full-disk encryption | フルディスク暗号化 |
+| SIP / Gatekeeper | Biarkan **enabled** | Keep **enabled** | **有効**を維持 |
+| Keychain | Kunci saat idle; tanpa shared login | Lock when idle; no shared logins | アイドル時ロック |
+| LaunchAgents | Baseline + code signing | Baseline + signed plists | 署名付きベースライン |
+| TCC | Least privacy grants | Least privacy grants | 最小のプライバシー許可 |
+| SSH keys | `chmod 600`; passphrase | `chmod 600`; passphrase | `chmod 600`・パスフレーズ |
+| Unified logging | Forward critical auth events | Forward auth events | 認証イベント転送 |
+
+> 🛡️ **Defense-first:** Unexpected LaunchDaemons, disabled SIP/Gatekeeper, or world-writable LaunchAgent plists are **critical hardening findings** (see Apple Platform Security Guide).
 
 ### 📊 macOS Security Priority Table
 
@@ -1329,13 +1314,14 @@ codesign -d --entitlements - App.app       # entitlements
 
 ---
 
-> 📚 **References:**
+> 📚 **References & Book Sources:**
+> - Apple — *Apple Platform Security Guide* (`https://support.apple.com/guide/security/welcome/web`)
 > - [Apple Developer — File System Programming Guide](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/)
-> - [Apple Platform Security Guide](https://support.apple.com/guide/security/welcome/web)
+> - Brian Ward — *How Linux Works* (`~/Documents/Books/CyberSec/Linux/`) — Unix filesystem concepts transferable to Darwin
 > - [HackTheBox Academy — macOS Fundamentals](https://academy.hackthebox.com)
-> - [Objective-See — macOS Malware Analysis Resources](https://objective-see.org)
-> - [PayloadsAllTheThings — macOS Privilege Escalation](https://github.com/swisskyrepo/PayloadsAllTheThings)
-> - [`man hier`](command:man hier) — Manual page for the macOS filesystem hierarchy
+> - [Objective-See — macOS Security Resources](https://objective-see.org)
+> - `man hier` — Manual page for the macOS filesystem hierarchy
 
+> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026  
 > 🔖 **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)  
 > 💬 **Feedback & Contributions welcome!** Open an issue or PR if you spot any errors.

@@ -5,6 +5,13 @@
 
 ---
 
+
+<!-- LC-CURRICULUM-START -->
+> **Curriculum ID:** `LC-071` | **Phase 8:** Bonus  
+> **Est. study:** 8-10h | **Level:** Intermediate  
+> **Prerequisites:** LC-016  
+> **Book map:** Shotts Â The Linux Command Line Ch.11-12, 24
+<!-- LC-CURRICULUM-END -->
 ## 📖 Daftar Isi / Table of Contents / 目次
 
 | # | Topic | Bahasa Indonesia | English | 日本語 |

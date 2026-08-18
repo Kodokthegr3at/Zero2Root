@@ -1,0 +1,979 @@
+{
+  "version": "2026.1",
+  "total_lessons": 71,
+  "phases": [
+    {
+      "id": 0,
+      "name": "Foundations & Computing Basics",
+      "lessons": "LC-001-007"
+    },
+    {
+      "id": 1,
+      "name": "Linux Fundamentals & Administration (HTB Academy)",
+      "lessons": "LC-008-037"
+    },
+    {
+      "id": 2,
+      "name": "Computer Networking & Protocols",
+      "lessons": "LC-038-043"
+    },
+    {
+      "id": 3,
+      "name": "Web Protocols & Application Security",
+      "lessons": "LC-044-053"
+    },
+    {
+      "id": 4,
+      "name": "Cryptography & Transport Security",
+      "lessons": "LC-054-057"
+    },
+    {
+      "id": 5,
+      "name": "Ethical Hacking & Penetration Testing",
+      "lessons": "LC-058-061"
+    },
+    {
+      "id": 6,
+      "name": "Binary Exploitation & Malware Analysis",
+      "lessons": "LC-062-065"
+    },
+    {
+      "id": 7,
+      "name": "Specialized Security Domains",
+      "lessons": "LC-066-070"
+    },
+    {
+      "id": 8,
+      "name": "Bonus & Productivity",
+      "lessons": "LC-071"
+    }
+  ],
+  "lessons": [
+    {
+      "id": "LC-001",
+      "phase": 0,
+      "phase_name": "Foundations",
+      "path": "basics/Expression.md",
+      "hours": "2-3h",
+      "level": "Beginner",
+      "prerequisites": "none",
+      "books_short": [
+        "K. N. King Â C Programming Ch.2-5",
+        "Friedl Â Mastering Regular Expressions Ch.1-4",
+        "Sweigart Â Automate the Boring Stuff Ch.1-6"
+      ]
+    },
+    {
+      "id": "LC-002",
+      "phase": 0,
+      "phase_name": "Foundations",
+      "path": "basics/Git — Version Control System.md",
+      "hours": "3-4h",
+      "level": "Beginner",
+      "prerequisites": "LC-001",
+      "books_short": [
+        "Shotts Â The Linux Command Line Ch.17-18 (VCS concepts)"
+      ]
+    },
+    {
+      "id": "LC-003",
+      "phase": 0,
+      "phase_name": "Foundations",
+      "path": "basics/PowerShell.md",
+      "hours": "4-5h",
+      "level": "Beginner",
+      "prerequisites": "LC-001",
+      "books_short": [
+        "Gray Hat Hacking Â Windows post-exploitation chapters"
+      ]
+    },
+    {
+      "id": "LC-004",
+      "phase": 0,
+      "phase_name": "Foundations",
+      "path": "basics/Windows Command Prompt (cmd.exe).md",
+      "hours": "3-4h",
+      "level": "Beginner",
+      "prerequisites": "LC-001",
+      "books_short": [
+        "Gray Hat Hacking Â Windows enumeration"
+      ]
+    },
+    {
+      "id": "LC-005",
+      "phase": 0,
+      "phase_name": "Foundations",
+      "path": "basics/OperatingSystem/Linux File System.md",
+      "hours": "5-6h",
+      "level": "Beginner",
+      "prerequisites": "LC-001",
+      "books_short": [
+        "Ward Â How Linux Works Ch.3-5 (FHS, /proc, /sys)",
+        "Shotts Â The Linux Command Line Ch.3"
+      ]
+    },
+    {
+      "id": "LC-006",
+      "phase": 0,
+      "phase_name": "Foundations",
+      "path": "basics/OperatingSystem/Windows File System.md",
+      "hours": "5-6h",
+      "level": "Beginner",
+      "prerequisites": "LC-001",
+      "books_short": [
+        "Gray Hat Hacking Â NTFS, Registry, ADS"
+      ]
+    },
+    {
+      "id": "LC-007",
+      "phase": 0,
+      "phase_name": "Foundations",
+      "path": "basics/OperatingSystem/macOS File System.md",
+      "hours": "4-5h",
+      "level": "Beginner",
+      "prerequisites": "LC-001",
+      "books_short": [
+        "Ward Â How Linux Works (Unix comparison); Apple platform guides"
+      ]
+    },
+    {
+      "id": "LC-008",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/01. Linux Structure — History, Philosophy, Architecture & Filesystem.md",
+      "hours": "3-4h",
+      "level": "Beginner",
+      "prerequisites": "LC-005",
+      "books_short": [
+        "Ward Â How Linux Works Ch.1-2",
+        "Shotts Â The Linux Command Line Ch.1-2"
+      ]
+    },
+    {
+      "id": "LC-009",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/02. Linux Distributions (Distros).md",
+      "hours": "2-3h",
+      "level": "Beginner",
+      "prerequisites": "LC-008",
+      "books_short": [
+        "Ward Â How Linux Works Ch.1",
+        "Shotts Â The Linux Command Line Ch.1"
+      ]
+    },
+    {
+      "id": "LC-010",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/03. Introduction to Shell.md",
+      "hours": "4-5h",
+      "level": "Beginner",
+      "prerequisites": "LC-008",
+      "books_short": [
+        "Shotts Â The Linux Command Line Ch.4-6, 18",
+        "Ward Â How Linux Works Ch.7"
+      ]
+    },
+    {
+      "id": "LC-011",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/04. Prompt Description & PS1 Customization.md",
+      "hours": "2h",
+      "level": "Beginner",
+      "prerequisites": "LC-010",
+      "books_short": [
+        "Shotts Â The Linux Command Line Ch.6 (Prompt)",
+        "Ward Â How Linux Works Ch.7"
+      ]
+    },
+    {
+      "id": "LC-012",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/05. Getting Help — man, --help, apropos.md",
+      "hours": "2h",
+      "level": "Beginner",
+      "prerequisites": "LC-010",
+      "books_short": [
+        "Shotts Â The Linux Command Line Ch.7",
+        "Ward Â How Linux Works Ch.1"
+      ]
+    },
+    {
+      "id": "LC-013",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/06. System Information — Kernel, Hardware & Environment.md",
+      "hours": "3h",
+      "level": "Beginner",
+      "prerequisites": "LC-010",
+      "books_short": [
+        "Ward Â How Linux Works Ch.2-3, 6",
+        "Shotts Â The Linux Command Line Ch.15"
+      ]
+    },
+    {
+      "id": "LC-014",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/07. Navigation — Moving Through the Linux Filesystem.md",
+      "hours": "2-3h",
+      "level": "Beginner",
+      "prerequisites": "LC-010",
+      "books_short": [
+        "Shotts Â The Linux Command Line Ch.3-4",
+        "Ward Â How Linux Works Ch.3"
+      ]
+    },
+    {
+      "id": "LC-015",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/08. Working with Files & Directories.md",
+      "hours": "3-4h",
+      "level": "Beginner",
+      "prerequisites": "LC-014",
+      "books_short": [
+        "Shotts Â The Linux Command Line Ch.8-10",
+        "Ward Â How Linux Works Ch.4"
+      ]
+    },
+    {
+      "id": "LC-016",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/09. Editing Files — Nano & Vim.md",
+      "hours": "4-5h",
+      "level": "Beginner",
+      "prerequisites": "LC-014",
+      "books_short": [
+        "Shotts Â The Linux Command Line Ch.11-12, 24"
+      ]
+    },
+    {
+      "id": "LC-017",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/10. Find Files & Directories.md",
+      "hours": "3h",
+      "level": "Beginner",
+      "prerequisites": "LC-015",
+      "books_short": [
+        "Shotts Â The Linux Command Line Ch.17",
+        "Ward Â How Linux Works Ch.4"
+      ]
+    },
+    {
+      "id": "LC-018",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/11. File Descriptors & Redirections.md",
+      "hours": "4h",
+      "level": "Intermediate",
+      "prerequisites": "LC-010",
+      "books_short": [
+        "Shotts Â The Linux Command Line Ch.6, 19",
+        "Stevens Â UNIX Network Programming Vol.1 Ch.3-4"
+      ]
+    },
+    {
+      "id": "LC-019",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/12. Filter Contents — Output Filtering & Text Processing.md",
+      "hours": "4-5h",
+      "level": "Intermediate",
+      "prerequisites": "LC-018",
+      "books_short": [
+        "Shotts Â The Linux Command Line Ch.16, 20-21",
+        "Ward Â How Linux Works Ch.7"
+      ]
+    },
+    {
+      "id": "LC-020",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/13. Regular Expressions (RegEx).md",
+      "hours": "5-6h",
+      "level": "Intermediate",
+      "prerequisites": "LC-019",
+      "books_short": [
+        "Friedl Â Mastering Regular Expressions (full)",
+        "Shotts Â The Linux Command Line Ch.20"
+      ]
+    },
+    {
+      "id": "LC-021",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/14. Permission Management.md",
+      "hours": "4-5h",
+      "level": "Intermediate",
+      "prerequisites": "LC-015",
+      "books_short": [
+        "Ward Â How Linux Works Ch.4",
+        "Shotts Â The Linux Command Line Ch.10",
+        "Stallings Â Network Security Essentials Ch.4"
+      ]
+    },
+    {
+      "id": "LC-022",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/15. User Management.md",
+      "hours": "4h",
+      "level": "Intermediate",
+      "prerequisites": "LC-021",
+      "books_short": [
+        "Ward Â How Linux Works Ch.5",
+        "Shotts Â The Linux Command Line Ch.10"
+      ]
+    },
+    {
+      "id": "LC-023",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/16. Package Management.md",
+      "hours": "3-4h",
+      "level": "Intermediate",
+      "prerequisites": "LC-009",
+      "books_short": [
+        "Ward Â How Linux Works Ch.1, 15",
+        "Shotts Â The Linux Command Line Ch.13"
+      ]
+    },
+    {
+      "id": "LC-024",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/17. Service and Process Management.md",
+      "hours": "4-5h",
+      "level": "Intermediate",
+      "prerequisites": "LC-022",
+      "books_short": [
+        "Ward Â How Linux Works Ch.6-7",
+        "Shotts Â The Linux Command Line Ch.14-15"
+      ]
+    },
+    {
+      "id": "LC-025",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/18. Task Scheduling.md",
+      "hours": "3-4h",
+      "level": "Intermediate",
+      "prerequisites": "LC-024",
+      "books_short": [
+        "Ward Â How Linux Works Ch.7",
+        "Shotts Â The Linux Command Line Ch.14"
+      ]
+    },
+    {
+      "id": "LC-026",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/19. Network Services.md",
+      "hours": "4h",
+      "level": "Intermediate",
+      "prerequisites": "LC-024, LC-038",
+      "books_short": [
+        "Benvenuti Â Understanding Linux Network Internals Ch.9-12",
+        "Stevens Â UNIX Network Programming Vol.1 Ch.9-11"
+      ]
+    },
+    {
+      "id": "LC-027",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/20. Working with Web Services.md",
+      "hours": "3-4h",
+      "level": "Intermediate",
+      "prerequisites": "LC-024",
+      "books_short": [
+        "Ward Â How Linux Works Ch.8",
+        "Stuttard Â WAHH Ch.1"
+      ]
+    },
+    {
+      "id": "LC-028",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/21. Backup and Restore.md",
+      "hours": "3h",
+      "level": "Intermediate",
+      "prerequisites": "LC-015",
+      "books_short": [
+        "Ward Â How Linux Works Ch.4",
+        "Shotts Â The Linux Command Line Ch.17"
+      ]
+    },
+    {
+      "id": "LC-029",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/22. File System Management.md",
+      "hours": "4-5h",
+      "level": "Intermediate",
+      "prerequisites": "LC-015",
+      "books_short": [
+        "Ward Â How Linux Works Ch.4",
+        "Shotts Â The Linux Command Line Ch.17"
+      ]
+    },
+    {
+      "id": "LC-030",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/23. Containerization.md",
+      "hours": "4-5h",
+      "level": "Advanced",
+      "prerequisites": "LC-024, LC-021",
+      "books_short": [
+        "Ward Â How Linux Works Ch.6",
+        "NIST SP 800-190 (container security)"
+      ]
+    },
+    {
+      "id": "LC-031",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/24. Linux Networking — Interfaces & Routing.md",
+      "hours": "4h",
+      "level": "Intermediate",
+      "prerequisites": "LC-038, LC-039",
+      "books_short": [
+        "Benvenuti Â Understanding Linux Network Internals Ch.14-19",
+        "Stevens Â UNIX Network Programming Vol.1 Ch.3, 16-17"
+      ]
+    },
+    {
+      "id": "LC-032",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/25. Linux Networking — Diagnostics & Packet Analysis.md",
+      "hours": "4-5h",
+      "level": "Intermediate",
+      "prerequisites": "LC-031",
+      "books_short": [
+        "Benvenuti Â Understanding Linux Network Internals Ch.20-26",
+        "Kurose & Ross Â Computer Networking Ch.1"
+      ]
+    },
+    {
+      "id": "LC-033",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/26. Linux Security — Threat Model & Hardening Theory.md",
+      "hours": "4h",
+      "level": "Advanced",
+      "prerequisites": "LC-021, LC-024",
+      "books_short": [
+        "Stallings Â Network Security Essentials Ch.4-5, 9",
+        "Ward Â How Linux Works Ch.5, 8"
+      ]
+    },
+    {
+      "id": "LC-034",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/27. Firewall Setup.md",
+      "hours": "4h",
+      "level": "Advanced",
+      "prerequisites": "LC-033, LC-031",
+      "books_short": [
+        "Stallings Â Network Security Essentials Ch.9 (Firewalls)",
+        "Benvenuti Â Linux Network Internals Ch.26"
+      ]
+    },
+    {
+      "id": "LC-035",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/28. System Logs.md",
+      "hours": "3-4h",
+      "level": "Intermediate",
+      "prerequisites": "LC-024",
+      "books_short": [
+        "Ward Â How Linux Works Ch.7",
+        "Shotts Â The Linux Command Line Ch.15"
+      ]
+    },
+    {
+      "id": "LC-036",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/29. Solaris — Linux Distributions vs Solaris.md",
+      "hours": "2-3h",
+      "level": "Intermediate",
+      "prerequisites": "LC-008, LC-024",
+      "books_short": [
+        "Ward Â How Linux Works (Unix lineage)",
+        "Oracle Solaris 11 Admin Docs"
+      ]
+    },
+    {
+      "id": "LC-037",
+      "phase": 1,
+      "phase_name": "Linux",
+      "path": "linux/30. Shortcuts — Bash Tips & Tricks.md",
+      "hours": "6-8h",
+      "level": "Intermediate",
+      "prerequisites": "LC-010-LC-020",
+      "books_short": [
+        "Shotts Â The Linux Command Line (full reference)",
+        "Friedl Â Mastering Regular Expressions"
+      ]
+    },
+    {
+      "id": "LC-038",
+      "phase": 2,
+      "phase_name": "Networking",
+      "path": "networking/OSI Modelling.md",
+      "hours": "6-8h",
+      "level": "Beginner",
+      "prerequisites": "LC-005",
+      "books_short": [
+        "Kurose & Ross Â Computer Networking Ch.1-2",
+        "Stallings Â Network Security Essentials Ch.2"
+      ]
+    },
+    {
+      "id": "LC-039",
+      "phase": 2,
+      "phase_name": "Networking",
+      "path": "networking/TCP-IP Architecture & Socket Programming.md",
+      "hours": "5-6h",
+      "level": "Intermediate",
+      "prerequisites": "LC-038",
+      "books_short": [
+        "Kurose & Ross Â Computer Networking Ch.3-4",
+        "Stevens Â UNIX Network Programming Vol.1 Ch.1-6"
+      ]
+    },
+    {
+      "id": "LC-040",
+      "phase": 2,
+      "phase_name": "Networking",
+      "path": "networking/IP Addressing & Subnetting.md",
+      "hours": "4-5h",
+      "level": "Intermediate",
+      "prerequisites": "LC-038",
+      "books_short": [
+        "Kurose & Ross Â Computer Networking Ch.4",
+        "Stallings Â Network Security Essentials Ch.2"
+      ]
+    },
+    {
+      "id": "LC-041",
+      "phase": 2,
+      "phase_name": "Networking",
+      "path": "networking/DNS & Domain Name System Security.md",
+      "hours": "4h",
+      "level": "Intermediate",
+      "prerequisites": "LC-039",
+      "books_short": [
+        "Kurose & Ross Â Computer Networking Ch.2",
+        "Stallings Â Network Security Essentials Ch.8"
+      ]
+    },
+    {
+      "id": "LC-042",
+      "phase": 2,
+      "phase_name": "Networking",
+      "path": "networking/ARP & Local Network Attacks.md",
+      "hours": "4h",
+      "level": "Advanced",
+      "prerequisites": "LC-039, LC-040",
+      "books_short": [
+        "Kurose & Ross Â Computer Networking Ch.4-5",
+        "Stallings Â Network Security Essentials Ch.8"
+      ]
+    },
+    {
+      "id": "LC-043",
+      "phase": 2,
+      "phase_name": "Networking",
+      "path": "networking/Wireless 802.11 Security & Attacks.md",
+      "hours": "5h",
+      "level": "Advanced",
+      "prerequisites": "LC-038",
+      "books_short": [
+        "Gast Â 802.11 Wireless Networks (full)",
+        "Stallings Â Network Security Essentials Ch.8"
+      ]
+    },
+    {
+      "id": "LC-044",
+      "phase": 3,
+      "phase_name": "Web Security",
+      "path": "web/HTTP/1. HTTP & cURL.md",
+      "hours": "3h",
+      "level": "Beginner",
+      "prerequisites": "LC-038, LC-039",
+      "books_short": [
+        "Kurose & Ross Â Computer Networking Ch.2",
+        "Stuttard Â WAHH Ch.1",
+        "Zalewski Â The Tangled Web Ch.1-3"
+      ]
+    },
+    {
+      "id": "LC-045",
+      "phase": 3,
+      "phase_name": "Web Security",
+      "path": "web/HTTP/2. HTTP Requests, Responses & Status Codes.md",
+      "hours": "3h",
+      "level": "Beginner",
+      "prerequisites": "LC-044",
+      "books_short": [
+        "Stuttard Â WAHH Ch.1-3",
+        "Zalewski Â The Tangled Web Ch.3-5"
+      ]
+    },
+    {
+      "id": "LC-046",
+      "phase": 3,
+      "phase_name": "Web Security",
+      "path": "web/HTTP/3. HTTP Headers & Security Headers.md",
+      "hours": "3-4h",
+      "level": "Intermediate",
+      "prerequisites": "LC-045",
+      "books_short": [
+        "Stuttard Â WAHH Ch.4",
+        "Zalewski Â The Tangled Web Ch.9-11"
+      ]
+    },
+    {
+      "id": "LC-047",
+      "phase": 3,
+      "phase_name": "Web Security",
+      "path": "web/Vulnerabilities/1. SQL Injection (SQLi).md",
+      "hours": "5-6h",
+      "level": "Intermediate",
+      "prerequisites": "LC-044-LC-046",
+      "books_short": [
+        "Stuttard Â WAHH Ch.9",
+        "Zalewski Â The Tangled Web Ch.12"
+      ]
+    },
+    {
+      "id": "LC-048",
+      "phase": 3,
+      "phase_name": "Web Security",
+      "path": "web/Vulnerabilities/2. Cross-Site Scripting (XSS).md",
+      "hours": "4-5h",
+      "level": "Intermediate",
+      "prerequisites": "LC-046",
+      "books_short": [
+        "Stuttard Â WAHH Ch.12",
+        "Zalewski Â The Tangled Web Ch.6-8"
+      ]
+    },
+    {
+      "id": "LC-049",
+      "phase": 3,
+      "phase_name": "Web Security",
+      "path": "web/Vulnerabilities/3. Cross-Site Request Forgery (CSRF).md",
+      "hours": "3h",
+      "level": "Intermediate",
+      "prerequisites": "LC-046",
+      "books_short": [
+        "Stuttard Â WAHH Ch.13",
+        "Zalewski Â The Tangled Web Ch.9"
+      ]
+    },
+    {
+      "id": "LC-050",
+      "phase": 3,
+      "phase_name": "Web Security",
+      "path": "web/Vulnerabilities/4. Server-Side Request Forgery (SSRF).md",
+      "hours": "3-4h",
+      "level": "Advanced",
+      "prerequisites": "LC-046",
+      "books_short": [
+        "Stuttard Â WAHH Ch.10",
+        "Zalewski Â The Tangled Web Ch.11"
+      ]
+    },
+    {
+      "id": "LC-051",
+      "phase": 3,
+      "phase_name": "Web Security",
+      "path": "web/Vulnerabilities/5. Command Injection & File Inclusion (LFI & RFI).md",
+      "hours": "4-5h",
+      "level": "Advanced",
+      "prerequisites": "LC-047",
+      "books_short": [
+        "Stuttard Â WAHH Ch.10-11",
+        "Zalewski Â The Tangled Web Ch.12"
+      ]
+    },
+    {
+      "id": "LC-052",
+      "phase": 3,
+      "phase_name": "Web Security",
+      "path": "web/Vulnerabilities/6. File Upload Vulnerabilities & Web Shells.md",
+      "hours": "3-4h",
+      "level": "Advanced",
+      "prerequisites": "LC-047",
+      "books_short": [
+        "Stuttard Â WAHH Ch.10",
+        "Zalewski Â The Tangled Web Ch.13"
+      ]
+    },
+    {
+      "id": "LC-053",
+      "phase": 3,
+      "phase_name": "Web Security",
+      "path": "web/Vulnerabilities/7. Authentication, Session & JWT Attacks.md",
+      "hours": "4-5h",
+      "level": "Advanced",
+      "prerequisites": "LC-046, LC-054",
+      "books_short": [
+        "Stuttard Â WAHH Ch.6-7",
+        "Zalewski Â The Tangled Web Ch.9-10",
+        "Wong Â Real-World Cryptography Ch.8-10"
+      ]
+    },
+    {
+      "id": "LC-054",
+      "phase": 4,
+      "phase_name": "Cryptography",
+      "path": "cryptography/1. Symmetric Cryptography & Block Ciphers.md",
+      "hours": "4-5h",
+      "level": "Intermediate",
+      "prerequisites": "LC-001",
+      "books_short": [
+        "Wong Â Real-World Cryptography Ch.1-4",
+        "Stallings Â Network Security Essentials Ch.3-4"
+      ]
+    },
+    {
+      "id": "LC-055",
+      "phase": 4,
+      "phase_name": "Cryptography",
+      "path": "cryptography/2. Asymmetric Cryptography & Key Exchange.md",
+      "hours": "4-5h",
+      "level": "Intermediate",
+      "prerequisites": "LC-054",
+      "books_short": [
+        "Wong Â Real-World Cryptography Ch.5-9",
+        "Stallings Â Network Security Essentials Ch.3"
+      ]
+    },
+    {
+      "id": "LC-056",
+      "phase": 4,
+      "phase_name": "Cryptography",
+      "path": "cryptography/3. Hash Functions & Message Authentication.md",
+      "hours": "3-4h",
+      "level": "Intermediate",
+      "prerequisites": "LC-054",
+      "books_short": [
+        "Wong Â Real-World Cryptography Ch.2, 10-11",
+        "Stallings Â Network Security Essentials Ch.3"
+      ]
+    },
+    {
+      "id": "LC-057",
+      "phase": 4,
+      "phase_name": "Cryptography",
+      "path": "cryptography/4. Public Key Infrastructure (PKI) & TLS 1.3.md",
+      "hours": "5h",
+      "level": "Advanced",
+      "prerequisites": "LC-055, LC-056",
+      "books_short": [
+        "Wong Â Real-World Cryptography Ch.12-15",
+        "Stallings Â Network Security Essentials Ch.5-6"
+      ]
+    },
+    {
+      "id": "LC-058",
+      "phase": 5,
+      "phase_name": "Ethical Hacking",
+      "path": "ethical-hacking/1. Penetration Testing Methodology & Reconnaissance.md",
+      "hours": "4-5h",
+      "level": "Intermediate",
+      "prerequisites": "LC-038, LC-044",
+      "books_short": [
+        "Kim Â The Hacker Playbook 3 Ch.1-2",
+        "Weidman Â Penetration Testing Ch.1-4",
+        "Gray Hat Hacking Part I"
+      ]
+    },
+    {
+      "id": "LC-059",
+      "phase": 5,
+      "phase_name": "Ethical Hacking",
+      "path": "ethical-hacking/2. Port Scanning & Network Enumeration (Nmap).md",
+      "hours": "4h",
+      "level": "Intermediate",
+      "prerequisites": "LC-058, LC-039",
+      "books_short": [
+        "Kim Â The Hacker Playbook 3 Ch.2",
+        "Weidman Â Penetration Testing Ch.5-6"
+      ]
+    },
+    {
+      "id": "LC-060",
+      "phase": 5,
+      "phase_name": "Ethical Hacking",
+      "path": "ethical-hacking/3. Metasploit Framework & Exploitation.md",
+      "hours": "5-6h",
+      "level": "Advanced",
+      "prerequisites": "LC-059",
+      "books_short": [
+        "Kennedy et al. Â Metasploit: The Penetration Tester's Guide",
+        "Kim Â The Hacker Playbook 3 Ch.3-5"
+      ]
+    },
+    {
+      "id": "LC-061",
+      "phase": 5,
+      "phase_name": "Ethical Hacking",
+      "path": "ethical-hacking/4. Privilege Escalation & Post-Exploitation.md",
+      "hours": "5-6h",
+      "level": "Advanced",
+      "prerequisites": "LC-021, LC-060",
+      "books_short": [
+        "Kim Â The Hacker Playbook 3 Ch.6-8",
+        "Gray Hat Hacking Â PrivEsc chapters",
+        "Weidman Â Penetration Testing Ch.8-10"
+      ]
+    },
+    {
+      "id": "LC-062",
+      "phase": 6,
+      "phase_name": "Exploitation & RE",
+      "path": "binary-exploitation/Stack Buffer Overflow & Shellcoding.md",
+      "hours": "6-8h",
+      "level": "Advanced",
+      "prerequisites": "LC-001, LC-065",
+      "books_short": [
+        "Anley et al. Â The Shellcoder's Handbook",
+        "Erickson Â Hacking: The Art of Exploitation",
+        "Gray Hat Hacking Â Exploitation"
+      ]
+    },
+    {
+      "id": "LC-063",
+      "phase": 6,
+      "phase_name": "Exploitation & RE",
+      "path": "malware-analysis/1. Static Malware Analysis Fundamentals.md",
+      "hours": "5-6h",
+      "level": "Advanced",
+      "prerequisites": "LC-005, LC-038",
+      "books_short": [
+        "Sikorski & Honig Â Practical Malware Analysis Part I-II",
+        "Andriesse Â Practical Binary Analysis Ch.1-4"
+      ]
+    },
+    {
+      "id": "LC-064",
+      "phase": 6,
+      "phase_name": "Exploitation & RE",
+      "path": "malware-analysis/2. Dynamic Malware Analysis & Sandboxing.md",
+      "hours": "5h",
+      "level": "Advanced",
+      "prerequisites": "LC-063",
+      "books_short": [
+        "Sikorski & Honig Â Practical Malware Analysis Part III-IV",
+        "Andriesse Â Practical Binary Analysis Ch.5-7"
+      ]
+    },
+    {
+      "id": "LC-065",
+      "phase": 6,
+      "phase_name": "Exploitation & RE",
+      "path": "malware-analysis/3. x86 & x64 Assembly for Reverse Engineering.md",
+      "hours": "8-10h",
+      "level": "Advanced",
+      "prerequisites": "LC-001",
+      "books_short": [
+        "Dang et al. Â Practical Reverse Engineering",
+        "Sikorski & Honig Â PMA Appendix",
+        "King Â C Programming (memory model)"
+      ]
+    },
+    {
+      "id": "LC-066",
+      "phase": 7,
+      "phase_name": "Specialized",
+      "path": "mobile-security/Android Security Internals & Vulnerabilities.md",
+      "hours": "6-8h",
+      "level": "Advanced",
+      "prerequisites": "LC-054, LC-047",
+      "books_short": [
+        "Elenkov Â Android Security Internals (full)"
+      ]
+    },
+    {
+      "id": "LC-067",
+      "phase": 7,
+      "phase_name": "Specialized",
+      "path": "programming-security/Offensive Python & Go for Pentesters.md",
+      "hours": "6-8h",
+      "level": "Advanced",
+      "prerequisites": "LC-001, LC-018",
+      "books_short": [
+        "Seitz & Arnold Â Black Hat Python 2nd Ed.",
+        "Steele et al. Â Black Hat Go",
+        "Stevens Â UNIX Network Programming Vol.1"
+      ]
+    },
+    {
+      "id": "LC-068",
+      "phase": 7,
+      "phase_name": "Specialized",
+      "path": "social-engineering/Social Engineering — Principles, Vectors & Defense.md",
+      "hours": "4-5h",
+      "level": "Intermediate",
+      "prerequisites": "LC-058",
+      "books_short": [
+        "Hadnagy Â Social Engineering 2nd Ed.",
+        "Mitnick Â The Art of Deception",
+        "Gray Â Practical Social Engineering"
+      ]
+    },
+    {
+      "id": "LC-069",
+      "phase": 7,
+      "phase_name": "Specialized",
+      "path": "osint/OSINT — Open Source Intelligence Framework & Techniques.md",
+      "hours": "5h",
+      "level": "Intermediate",
+      "prerequisites": "LC-058",
+      "books_short": [
+        "Akhgar et al. Â Open Source Intelligence Methods and Tools"
+      ]
+    },
+    {
+      "id": "LC-070",
+      "phase": 7,
+      "phase_name": "Specialized",
+      "path": "hardware-iot/Hardware & IoT Security — Interfaces, Firmware & Automotive.md",
+      "hours": "6-8h",
+      "level": "Advanced",
+      "prerequisites": "LC-038",
+      "books_short": [
+        "van Woudenberg & O'Flynn Â The Hardware Hacking Handbook",
+        "Chantzis et al. Â Practical IoT Hacking",
+        "Smith Â The Car Hacker's Handbook",
+        "Gupta Â The IoT Hacker's Handbook"
+      ]
+    },
+    {
+      "id": "LC-071",
+      "phase": 8,
+      "phase_name": "Bonus",
+      "path": "linux/Tips & Tricks/Neovim — Tips & Tricks.md",
+      "hours": "8-10h",
+      "level": "Intermediate",
+      "prerequisites": "LC-016",
+      "books_short": [
+        "Shotts Â The Linux Command Line Ch.11-12, 24"
+      ]
+    }
+  ]
+}

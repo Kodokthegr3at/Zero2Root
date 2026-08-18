@@ -1,10 +1,16 @@
 # 🗂️ Linux File System
 
-> **LearnCybersecurity** | Linux Fundamentals Series  
-> 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at
+> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
 
 ---
 
+
+<!-- LC-CURRICULUM-START -->
+> **Curriculum ID:** `LC-005` | **Phase 0:** Foundations  
+> **Est. study:** 5-6h | **Level:** Beginner  
+> **Prerequisites:** LC-001  
+> **Book map:** Ward Â How Linux Works Ch.3-5 (FHS, /proc, /sys); Shotts Â The Linux Command Line Ch.3
+<!-- LC-CURRICULUM-END -->
 ## 📖 Daftar Isi / Table of Contents / 目次
 
 | # | Topic | Bahasa Indonesia | English | 日本語 |
@@ -28,7 +34,7 @@
 | 17 | `/opt` | Software opsional | Optional software | オプショナルソフトウェア |
 | 18 | `/boot` | File booting | Boot files | ブートファイル |
 | 19 | `/srv` | Data layanan server | Server service data | サーバーサービスデータ |
-| 20 | Security Note | Direktori penting untuk pentest | Key dirs for pentesting | ペンテスト重要ディレクトリ |
+| 20 | Security Note | Direktori sensitif & hardening | Sensitive dirs & defensive hardening | 機密ディレクトリと堅牢化 |
 | 21 | Workflow | Navigasi praktis | Practical navigation | 実践的なナビゲーション |
 
 ---
@@ -823,51 +829,43 @@ index.html  assets/  uploads/
 
 ---
 
-## 20. 🔐 Security Note — Key Directories for Pentesting
+## 20. 🔐 Security Note — Sensitive Directories & Defensive Hardening
 
 ### 🇮🇩 Bahasa Indonesia
-Berikut adalah direktori-direktori **paling penting dari perspektif penetration testing**, baik untuk rekognisi, privilege escalation, maupun forensik:
+Direktori berikut **bernilai tinggi** bagi penyerang *dan* defender. Gunakan daftar ini untuk **audit izin, monitoring, dan hardening** pada sistem yang Anda kelola (bukan panduan eksploit PrivEsc).
 
 ### 🇬🇧 English
-Here are the **most important directories from a penetration testing perspective**, whether for reconnaissance, privilege escalation, or forensics:
+The following directories are **high-value** to attackers *and* defenders. Use this list for **permission audits, monitoring, and hardening** on systems you manage (not a PrivEsc exploit guide).
 
 ### 🇯🇵 日本語
-偵察、権限昇格、フォレンジクスのいずれの観点からも、**ペンテストの観点から最も重要なディレクトリ**を以下に示します：
+以下のディレクトリは攻撃者*と*防御者の双方にとって**高価値**です。管理下システムでの**権限監査・監視・堅牢化**に使い、PrivEsc攻撃手順としては使わないでください。
 
 ```bash
-# ── CREDENTIAL HUNTING ───────────────────────────────────────
+# ── HIGH-VALUE PATHS (inventory for defenders) ───────────────
 /etc/passwd             # usernames & shells
-/etc/shadow             # password hashes (root only)
-/etc/sudoers            # sudo privileges
-/home/*/.bash_history   # command history (may contain passwords)
-/home/*/.ssh/id_rsa     # SSH private keys
-/root/.bash_history     # root's command history
-/root/.ssh/id_rsa       # root's SSH private key
-
-# ── CONFIG FILES WITH CREDENTIALS ───────────────────────────
-/var/www/html/          # web app source code (DB passwords!)
-/etc/mysql/             # MySQL config
-/etc/php*/              # PHP config (db connections)
-/home/*/.gitconfig      # Git credentials
-
-# ── LOG ANALYSIS ─────────────────────────────────────────────
-/var/log/auth.log       # login attempts & sudo usage
-/var/log/syslog         # general system events
-/var/log/apache2/       # web server access/error logs
-/var/log/nginx/         # nginx logs
-
-# ── WRITABLE DIRECTORIES (privilege escalation) ──────────────
-/tmp/                   # world-writable
-/var/tmp/               # world-writable, persists across reboots
-/dev/shm/               # shared memory, world-writable
-
-# ── PERSISTENCE LOCATIONS ────────────────────────────────────
-/etc/cron*/             # cron jobs
-/var/spool/cron/        # per-user cron jobs
-/etc/systemd/system/    # systemd services
-/etc/rc.local           # startup script
-/home/*/.bashrc         # user shell startup
+/etc/shadow             # password hashes (root only) — mode 640, group shadow
+/etc/sudoers            # sudo privileges — validate with visudo
+/home/*/.bash_history   # may contain secrets — restrict perms, clear carefully
+/home/*/.ssh/           # SSH keys — mode 700 dir / 600 private keys
+/var/www/html/          # web roots — no secrets in tree; use secrets manager
+/var/log/auth.log       # auth telemetry — protect integrity (append-only / remote)
+/tmp/ /var/tmp/ /dev/shm/  # world-writable — sticky bit, noexec where policy allows
+/etc/cron*/ /etc/systemd/system/  # persistence surfaces — inventory & alert on changes
 ```
+
+### 🛡️ Defensive Hardening Focus
+
+| Control | 🇮🇩 Tindakan | 🇬🇧 Action | 🇯🇵 アクション |
+|---------|-------------|-----------|----------------|
+| Permissions | `chmod`/`chown` ketat pada `/etc/shadow`, SSH keys | Strict modes on shadow & keys | shadow・鍵の厳格な権限 |
+| Sudo | `visudo`, tanpa NOPASSWD luas | Least-privilege sudoers | 最小権限のsudoers |
+| World-writable | Sticky bit; batasi `noexec` di `/tmp` | Sticky bit; `/tmp` noexec if OK | `/tmp` の sticky / noexec |
+| Integrity | AIDE/Tripwire pada `/etc`, cron, systemd | Monitor `/etc`, cron, units | `/etc`等の改ざん検知 |
+| Logging | Remote syslog/journal; batasi hapus lokal | Ship logs off-box | ログの外部転送 |
+| SSH | `PermitRootLogin no`; kunci 600 | Harden sshd; key modes 600 | sshd堅牢化・鍵600 |
+| Web roots | Tanpa `.env` / kredensial di dokumen root | No secrets under docroot | ドキュメントルートに秘密を置かない |
+
+> 🛡️ **Defense-first:** Unexpected SUID changes, writable `/etc/cron*`, or world-writable service scripts are **hardening findings** — remediate with least privilege and change monitoring (*How Linux Works*).
 
 ### 📊 Directory Security Priority Table
 
@@ -1009,11 +1007,15 @@ sudo umount /mnt/usb             # unmount a device
 
 ---
 
-> 📚 **References:**
-> - [HackTheBox Academy - Linux Fundamentals](https://academy.hackthebox.com)
+> 📚 **References & Book Sources:**
+> - Brian Ward — *How Linux Works: What Every Superuser Should Know (3rd Edition)* (`~/Documents/Books/CyberSec/Linux/`)
+> - William Shotts — *The Linux Command Line (2nd Edition)* (`~/Documents/Books/CyberSec/Linux/`)
+> - Remzi H. Arpaci-Dusseau & Andrea C. Arpaci-Dusseau — *Operating Systems: Three Easy Pieces* (referenced in curriculum library)
 > - [Linux Filesystem Hierarchy Standard (FHS)](https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html)
 > - `man hier` — Manual page for the Linux filesystem hierarchy
-> - [GTFOBins](https://gtfobins.github.io) — SUID/SUDO binary exploitation
+> - [HackTheBox Academy - Linux Fundamentals](https://academy.hackthebox.com)
+> - [GTFOBins](https://gtfobins.github.io) — defender awareness of dangerous SUID/sudo binaries
 
+> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026  
 > 🔖 **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)  
 > 💬 **Feedback & Contributions welcome!** Open an issue or PR if you spot any errors.

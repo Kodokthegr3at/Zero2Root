@@ -1,10 +1,16 @@
 # 🪟 Windows File System
 
-> **LearnCybersecurity** | Windows Fundamentals Series  
-> 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at
+> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
 
 ---
 
+
+<!-- LC-CURRICULUM-START -->
+> **Curriculum ID:** `LC-006` | **Phase 0:** Foundations  
+> **Est. study:** 5-6h | **Level:** Beginner  
+> **Prerequisites:** LC-001  
+> **Book map:** Gray Hat Hacking Â NTFS, Registry, ADS
+<!-- LC-CURRICULUM-END -->
 ## 📖 Daftar Isi / Table of Contents / 目次
 
 | # | Topic | Bahasa Indonesia | English | 日本語 |
@@ -22,7 +28,7 @@
 | 11 | Environment Variables | Variabel lingkungan | Environment variables | 環境変数 |
 | 12 | NTFS & Permissions | Filesystem & izin | Filesystem & permissions | ファイルシステムと権限 |
 | 13 | Special Files | File & folder tersembunyi | Hidden & special files | 隠しファイルと特殊ファイル |
-| 14 | Security Note | Direktori penting untuk pentest | Key dirs for pentesting | ペンテスト重要ディレクトリ |
+| 14 | Security Note | Lokasi sensitif & hardening | Sensitive locations & hardening | 機密ロケーションと堅牢化 |
 | 15 | Workflow | Navigasi & rekon praktis | Practical recon navigation | 実践的な偵察ナビゲーション |
 
 ---
@@ -763,96 +769,57 @@ PS> Get-WinEvent -LogName Security -MaxEvents 50 |
 
 ---
 
-## 14. 🔐 Security Note — Key Locations for Pentesting
+## 14. 🔐 Security Note — Sensitive Locations & Defensive Hardening
 
 ### 🇮🇩 Bahasa Indonesia
-Berikut adalah lokasi-lokasi **paling penting dari perspektif Windows pentesting**, baik untuk rekognisi, privilege escalation, credential dumping, maupun forensik:
+Lokasi berikut **bernilai tinggi** bagi penyerang *dan* defender. Gunakan untuk **audit izin, monitoring, dan hardening** pada host yang Anda kelola — bukan resep dumping kredensial ofensif.
 
 ### 🇬🇧 English
-Here are the **most important locations from a Windows pentesting perspective**, whether for reconnaissance, privilege escalation, credential dumping, or forensics:
+These locations are **high-value** to attackers *and* defenders. Use them for **permission audits, monitoring, and hardening** on hosts you manage — not an offensive credential-dumping recipe.
 
 ### 🇯🇵 日本語
-偵察、権限昇格、認証情報ダンプ、フォレンジクスのいずれの観点からも、**Windowsペンテストの観点から最も重要な場所**を以下に示します：
+以下は攻撃者*と*防御者双方にとって**高価値**です。管理ホストでの**権限監査・監視・堅牢化**に使い、攻撃的な認証情報ダンプ手順としては使わないでください。
 
 ```cmd
-:: ── CREDENTIAL HUNTING ───────────────────────────────────────
-
-:: Password hashes (requires admin + shadow copy or offline)
+:: ── HIGH-VALUE PATHS (defender inventory) ────────────────────
 C:\Windows\System32\config\SAM
 C:\Windows\System32\config\SYSTEM
+:: Protect with disk encryption, ACL lockdown, backup hygiene
 
-:: Cleartext AutoLogon credentials in registry
 HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon
+:: Disable AutoLogon cleartext; audit DefaultPassword presence
 
-:: PowerShell command history
 %APPDATA%\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
+:: Avoid secrets on CLI; enable PS logging instead of relying on history
 
-:: Stored credentials manager
-> cmdkey /list
-
-:: Browser saved passwords (Chrome)
-%LOCALAPPDATA%\Google\Chrome\User Data\Default\Login Data
-
-:: Unattended install files (may contain admin password!)
 C:\Windows\Panther\Unattend.xml
-C:\Windows\Panther\Unattend\Unattend.xml
 C:\Windows\system32\sysprep\sysprep.xml
-C:\Windows\system32\sysprep.inf
+:: Remove leftover unattend files from images
 
-:: web.config files (IIS credentials)
 C:\inetpub\wwwroot\web.config
-C:\Windows\Microsoft.NET\Framework*\*\web.config
+:: Secrets → vault / DPAPI / KeyVault, not plaintext in web.config
 
-:: ── PRIVILEGE ESCALATION ────────────────────────────────────
-
-:: Writable Program Files directories
-C:\Program Files\
-C:\Program Files (x86)\
-
-:: Always Install Elevated (if enabled = escalation!)
-> reg query HKCU\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated
-> reg query HKLM\SOFTWARE\Policies\Microsoft\Windows\Installer /v AlwaysInstallElevated
-
-:: Services with weak permissions
-> sc query
-> accesschk.exe -uwcqv "Everyone" *
-> accesschk.exe -uwcqv "Users" *
-
-:: Unquoted service paths
-> wmic service get name,displayname,pathname,startmode |
-  findstr /i "auto" | findstr /i /v "C:\Windows\\" | findstr /i /v """
-
-:: ── PERSISTENCE LOCATIONS ────────────────────────────────────
-
-:: Registry run keys
 HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
-HKCU\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
-
-:: Scheduled tasks
 C:\Windows\System32\Tasks\
-C:\Windows\SysWOW64\Tasks\
-> schtasks /query /fo LIST /v
+:: Inventory autoruns; alert on unexpected changes
 
-:: Startup folders
-C:\Users\<user>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\
-C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Startup\
-
-:: Services
-HKLM\SYSTEM\CurrentControlSet\Services\
-> sc query type= all state= all
-
-:: ── LOG ANALYSIS ─────────────────────────────────────────────
-C:\Windows\System32\winevt\Logs\Security.evtx    :: login events
-C:\Windows\System32\winevt\Logs\System.evtx      :: system events
-C:\Windows\System32\winevt\Logs\Application.evtx :: app events
-C:\inetpub\logs\LogFiles\                         :: IIS logs
-
-:: ── FORENSIC ARTIFACTS ──────────────────────────────────────
-C:\Windows\Prefetch\          :: program execution history
-C:\hiberfil.sys               :: hibernation RAM dump
-C:\$Recycle.Bin\              :: deleted files
-C:\Users\*\AppData\Roaming\Microsoft\Windows\Recent\  :: recent files
+C:\Windows\System32\winevt\Logs\Security.evtx
+:: Forward to SIEM; protect local log tampering
 ```
+
+### 🛡️ Defensive Hardening Focus
+
+| Control | 🇮🇩 | 🇬🇧 | 🇯🇵 |
+|---------|----|----|----|
+| BitLocker / encryption | Lindungi SAM offline theft | Protect offline SAM theft | オフラインSAM窃取を防止 |
+| No AutoLogon secrets | Hapus DefaultPassword | Remove cleartext AutoLogon | 平文AutoLogonを廃止 |
+| AlwaysInstallElevated | Pastikan **disabled** | Ensure **disabled** | **無効**を確認 |
+| Service ACLs | Tidak writable oleh Users | No user-writable bin paths | Users書き込み不可 |
+| Autoruns inventory | Baseline Run keys & Tasks | Baseline Run keys & Tasks | Run/Tasksをベースライン |
+| Unattend cleanup | Hapus dari image | Strip from golden images | イメージから削除 |
+| Event forwarding | WEF / SIEM | WEF / SIEM | WEF / SIEM |
+
+> 🛡️ **Defense-first:** Treat cleartext Winlogon passwords, leftover Unattend.xml, and user-writable service binaries as **critical hardening findings** — remediate before any “red team” narrative.
 
 ### 📊 Windows Security Priority Table
 
@@ -1027,12 +994,14 @@ PS> Get-LocalGroupMember Administrators    :: net localgroup administrators
 
 ---
 
-> 📚 **References:**
+> 📚 **References & Book Sources:**
+> - Peter Kim — *The Hacker Playbook 3* (`~/Documents/Books/CyberSec/Ethical Hacking/`) — authorized methodology context
+> - Georgia Weidman — *Penetration Testing* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
+> - Allen Harper et al. — *Gray Hat Hacking* (`~/Documents/Books/CyberSec/Handbook/`)
+> - [Microsoft Docs — Windows File Systems](https://docs.microsoft.com/en-us/windows/win32/fileio/file-systems)
 > - [HackTheBox Academy - Windows Fundamentals](https://academy.hackthebox.com)
-> - [Microsoft Docs — Windows File System](https://docs.microsoft.com/en-us/windows/win32/fileio/file-systems)
-> - [PayloadsAllTheThings — Windows Privilege Escalation](https://github.com/swisskyrepo/PayloadsAllTheThings)
-> - [GTFOBins Windows — LOLBAS](https://lolbas-project.github.io)
-> - [Mimikatz Documentation](https://github.com/gentilkiwi/mimikatz)
+> - [LOLBAS Project](https://lolbas-project.github.io) — defender awareness
 
+> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026  
 > 🔖 **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)  
 > 💬 **Feedback & Contributions welcome!** Open an issue or PR if you spot any errors.

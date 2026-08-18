@@ -1,10 +1,16 @@
 # 🖥️ Windows Command Prompt (cmd.exe)
 
-> **LearnCybersecurity** | Windows Fundamentals Series  
-> 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at
+> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
 
 ---
 
+
+<!-- LC-CURRICULUM-START -->
+> **Curriculum ID:** `LC-004` | **Phase 0:** Foundations  
+> **Est. study:** 3-4h | **Level:** Beginner  
+> **Prerequisites:** LC-001  
+> **Book map:** Gray Hat Hacking Â Windows enumeration
+<!-- LC-CURRICULUM-END -->
 ## 📖 Daftar Isi / Table of Contents / 目次
 
 | # | Category | Bahasa Indonesia | English | 日本語 |
@@ -15,8 +21,9 @@
 | 4 | System Info | Informasi sistem | System information | システム情報 |
 | 5 | Network | Perintah jaringan | Network commands | ネットワークコマンド |
 | 6 | User & Process | User & proses | Users & processes | ユーザー・プロセス |
-| 7 | Pentesting | Perintah enumerasi | Enumeration commands | 列挙コマンド |
-| 8 | Cheatsheet | Referensi cepat | Quick reference | クイックリファレンス |
+| 7 | Host Enumeration | Enumerasi host (izin) | Authorized host enumeration | 許可下のホスト列挙 |
+| 8 | Security Note | Audit, LOLBins awareness & hardening | Audit logging & LOLBin defense | 監査ログとLOLBin防御 |
+| 9 | Cheatsheet | Referensi cepat | Quick reference | クイックリファレンス |
 
 ---
 
@@ -366,16 +373,16 @@ C:\> taskkill /IM notepad.exe /F
 
 ---
 
-## 7. 🛡️ Pentesting — Enumeration Commands
+## 7. 🛡️ Authorized Host Enumeration
 
 ### 🇮🇩 Bahasa Indonesia
-Setelah mendapatkan akses ke sistem Windows, perintah-perintah berikut sering digunakan untuk **enumerasi cepat** guna memahami sistem dan mencari peluang **privilege escalation**.
+Pada **uji berizin** / lab sendiri, perintah berikut membantu inventaris host Windows dan audit konfigurasi (bukan resep PrivEsc ofensif).
 
 ### 🇬🇧 English
-After gaining access to a Windows system, the following commands are commonly used for **quick enumeration** to understand the system and look for **privilege escalation** opportunities.
+On **authorized** engagements / your own lab, the following commands help inventory a Windows host and audit configuration (not an offensive PrivEsc recipe).
 
 ### 🇯🇵 日本語
-Windowsシステムへのアクセスを取得した後、以下のコマンドはシステムを理解し**権限昇格**の機会を探すための**迅速な列挙**によく使われます。
+**許可された**検証や自ラボでは、以下のコマンドでWindowsホストの棚卸しと設定監査ができます（攻撃用PrivEsc手順ではありません）。
 
 ```cmd
 REM ── Basic Recon ─────────────────────────────────────
@@ -409,7 +416,47 @@ wmic product get name,version
 wmic qfe get Caption,Description,HotFixID,InstalledOn
 ```
 
-> ⚠️ **Note:** These commands are intended for **authorized** penetration testing and CTF environments only.
+> ⚠️ **Note:** These commands are intended for **authorized** penetration testing, defensive audits, and CTF/lab environments only.
+
+---
+
+## 8. 🔐 Security Note — CMD Hardening, Audit & LOLBin Awareness
+
+### 🇮🇩 Bahasa Indonesia
+`cmd.exe` dan utilitas bawaan (*living-off-the-land*) sering dipakai penyerang **dan** admin. Defense = **kurangi privilege**, **aktifkan audit**, dan **monitor** binary sah yang disalahgunakan.
+
+### 🇬🇧 English
+`cmd.exe` and built-in utilities (*living-off-the-land*) are used by attackers **and** admins. Defense = **reduce privilege**, **enable audit**, and **monitor** abuse of legitimate binaries.
+
+### 🇯🇵 日本語
+`cmd.exe` と組み込みユーティリティ（Living-off-the-Land）は攻撃者**と**管理者の双方が使います。防御は**権限縮小**、**監査有効化**、正規バイナリの**悪用監視**です。
+
+```cmd
+:: ── Privilege & session hygiene ─────────────────────────────
+whoami /groups
+:: Prefer standard user for daily work; elevate only when required
+:: Disable local admin where possible; use LAPS for workstation admins
+
+:: ── Command-line process auditing (defender-side) ───────────
+:: Enable via GPO: Audit Process Creation + Include command line
+:: Event ID 4688 (Security) — review suspicious cmd.exe /c chains
+wevtutil qe Security /q:"*[System[(EventID=4688)]]" /c:5 /f:text
+
+:: ── Soften attack surface ───────────────────────────────────
+:: AppLocker/WDAC: restrict who can launch cmd.exe / scripting hosts
+:: Remove unnecessary local admin; block interactive logon for service accounts
+:: Prefer PowerShell with Script Block Logging for admin automation (auditable)
+```
+
+| Control | 🇮🇩 | 🇬🇧 | 🇯🇵 |
+|---------|----|----|----|
+| Least privilege | Jangan run-as-admin harian | No daily admin shell | 日常の管理者シェル禁止 |
+| Process creation audit | Event 4688 + cmdline | 4688 + command line | 4688とコマンドライン |
+| WDAC / AppLocker | Batasi `cmd` / script hosts | Restrict `cmd` / hosts | `cmd`等を制限 |
+| LOLBAS monitoring | Alert pola anomali | Alert anomalous LOLBin use | 異常なLOLBinを警告 |
+| Credential hygiene | Jangan `echo` password | Never echo passwords | パスワードをechoしない |
+
+> 🛡️ **Defense-first:** Treat unexpected `cmd.exe /c` chains, `sc`/`schtasks` changes, and mass `findstr` over user profiles as **hunt signals**, not just noise.
 
 ---
 
@@ -510,23 +557,24 @@ tasklist                       :: list running processes
 taskkill /PID <pid> /F         :: kill process by PID
 taskkill /IM <name>.exe /F     :: kill process by name
 
-:: ── ENUMERATION (PENTESTING) ────────────────────────────────
-whoami /priv                   :: check current privileges
-net accounts                   :: password policy
-schtasks /query /fo LIST /v    :: scheduled tasks
-sc query                       :: list services
-wmic product get name,version  :: installed software
-dir /s /b *password*           :: hunt for files
+:: ── DEFENSE / AUDIT CHECKS ──────────────────────────────────
+whoami /priv                   :: review privileges (expect minimal daily)
+net accounts                   :: password policy inventory
+wevtutil qe Security /c:3 /f:text   :: sample recent Security events
+:: Prefer AppLocker/WDAC + 4688 command-line auditing in production
 ```
 
 ---
 
 > 📚 **References & Book Sources:**
-> - Peter Kim — *The Hacker Playbook 3: Practical Guide To Penetration Testing* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
+> - Peter Kim — *The Hacker Playbook 3* (`~/Documents/Books/CyberSec/Ethical Hacking/`) — authorized methodology context
 > - Georgia Weidman — *Penetration Testing: A Hands-On Introduction to Hacking* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
+> - Allen Harper et al. — *Gray Hat Hacking* (`~/Documents/Books/CyberSec/Handbook/`)
+> - Microsoft Docs — [Windows Commands](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands) · Audit Process Creation
+> - [LOLBAS Project](https://lolbas-project.github.io) — defender awareness of living-off-the-land binaries
 > - [HackTheBox Academy - Windows Fundamentals](https://academy.hackthebox.com)
-> - `help`, `<command> /?`, Microsoft Docs — [Windows Commands Reference](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands)
-> - Living Off The Land Binaries (LOLBAS) project — for advanced post-exploitation
+> - `help`, `<command> /?`
 
+> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026  
 > 🔖 **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)  
 > 💬 **Feedback & Contributions welcome!** Open an issue or PR if you spot any errors.

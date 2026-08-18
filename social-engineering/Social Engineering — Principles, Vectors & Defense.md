@@ -1,140 +1,284 @@
-# 🎭 Social Engineering — Principles, Attack Vectors & Defense
+# 🎭 Social Engineering — Principles, Vectors & Defense
 
-> **LearnCybersecurity** | Human Element & Social Engineering Series  
-> 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at
+> **LearnCybersecurity** | Human Factor Security Series  
+> 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at  
+> 📚 Primary refs: Christopher Hadnagy — *Social Engineering: The Science of Human Hacking*; Kevin Mitnick — *The Art of Deception*; Joe Gray — *Practical Social Engineering*
 
 ---
 
+
+<!-- LC-CURRICULUM-START -->
+> **Curriculum ID:** `LC-068` | **Phase 7:** Specialized  
+> **Est. study:** 4-5h | **Level:** Intermediate  
+> **Prerequisites:** LC-058  
+> **Book map:** Hadnagy Â Social Engineering 2nd Ed.; Mitnick Â The Art of Deception; Gray Â Practical Social Engineering
+<!-- LC-CURRICULUM-END -->
 ## 📖 Daftar Isi / Table of Contents / 目次
 
 | # | Topic | Bahasa Indonesia | English | 日本語 |
 |---|-------|-----------------|---------|--------|
-| 1 | Psychology & Principles | 6 Prinsip Persuasi Cialdini | Psychological Triggers & Cialdini's Laws | 心理誘導の原則（ロバート・チャルディーニ） |
-| 2 | Pretexting & Elicitation | Skenario rekayasa & teknik elisitasi | Pretexting Frameworks & Elicitation | プリテキスティングと情報引き出し技術 |
-| 3 | Phishing Taxonomy | Spear Phishing, Vishing, Quishing | Phishing, Spear Phishing, Vishing & Quishing | フィッシング、スピアフィッシング、ビッシング |
-| 4 | AiTM Phishing (MFA Bypass)| Evilginx2 & pencurian session cookie | Adversary-in-the-Middle (AiTM) & MFA Bypass | AiTM（Evilginx2）によるMFA回避とセッション強奪 |
-| 5 | Physical Infiltration | Tailgating, RFID Cloner, BadUSB | Physical Infiltration, RFID & BadUSB | 物理侵入、RFID複製、BadUSB攻撃 |
-| 6 | Defense & FIDO2 | Program kesadaran & autentikasi FIDO2 | Security Culture & Phishing-Resistant MFA | セキュリティ文化の醸成とFIDO2ハードウェア認証 |
-| 7 | Cheatsheet | Referensi cepat skenario & mitigasi | Social Engineering Assessment Cheatsheet | ソーシャルエンジニアリング診断チートシート |
+| 1 | Human Layer | Manusia sebagai permukaan | Human attack surface | 人的攻撃面 |
+| 2 | Cialdini Principles | 6(+1) prinsip pengaruh | Influence principles | 影響力の原理 |
+| 3 | Attack Narrative | Siklus rekayasa sosial | SE engagement cycle | SEの流れ |
+| 4 | Common Vectors | Vektor tipikal | Common vectors | 代表的な経路 |
+| 5 | Detection Signals | Sinyal deteksi | Red flags | 検知シグナル |
+| 6 | Awareness Training | Program kesadaran | Training program | 啓発訓練 |
+| 7 | Organizational Defense | Kontrol organisasi | Org controls | 組織防御 |
+| 8 | Ethics & Law | Etika & hukum | Legal ethics | 倫理と法 |
+| 9 | Incident Response | Respons insiden SE | SE incident handling | インシデント対応 |
+| 10 | Cheatsheet | Kartu cepat defense | Defense cheatsheet | 防御チートシート |
 
 ---
 
-## 1. 🧠 Robert Cialdini's 6 Principles of Influence
+## 1. 🧠 The Human Layer as Attack Surface
 
 ### 🇮🇩 Bahasa Indonesia
-Sosial engineering mengeksploitasi celah psikologis manusia (*human vulnerability*) daripada kerentanan perangkat lunak. Dr. Robert Cialdini merumuskan 6 prinsip psikologis utama yang sering dimanipulasi oleh penyerang:
+Keamanan teknis dapat dilewati jika penyerang meyakinkan manusia untuk **memberikan akses, rahasia, atau tindakan**. Mitnick (*Art of Deception*) menekankan: orang cenderung membantu, takut konflik, dan percaya pada otoritas yang tampak sah.
 
-1. **Authority (Otoritas)**: Manusia cenderung patuh pada figur otoritas (Direktur, IT Helpdesk, Polisi, Pengacara).
-2. **Urgency / Fear (Urgensi & Ketakutan)**: Menimbulkan kepanikan agar korban bertindak cepat tanpa berpikir kritis (*"Akun Anda akan dibekukan dalam 10 menit!"*).
-3. **Social Proof (Bukti Sosial)**: Manusia mengikuti perilaku mayoritas (*"Semua rekan tim di divisi Anda sudah menandatangani formulir ini"*).
-4. **Scarcity (Kelangkaan)**: Menawarkan peluang yang terbatas (*"Hanya tersisa 2 voucher bonus"*).
-5. **Reciprocity (Timbal Balik)**: Memberikan bantuan atau hadiah kecil terlebih dahulu untuk memicu rasa sungkan atau kewajiban membalas budi.
-6. **Liking / Sympathy (Ketertarikan & Simpati)**: Membangun rapport persahabatan, pujian, atau berpura-pura membutuhkan pertolongan mendesak.
+$$
+\mathsf{Risk}_{SE} = f(\mathsf{Trust},\; \mathsf{Urgency},\; \mathsf{Access},\; \mathsf{VerificationGap})
+$$
+
+Semakin besar trust + urgency dan semakin lemah verifikasi, semakin tinggi keberhasilan rekayasa sosial.
 
 ### 🇬🇧 English
-Social engineering targets cognitive vulnerabilities in the human mind rather than algorithmic flaws in code. Dr. Robert Cialdini codified 6 fundamental psychological triggers weaponized by social engineers:
+Social engineering (SE) exploits cognitive biases and organizational process gaps — not (primarily) memory corruption. Defense is process + culture + verification channels, not another firewall rule alone.
 
-1. **Authority**: Deeply conditioned compliance towards perceived figures of authority (CEOs, Law Enforcement, Enterprise IT Support).
-2. **Urgency & Fear**: Artificially manufacturing panic to bypass rational cognitive deliberation (*"Your corporate account will be permanently terminated within 10 minutes!"*).
-3. **Social Proof**: Conformity bias where targets mirror perceived group consensus (*"The rest of your department has already verified their credentials"*).
-4. **Scarcity**: Leveraging fear of missing out (FOMO) regarding limited corporate bonuses or critical security patches.
-5. **Reciprocity**: Offering an unsolicited favor or assistance to induce a subconscious psychological obligation to return the favor.
-6. **Liking & Rapport**: Establishing immediate interpersonal charisma, compliments, or feigned distress to foster compliance.
-
-### 🇯🇵 日本語
-ソーシャルエンジニアリングは、ソフトウェアの脆弱性ではなく人間の認知バイアス（心理的脆弱性）を突く攻撃手法です。ロバート・チャルディーニ博士が提唱した6つの影響力の武器が悪用されます：
-
-1. **権威（Authority）**: 役員、警察、システム管理者などの権威者に対する無条件の服従傾向。
-2. **緊急性・恐怖（Urgency / Fear）**: 思考時間を奪い衝動的な行動を促す圧力（「10分以内に対応しないとアカウントが削除されます」）。
-3. **社会的証明（Social Proof）**: 「他の社員は全員手続きを完了しています」という同調圧力。
-4. **希少性（Scarcity）**: 限定性や特別感を演出して行動を促す。
-5. **返報性（Reciprocity）**: 先に小さな親切や情報を提供し、相手に借りを返したいという心理を抱かせる。
-6. **好意（Liking）**: 親近感、褒め言葉、または困っている姿を見せて同情を引く。
+### 日本語
+ソーシャルエンジニアリングは認知バイアスと業務手順の隙を突きます。防御は技術だけでなく検証文化です。
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                 6 PRINCIPLES OF PERSUASION                  │
-├─────────────────┬───────────────────────────────────────────┤
-│ 1. Authority    │ Meniru figur bos, aparat hukum, atau IT   │
-│ 2. Urgency      │ "Akun Anda diblokir dalam 15 menit!"      │
-│ 3. Social Proof │ "Semua karyawan divisi keuangan sudah..." │
-│ 4. Scarcity     │ "Hanya tersisa 3 kupon bonus!"            │
-│ 5. Reciprocity  │ Memberi bantuan kecil untuk memicu balasan│
-│ 6. Liking       │ Membangun koneksi personal & pujian       │
-└─────────────────┴───────────────────────────────────────────┘
+┌──────────────┐     trust / fear / greed      ┌──────────────┐
+│  Attacker    │ ─────────────────────────────▶│   Target     │
+│  narrative   │◀──── info / access / action ──│   human      │
+└──────────────┘                               └──────────────┘
+        │                                              │
+        └────────── defense: verify out-of-band ───────┘
 ```
 
 ---
 
-## 2. 🎭 Pretexting Frameworks & Information Elicitation
+## 2. 📐 Cialdini’s Principles of Influence (Defense Lens)
 
-### 🇮🇩 Bahasa Indonesia
-**Pretexting** adalah seni menciptakan skenario atau identitas palsu yang meyakinkan untuk memanipulasi target agar memberikan data rahasia.
+Hadnagy membangun kerangka SE di atas psikologi pengaruh. Pahami prinsip ini **untuk mendeteksi manipulasi**, bukan untuk menyiapkan kampanye tipuan.
 
-**Teknik Elisitasi Informasi (Information Elicitation)**:
-- **Artificial Ignorance (Berpura-pura Bodoh)**: Sengaja memberikan pernyataan teknis yang salah secara percaya diri, memicu target untuk mengoreksi dan membeberkan konfigurasi arsitektur jaringan internal yang sebenarnya.
-- **Ego Baiting**: Memuji keahlian target secara berlebihan sehingga target membanggakan detail rahasia proyek internal perusahaan.
-- **Mutual Ground**: Menggunakan jargon internal perusahaan (yang diperoleh sebelumnya dari OSINT LinkedIn/GitHub) agar dianggap sebagai rekan satu perusahaan.
+| Principle | Intuisi | Contoh manipulasi | Pertahanan |
+|:---|:---|:---|:---|
+| **Reciprocity** | Hutang budi | “Saya bantu dulu, tolong balas kirim file” | Kebijakan: hadiah ≠ bypass prosedur |
+| **Commitment / Consistency** | Konsisten dengan pernyataan awal | “Tadi Anda bilang bisa bantu…” | Izinkan ubah keputusan bila fakta baru |
+| **Social proof** | Ikuti orang lain | “Semua staf sudah update lewat link ini” | Verifikasi sumber resmi |
+| **Authority** | Patuhi atasan / seragam | “IT Director minta reset sekarang” | Callback ke nomor resmi; dual control |
+| **Liking** | Tolong orang yang disukai | Rapport berlebihan + permintaan sensitif | Pisahkan ramah dari otorisasi |
+| **Scarcity / Urgency** | Takut kehilangan | “Akun ditutup dalam 15 menit” | SLA: tidak ada aksi sensitif di bawah tekanan waktu palsu |
+| **Unity** (ed.) | “Kita satu kelompok” | Identitas palsu komunitas/vendor | Badge + identitas terverifikasi |
+
+### Formalisasi sederhana
+$$
+\mathsf{Compliance} \uparrow \;\text{when}\; \sum_i w_i \cdot \mathsf{Principle}_i > \mathsf{VerificationFriction}
+$$
+
+Defense menaikkan **VerificationFriction** (callback, ticket, dual approval) tanpa menghancurkan produktivitas.
 
 ---
 
-## 3. 🎣 Modern Phishing Taxonomy
+## 3. 🔄 Social Engineering Narrative Cycle
 
-| Vector | Description / Mekanisme | Defense / Mitigasi |
+Dari *Practical Social Engineering* / Hadnagy (siklus generik, **bukan playbook serangan**):
+
+```
+OSINT (publik) → Pretext design → Contact → Rapport → Ask → Exit → Report
+```
+
+| Fase | Apa yang terjadi | Kontrol defense |
 |:---|:---|:---|
-| **Spear Phishing** | Email tertarget tinggi yang dipersonalisasi dengan data pribadi/profesional korban. | DMARC/DKIM/SPF, AI Email Gateways |
-| **Whaling / BEC** | Penipuan email yang meniru CEO/CFO untuk memicu transfer dana miliaran rupiah. | Verifikasi telepon dua pihak wajib |
-| **Vishing (Voice)** | Panggilan suara penipuan menggunakan **AI Voice Cloning** (Deepfake suara bos). | Challenge questions berbasis out-of-band |
-| **Smishing (SMS)** | Pesan SMS/WhatsApp dengan tautan credential harvester atau malware perbankan APK. | Filtering SMS operator, App blocker |
-| **Quishing (QR)** | Kode QR fisik/email yang mengarahkan korban ke situs login palsu (Bypass filter email teks). | QR code scanner with URL preview |
+| OSINT | Pengumpulan info publik tentang org/orang | Minimasi jejak publik; privacy training |
+| Pretext | Cerita yang “masuk akal” | Challenge story yang minta akses |
+| Contact | Email, telepon, tatap muka, chat | Channel resmi + banner peringatan |
+| Rapport | Membangun kenyamanan | Waspadai permintaan mendadak setelah basa-basi |
+| Ask | Permintaan aksi/info | Never skip verification for “small” asks |
+| Exit | Menutup tanpa alarm | Logging & after-action review |
+| Report | (Di red team berizin) dokumentasi | Hanya dengan RoE tertulis |
+
+> Catatan keras: repository ini **tidak** mengajarkan setup phishing kit, Evilginx, BadUSB payload, atau skrip penipuan. Fokus: psikologi + deteksi + pelatihan.
 
 ---
 
-## 4. 🥷 Adversary-in-the-Middle (AiTM) Phishing & MFA Bypass (Evilginx2)
+## 4. 📡 Common Vectors (Konsep)
 
-### 🇮🇩 Bahasa Indonesia
-Phishing tradisional yang hanya mencuri username dan password telah gagal jika korban mengaktifkan **MFA (Multi-Factor Authentication)** berbasis SMS atau OTP Authenticator App.
+| Vektor | Deskripsi singkat | Apa yang diminta biasanya |
+|:---|:---|:---|
+| **Phishing / spear-phishing** | Pesan tipuan bermuatan CTA | Kredensial, malware click, wire change |
+| **Vishing** | Telepon / VoIP | Reset password, MFA code, data pelanggan |
+| **Smishing** | SMS / chat mobile | Link “paket” / “bank” |
+| **Pretexting (helpdesk)** | Meniru karyawan/vendor | Unlock akun, tambah ke VPN group |
+| **Impersonation** | Physical / badge surfing | Tailgating, “tamu vendor” |
+| **Business Email Compromise (BEC)** | Penyimpangan wire / invoice | Ubah rekening pembayaran |
+| **Quid pro quo** | “Saya bantu IT, Anda install…” | Remote access tools |
 
-**AiTM Phishing (Evilginx2)** memposisikan dirinya sebagai proxy transparan di antara Korban dan Server Asli (Microsoft 365, Google, Okta):
-1. Korban membuka link phishing (`login.attacker-m365.com`).
-2. Evilginx2 meneruskan request ke Microsoft asli dan menampilkan halaman login asli secara real-time.
-3. Korban memasukkan username, password, dan kode OTP MFA 6-digit.
-4. Microsoft memvalidasi OTP dan menerbitkan **Session Cookie otentikasi (`ESTSAUTH`, `SignInStateCookie`)**.
-5. Evilginx2 menangkap session cookie tersebut dan menyimpannya di log penyerang.
-6. **Penyerang mengimpor cookie ke browser mereka dan login sebagai korban tanpa perlu memasukkan password atau OTP lagi!**
+$$
+\mathsf{Impact} = \mathsf{PrivilegeGranted} \times \mathsf{DataSensitivity} \times \mathsf{SpeedOfDetection}^{-1}
+$$
+
+---
+
+## 5. 🚩 Detection Signals — Red Flags
+
+### Bahasa / konten
+- Urgensi ekstrem + ancaman hukuman.
+- Permintaan bypass prosedur (“jangan bilang siapa-siapa”).
+- Ketidaksesuaian domain email (homoglyph, subdomain aneh).
+- Permintaan **MFA code**, password, atau seed phrase (sahih IT **tidak** meminta ini).
+- Perubahan rekening vendor tanpa verifikasi dual-channel.
+
+### Proses
+- Kontak masuk di luar jam + desak segera.
+- Meminta remote tool tidak standar.
+- Menolak ticket / callback.
+
+### Tabel cepat triage
+
+| Sinyal | Severity | Tindakan segera |
+|:---|:---:|:---|
+| Minta password / MFA | Tinggi | Hentikan; laporkan SOC |
+| Ubah wire instructions | Tinggi | Dual approval finance |
+| Link “login portal” | Sedang–Tinggi | Lapor; jangan klik; verifikasi portal resmi |
+| Vendor “baru” tanpa PO | Sedang | Procurement verify |
+| Tailgate di pintu | Sedang | Challenge politely; security escort |
+
+---
+
+## 6. 🎓 Awareness Training That Works
+
+Pelatihan buruk = video tahunan yang dilupa. Pelatihan baik = **berulang, terukur, tanpa malu-malukan**.
+
+### Desain program
+1. **Baseline** — survei + simulasi berizin (internal phishing simulation dengan RoE & HR buy-in).
+2. **Teach principles** — Cialdini + prosedur callback, bukan “jangan klik link” semata.
+3. **Just-in-time** — tips saat musim pajak, payroll, vendor renewals.
+4. **Role-based** — finance (BEC), helpdesk (pretext), executives (whaling).
+5. **Measure** — report rate ↑, repeat-click ↓, time-to-report ↓.
+6. **No shame culture** — yang melapor cepat = perilaku yang dihadiahi.
+
+$$
+\mathsf{TrainingROI} \propto \frac{\mathsf{ReportRate} \times \mathsf{PreventedLoss}}{\mathsf{ProgramCost}}
+$$
+
+### Micro-curriculum (contoh 15 menit)
+| Menit | Isi |
+|:---:|:---|
+| 0–3 | Cerita nyata (anonim) di industri Anda |
+| 3–8 | 3 red flags + cara verifikasi |
+| 8–12 | Latihan skenario (vishing script defense) |
+| 12–15 | Cara lapor + apa yang terjadi setelah lapor |
+
+---
+
+## 7. 🏢 Organizational Controls
+
+| Kontrol | Implementasi | Melawan |
+|:---|:---|:---|
+| Out-of-band verification | Callback ke nomor di HR directory | Vishing / BEC |
+| Dual control | 2 orang untuk wire & privilege | Fraud tunggal |
+| Least privilege + JIT | Akses terbatas waktu | Pretext helpdesk |
+| Email authentication | SPF, DKIM, DMARC enforce | Spoof domain |
+| Banner external mail | “External” warning | Fake internal |
+| Helpdesk identity proof | Employee ID + callback | Account takeover social |
+| Physical access policy | Badge + visitor escort | Tailgating |
+| MFA resistant where possible | Phishing-resistant MFA (passkeys/FIDO2) | Credential harvest |
+| Data classification | Jangan sebut data sensitif di telepon | Oversharing |
 
 ```
-Victim Browser ───> [ Evilginx2 Reverse Proxy ] ───> [ Real Microsoft 365 ]
-                         │                                    │
-                         │ (Steals ESTSAUTH Session Cookie!)   │
-                         ▼                                    ▼
-                 [ Attacker Machine ]                [ User Authenticated ]
+Request sensitive action
+        │
+        ▼
+  Ticket required? ──no──▶ deny / redirect
+        │ yes
+        ▼
+  Identity proof (policy)
+        │
+        ▼
+  Out-of-band confirm (if high risk)
+        │
+        ▼
+  Dual approval (if financial / admin)
+        │
+        ▼
+  Execute + audit log
 ```
 
 ---
 
-## 5. 🚪 Physical Infiltration & Hardware Implants
+## 8. ⚖️ Ethics, Law & Authorized Testing
 
-1. **Tailgating / Piggybacking**: Mengikuti karyawan resmi masuk ke area terbatas tanpa memindai kartu akses (misal dengan membawa nampan kopi di kedua tangan).
-2. **RFID / NFC Cloning (Proxmark3 / Flipper Zero)**: Membaca ID kartu RFID 125kHz (HID Prox) atau 13.56MHz (MIFARE Classic) milik karyawan dari jarak dekat di lift/kafe dan menduplikasikannya ke kartu kosong dalam 2 detik.
-3. **BadUSB / Rubber Ducky**: Perangkat USB yang menyamar sebagai keyboard HID. Saat ditancapkan, ia mengetik 1000 karakter per detik untuk membuka PowerShell dan mengunduh reverse shell.
+| Aktivitas | Syarat |
+|:---|:---|
+| Red team SE / phishing simulasi | RoE tertulis, legal, HR, executive sponsor |
+| OSINT pada karyawan | Batasi sumber publik; hormati hukum privasi lokal |
+| Impersonation physical | Izin fasilitas + safety stop |
+| Mengajar teknik tipuan detail | Hindari “kit siap pakai”; fokus deteksi |
 
----
-
-## 6. 🛡️ Enterprise Defense: Phishing-Resistant MFA (FIDO2)
-
-### 🇮🇩 Bahasa Indonesia
-Satu-satunya pertahanan permanen yang **100% kebal terhadap serangan Evilginx2 / AiTM Phishing** adalah **FIDO2 / WebAuthn Hardware Security Keys (seperti YubiKey)**:
-- Browser secara otomatis mengikat (*cryptographic binding*) proses autentikasi ke nama domain asal (*origin URL*).
-- Kunci hardware menolak menandatangani respons tantangan jika URL pada address bar adalah `login.attacker-m365.com` bukan `login.microsoftonline.com` asli!
+**Undang-undang** berbeda per yurisdiksi (penipuan, akses komputer, perekaman panggilan). Simulasi tanpa izin dapat melanggar hukum dan kontrak kerja.
 
 ---
 
-> 📚 **References & Book Sources:**
-> - Christopher Hadnagy — *Social Engineering: The Science of Human Hacking (2nd Edition)* (`~/Documents/Books/CyberSec/Social Engineering/`)
-> - Kevin Mitnick — *The Art of Deception: Controlling the Human Element of Security* (`~/Documents/Books/CyberSec/Social Engineering/`)
-> - Joe Gray — *Practical Social Engineering: A Primer for the Ethical Hacker* (`~/Documents/Books/CyberSec/Social Engineering/`)
-> - Peter Kim — *The Hacker Playbook 3* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
+## 9. 🚑 Social Engineering Incident Response
+
+1. **Contain** — jangan lanjutkan percakapan tipuan; amankan akun jika kredensial terpapar.
+2. **Preserve** — header email, nomor telepon, rekaman (jika legal), chat log.
+3. **Reset** — password, session, MFA device bila perlu; review forward rules.
+4. **Notify** — SOC / IR; finance jika BEC; legal jika data pelanggan.
+5. **Hunt** — mailbox rules, new inbox delegates, unusual VPN.
+6. **Lessons** — update training + kontrol; tanpa menyalahkan korban yang melapor.
+
+$$
+t_{\text{detect}} \downarrow \Rightarrow \mathsf{ExpectedLoss} \downarrow
+$$
+
+---
+
+## 10. 🛠️ Defense Cheatsheet
+
+```text
+SEBUTKAN SEBELUM BERTINDAK
+[ ] Apakah ada urgensi yang dipaksakan?
+[ ] Apakah identitas terverifikasi lewat saluran resmi?
+[ ] Apakah prosedur normal dilewati?
+[ ] Apakah diminta rahasia (password/MFA/seed)?
+[ ] Apakah ada perubahan rekening / akses admin?
+
+JIKA YA PADA SALAH SATU → STOP → TICKET / CALLBACK → LAPOR
+```
+
+| Peran | Satu kebiasaan emas |
+|:---|:---|
+| Semua karyawan | Laporkan yang mencurigakan tanpa takut salah |
+| Helpdesk | Tidak ada reset tanpa proof policy |
+| Finance | Dual channel untuk ubah pembayaran |
+| Exec assistant | Whaling checklist sebelum jadwal/transfer |
+| Security | Ukur report rate, bukan hanya click rate |
+
+---
+
+## 🔐 Security Notes — Threats & Defenses
+
+| Ancaman | Mekanisme | Pertahanan |
+|:---|:---|:---|
+| Credential harvest | Fake login / vishing | FIDO2; never share MFA; report |
+| BEC fraud | Invoice / CEO fraud | Dual control; vendor callbacks |
+| Helpdesk pretext | Social reset | Strong identity proof |
+| Tailgating | Physical follow-in | Challenge culture; turnstiles |
+| Oversharing | Rapport abuse | Classification; need-to-know |
+| Shame culture | Hide incidents | Reward fast reporting |
+
+> **Tidak dibahas:** konstruksi kit phishing, proxy credential harvesting, payload BadUSB, atau skrip tipuan siap pakai.
+
+---
+
+> 📚 **References & Book Sources**
+> - Christopher Hadnagy — *Social Engineering: The Science of Human Hacking* — `~/Documents/Books/CyberSec/Social Engineering/`
+> - Kevin Mitnick & William Simon — *The Art of Deception* — `~/Documents/Books/CyberSec/Social Engineering/`
+> - Joe Gray — *Practical Social Engineering* — `~/Documents/Books/CyberSec/Social Engineering/`
+> - Robert Cialdini — *Influence* (principles referenced via SE literature)
 
 > 🔖 **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)  
-> 💬 **Feedback & Contributions welcome!** Open an issue or PR if you spot any errors.
+> ⚖️ Edukasi & pelatihan berizin. Jangan gunakan untuk penipuan atau akses tidak sah.

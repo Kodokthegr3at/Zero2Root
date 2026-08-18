@@ -1,10 +1,16 @@
 # 🔀 Git — Version Control System
 
-> **LearnCybersecurity** | Linux Fundamentals Series  
-> 📅 Last Updated: 2026 | 👤 Author: kodoktheGr3at
+> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
 
 ---
 
+
+<!-- LC-CURRICULUM-START -->
+> **Curriculum ID:** `LC-002` | **Phase 0:** Foundations  
+> **Est. study:** 3-4h | **Level:** Beginner  
+> **Prerequisites:** LC-001  
+> **Book map:** Shotts Â The Linux Command Line Ch.17-18 (VCS concepts)
+<!-- LC-CURRICULUM-END -->
 ## 📖 Daftar Isi / Table of Contents / 目次
 
 | # | Topic | Bahasa Indonesia | English | 日本語 |
@@ -19,7 +25,7 @@
 | 8 | History & Undo | Lihat riwayat & batalkan perubahan | View history & undo changes | 履歴の確認と変更の取り消し |
 | 9 | `.gitignore` | Mengabaikan file tertentu | Ignoring certain files | 特定ファイルの無視 |
 | 10 | Git Workflow | Alur kerja kolaborasi | Collaboration workflow | コラボレーションワークフロー |
-| 11 | Security Note | Risiko keamanan Git | Git security risks | Gitのセキュリティリスク |
+| 11 | Security Note | Hygiene kredensial & secret scanning | Credential hygiene & secret scanning | 認証情報衛生とシークレットスキャン |
 | 12 | Workflow | Contoh praktis lengkap | Full practical example | 実践的なワークフロー例 |
 
 ---
@@ -636,68 +642,58 @@ $ git branch -d fix-xss-vulnerability
 
 ---
 
-## 11. 🔐 Security Note — Git Security Risks
+## 11. 🔐 Security Note — Credential Hygiene & Secret Scanning (Defense)
 
 ### 🇮🇩 Bahasa Indonesia
-Dalam konteks **penetration testing** dan **bug bounty**, repository Git (baik publik maupun yang terekspos secara tidak sengaja di web server) adalah sumber **informasi sensitif** yang sangat berharga.
+Riwayat Git **menyimpan selamanya** apa yang pernah di-commit. Fokus keamanan di sini adalah **mencegah kebocoran kredensial** dan **mendeteksi secret sebelum push** — bukan panduan berburu kredensial pada target.
 
 ### 🇬🇧 English
-In the context of **penetration testing** and **bug bounty**, Git repositories (whether public or accidentally exposed on a web server) are a valuable source of **sensitive information**.
+Git history **retains forever** anything once committed. Security focus here is **preventing credential leaks** and **detecting secrets before push** — not a guide to hunting credentials on third-party targets.
 
 ### 🇯🇵 日本語
-**ペンテスト**と**バグバウンティ**の文脈では、Gitリポジトリ（公開されているか、Webサーバー上で誤って公開されているか問わず）は**機密情報**の貴重な源です。
+Gitの履歴は一度コミットした内容を**永続保持**します。ここでの重点は**認証情報漏洩の防止**と**push前のシークレット検知**であり、第三者ターゲットへのクレデンシャル探索ガイドではありません。
 
 ```bash
-# ── FINDING EXPOSED .git FOLDERS ON WEB SERVERS ──────────────
+# ── PREVENT: stop secrets from entering commits ──────────────
+# Strong .gitignore patterns (always review before first push)
+echo -e '.env\n.env.*\n*.pem\n*.key\nid_rsa\nid_ed25519\n*.p12\ncredentials.json' >> .gitignore
 
-# Check if .git is exposed on a target website
-$ curl -s http://target.com/.git/HEAD
-$ curl -s http://target.com/.git/config
+# Pre-commit secret scanning (developer workstation / CI)
+# Install gitleaks or trufflehog as a pre-commit / CI gate
+gitleaks detect --source . --verbose
+# Or: pre-commit hook running gitleaks protect --staged
 
-# Tools to dump an exposed .git folder
-$ git clone http://target.com/.git/ dumped-repo
-# Or use specialized tools:
-$ python3 git-dumper.py http://target.com/.git/ ./dumped-repo
-$ python3 GitTools/Dumper/gitdumper.sh http://target.com/.git/ ./dumped-repo
+# Block common patterns in CI (fail the pipeline on findings)
+gitleaks detect --source . --report-path gitleaks-report.json --exit-code 1
 
-# ── SEARCHING COMMIT HISTORY FOR SECRETS ─────────────────────
+# ── DETECT: audit YOUR repositories you own/maintain ─────────
+# Scan local clone history for accidentally committed secrets
+gitleaks detect --source . --log-opts="--all"
+trufflehog git file://. --only-verified   # prefer verified findings
 
-# Search all commit messages and diffs for keywords
-$ git log --all -p | grep -i "password"
-$ git log --all -p | grep -i "api_key"
-$ git log --all -p | grep -i "secret"
+# Search YOUR history for known secret markers (ops hygiene)
+git log --all -p -S 'AKIA' -- '*.env' '*.yml' '*.json' 2>/dev/null | head
 
-# Use specialized secret-scanning tools
-$ trufflehog git https://github.com/username/repo.git
-$ gitleaks detect --source . -v
-
-# Find deleted files that might still exist in history
-$ git log --diff-filter=D --summary | grep delete
-
-# Recover a deleted file from history
-$ git log --all --full-history -- "**/secrets.yaml"
-$ git show <commit-hash>:path/to/secrets.yaml
-
-# ── CHECKING FOR SENSITIVE FILES IN REPO ─────────────────────
-$ find . -name "*.env" -o -name "*.pem" -o -name "id_rsa" 2>/dev/null
-$ grep -r "AKIA" . 2>/dev/null              # AWS access key pattern
-$ grep -r "password.*=" . 2>/dev/null       # hardcoded passwords
+# ── RESPOND: if a secret was committed ───────────────────────
+# 1) Rotate/revoke the credential immediately (primary control)
+# 2) Remove from future commits (.gitignore + rewrite only if policy allows)
+# 3) Treat old history as compromised until rotation completes
+# 4) Prefer BFG/filter-repo ONLY on repos you control, then force-sync with team policy
 ```
 
-### 🔑 Common Sensitive Data Found in Git Repos
+### 🛡️ Defensive Controls Checklist
 
-| Pattern | 🇮🇩 Risiko | 🇬🇧 Risk | 🇯🇵 リスク |
-|---------|-----------|---------|-----------|
-| `.env` files committed | Kredensial database & API exposed | Database & API credentials exposed | データベースとAPI認証情報の露出 |
-| Hardcoded passwords in code | Akses langsung ke sistem | Direct access to systems | システムへの直接アクセス |
-| `id_rsa` / private keys | Akses SSH tanpa password | SSH access without password | パスワードなしのSSHアクセス |
-| AWS/Cloud keys in history | Akses ke infrastruktur cloud | Access to cloud infrastructure | クラウドインフラへのアクセス |
-| Exposed `.git/config` | Mengungkap URL remote & kadang token | Reveals remote URL & sometimes tokens | リモートURLとトークンの露出 |
-| Deleted-but-recoverable commits | Data "terhapus" tapi tetap ada | "Deleted" data that still exists | 「削除済み」だが残存するデータ |
+| Control | 🇮🇩 Tindakan | 🇬🇧 Action | 🇯🇵 アクション |
+|---------|-------------|-----------|----------------|
+| `.gitignore` + templates | Blokir `.env`, key, PEM | Block `.env`, keys, PEMs | `.env`・鍵・PEMを除外 |
+| Pre-commit / CI scanners | `gitleaks` / TruffleHog gate | Fail build on secrets | シークレット検知でCI失敗 |
+| Short-lived tokens | PAT/OIDC, bukan long-lived | Prefer OIDC / short PATs | 短寿命トークン・OIDC |
+| Secret managers | Vault / cloud SM, bukan repo | Vault/cloud SM, not git | Vault等、リポジトリ外 |
+| Rotation runbook | Segera revoke jika bocor | Revoke first, then cleanup | 漏洩時は先に失効 |
+| Protected branches + CODEOWNERS | Review wajib sebelum merge | Require review before merge | マージ前レビュー必須 |
+| No `.git` on web roots | Pastikan deploy tanpa `.git` | Never deploy `.git` to prod | 本番に `.git` を置かない |
 
-> ⚠️ **Pentesting note:** Selalu cek `/.git/` di setiap target web app sebagai langkah rekognisi awal. Banyak developer lupa mengecualikan folder `.git` dari deployment produksi, yang memungkinkan source code dan riwayat commit lengkap untuk di-dump.
-
-> 🛡️ **Defensive note:** Sebagai developer, gunakan `git-secrets`, `gitleaks`, atau pre-commit hooks untuk **mencegah** credential masuk ke commit sejak awal — lebih mudah mencegah daripada membersihkan riwayat setelahnya.
+> 🛡️ **Defense-first:** Treat every accidental commit of a secret as a **confirmed compromise of that secret**. Rotation beats history rewriting. Use scanners in CI so humans are not the only control.
 
 ---
 
@@ -822,24 +818,24 @@ git remote -v                             # list remotes
 git remote add origin <url>               # add remote
 git fetch origin                          # fetch without merging
 
-# ── SECURITY / RECON ─────────────────────────────────────────
-curl -s http://target.com/.git/HEAD       # check exposed .git
-git log --all -p | grep -i "password"     # search history for secrets
-trufflehog git <repo-url>                 # automated secret scan
-gitleaks detect --source .                # automated secret scan
+# ── SECURITY / SECRET HYGIENE (YOUR REPOS) ────────────────
+gitleaks detect --source .                # scan working tree
+gitleaks detect --source . --log-opts="--all"  # include history
+trufflehog git file://. --only-verified   # verified secret findings
+# Ensure .env, *.pem, id_rsa are in .gitignore before first push
 ```
 
 ---
 
 > 📚 **References & Book Sources:**
 > - Scott Chacon & Ben Straub — *Pro Git (2nd Edition)* (`https://git-scm.com/book/en/v2`)
-> - Peter Kim — *The Hacker Playbook 3: Practical Guide To Penetration Testing* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
+> - Peter Kim — *The Hacker Playbook 3* (`~/Documents/Books/CyberSec/Ethical Hacking/`) — authorized testing methodology context
 > - Dafydd Stuttard & Marcus Pinto — *The Web Application Hacker's Handbook (2nd Edition)* (`~/Documents/Books/CyberSec/Web App/`)
 > - [HackTheBox Academy - Linux Fundamentals](https://academy.hackthebox.com)
 > - `man git`, `git help <command>`
-> - [GitTools — Dumper & Extractor for exposed .git](https://github.com/internetwache/GitTools)
 > - [TruffleHog — Secret Scanner](https://github.com/trufflesecurity/trufflehog)
 > - [Gitleaks — Secret Scanner](https://github.com/gitleaks/gitleaks)
 
+> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026  
 > 🔖 **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)  
 > 💬 **Feedback & Contributions welcome!** Open an issue or PR if you spot any errors.
