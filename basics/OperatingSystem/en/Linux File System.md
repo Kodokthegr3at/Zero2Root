@@ -39,6 +39,23 @@
 
 ---
 
+## Key Terms
+
+You'll see these words throughout the lesson.
+
+| Term | Plain meaning |
+|:---|:---|
+| File system | How an operating system arranges files into a tree of directories |
+| Root (`/`) | The single top of the Linux tree; everything hangs off it |
+| FHS | Filesystem Hierarchy Standard: the agreed meaning of each top-level directory |
+| Path | A file's location, absolute (`/etc/passwd`) or relative (`../log`) |
+| Binary | A compiled program file (lives in `/bin`, `/usr/bin`, `/sbin`) |
+| Mount | Attaching a disk or device into the tree at a chosen directory |
+| Device file | A file under `/dev` that represents hardware |
+| Pseudo-filesystem | `/proc` and `/sys`: not real files on disk, but live views of the kernel |
+
+---
+
 ## 1. Overview: What Is the Linux File System
 
 The Linux file system is a hierarchical structure that organizes all files and directories on a Linux system. Unlike Windows, which uses separate drives (C:, D:, and so on), Linux uses one single directory tree starting from `/` (root).

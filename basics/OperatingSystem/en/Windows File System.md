@@ -33,6 +33,23 @@
 
 ---
 
+## Key Terms
+
+You'll see these words throughout the lesson.
+
+| Term | Plain meaning |
+|:---|:---|
+| Drive letter | Windows gives each volume a letter (`C:`, `D:`) instead of one root |
+| NTFS | The modern Windows file system (permissions, journaling, encryption) |
+| Path | A file's location; Windows uses backslashes (`C:\Users\alex`) |
+| Environment variable | A named shortcut for a path, like `%APPDATA%` or `%SystemRoot%` |
+| Registry | Windows' central settings database, separate from the file tree |
+| ACL | Access Control List: the per-file rules for who may read/write/execute |
+| ADS | Alternate Data Stream: hidden data NTFS can attach to a file |
+| Hidden / system file | Files flagged so they don't show by default |
+
+---
+
 ## 1. Overview: What Is the Windows File System
 
 The Windows file system uses a drive letter structure (C:, D:, E:, and so on), unlike Linux, which uses one directory tree rooted at `/`. Each drive carries its own directory hierarchy.

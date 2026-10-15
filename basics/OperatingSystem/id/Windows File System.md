@@ -33,6 +33,23 @@
 
 ---
 
+## Istilah penting
+
+Istilah-istilah ini akan sering muncul di materi.
+
+| Istilah | Artinya |
+|:---|:---|
+| Drive letter | Windows memberi tiap volume sebuah huruf (`C:`, `D:`), bukan satu root |
+| NTFS | File system Windows modern (permission, journaling, enkripsi) |
+| Path | Lokasi file; Windows memakai backslash (`C:\Users\alex`) |
+| Environment variable | Jalan pintas bernama untuk sebuah path, seperti `%APPDATA%` atau `%SystemRoot%` |
+| Registry | Basis data pengaturan terpusat Windows, terpisah dari pohon file |
+| ACL | Access Control List: aturan per-file soal siapa yang boleh read/write/execute |
+| ADS | Alternate Data Stream: data tersembunyi yang bisa ditempelkan NTFS ke sebuah file |
+| File hidden / system | File yang ditandai supaya tidak tampil secara default |
+
+---
+
 ## 1. Overview: Apa Itu Sistem Berkas Windows
 
 Sistem berkas Windows menggunakan struktur huruf drive (C:, D:, E:, dan seterusnya), berbeda dari Linux yang memakai satu pohon direktori berakar di `/`. Setiap drive punya hierarki direktorinya sendiri.

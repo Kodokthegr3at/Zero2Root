@@ -37,6 +37,23 @@
 
 ---
 
+## Key Terms
+
+You'll see these words throughout the lesson.
+
+| Term | Plain meaning |
+|:---|:---|
+| APFS | Apple File System: the modern macOS file system (snapshots, encryption) |
+| Volume | A mountable storage container; macOS shows them under `/Volumes` |
+| Path | A file's location; macOS is Unix-style with forward slashes (`/Users/alex`) |
+| Bundle | A folder macOS treats as a single item, like an `.app` application |
+| SIP | System Integrity Protection: keeps even root from altering protected system files |
+| Gatekeeper | The check that only lets signed/notarized apps run by default |
+| Quarantine | A flag macOS puts on downloaded files to trigger that check |
+| Home / Library | Your files live in `/Users/<name>`; app settings live in its `Library` |
+
+---
+
 ## 1. Overview: What Is the macOS File System
 
 The macOS file system is built on a Unix (BSD/Darwin) foundation, so its structure resembles Linux: one single directory tree from `/`. macOS adds Apple-specific layers on top of that, though, such as `/Applications`, `/Library`, and the `.app` bundle format that plain Linux doesn't have.

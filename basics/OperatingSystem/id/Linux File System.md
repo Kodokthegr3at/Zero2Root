@@ -39,6 +39,23 @@
 
 ---
 
+## Istilah penting
+
+Istilah-istilah ini akan sering muncul di materi.
+
+| Istilah | Artinya |
+|:---|:---|
+| File system | Cara sistem operasi menata file ke dalam pohon direktori |
+| Root (`/`) | Puncak tunggal pohon Linux; semua menggantung darinya |
+| FHS | Filesystem Hierarchy Standard: makna yang disepakati untuk tiap direktori teratas |
+| Path | Lokasi sebuah file, absolut (`/etc/passwd`) atau relatif (`../log`) |
+| Binary | File program terkompilasi (ada di `/bin`, `/usr/bin`, `/sbin`) |
+| Mount | Memasang disk atau perangkat ke dalam pohon pada direktori tertentu |
+| Device file | File di bawah `/dev` yang mewakili hardware |
+| Pseudo-filesystem | `/proc` dan `/sys`: bukan file nyata di disk, tapi tampilan langsung dari kernel |
+
+---
+
 ## 1. Overview: Apa Itu Linux File System
 
 Linux File System adalah struktur hierarki yang mengorganisir semua file dan direktori di sistem Linux. Berbeda dengan Windows yang menggunakan drive terpisah (C:, D:, dll.), Linux menggunakan satu pohon direktori tunggal yang dimulai dari `/` (root).

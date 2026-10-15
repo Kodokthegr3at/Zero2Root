@@ -37,6 +37,23 @@
 
 ---
 
+## Istilah penting
+
+Istilah-istilah ini akan sering muncul di materi.
+
+| Istilah | Artinya |
+|:---|:---|
+| APFS | Apple File System: file system macOS modern (snapshot, enkripsi) |
+| Volume | Wadah penyimpanan yang bisa di-mount; macOS menampilkannya di `/Volumes` |
+| Path | Lokasi file; macOS bergaya Unix dengan garis miring (`/Users/alex`) |
+| Bundle | Folder yang diperlakukan macOS sebagai satu item, seperti aplikasi `.app` |
+| SIP | System Integrity Protection: mencegah bahkan root mengubah file sistem terlindungi |
+| Gatekeeper | Pengecekan yang secara default hanya membolehkan app bertanda tangan/ter-notarize jalan |
+| Quarantine | Tanda yang dipasang macOS pada file unduhan untuk memicu pengecekan itu |
+| Home / Library | File-mu ada di `/Users/<nama>`; pengaturan app ada di `Library`-nya |
+
+---
+
 ## 1. Overview: Apa Itu Sistem Berkas macOS
 
 Sistem berkas macOS dibangun di atas fondasi Unix (BSD/Darwin), sehingga strukturnya mirip Linux: satu pohon direktori tunggal dari `/`. Namun macOS menambahkan lapisan khusus Apple di atasnya, seperti `/Applications`, `/Library`, dan format bundle `.app` yang tidak ada di Linux murni.
