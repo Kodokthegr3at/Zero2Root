@@ -13,18 +13,33 @@
 
 ## Table of Contents
 
-| # | Section |
-|---|---------|
-| 1 | Overview: What is PowerShell |
-| 2 | Navigation: Directory navigation |
-| 3 | File & folder management |
-| 4 | System information |
-| 5 | Network commands |
-| 6 | Users & processes |
-| 7 | Pipeline & objects |
-| 8 | Authorized host enumeration |
-| 9 | Security note: constrained language mode & logging defense |
-| 10 | Quick reference cheatsheet |
+1. What PowerShell is
+2. Navigating directories
+3. File & folder management
+4. System information
+5. Network commands
+6. Users & processes
+7. The pipeline & objects
+8. Authorized host enumeration
+9. Security notes: constrained language mode & logging
+10. Quick reference cheatsheet
+
+---
+
+## Key Terms
+
+You'll see these words throughout the lesson.
+
+| Term | Plain meaning |
+|:---|:---|
+| Shell | A program that runs typed commands, like PowerShell or CMD |
+| Cmdlet | A PowerShell command, always named `Verb-Noun` (e.g. `Get-Process`) |
+| Object | PowerShell's output isn't plain text; it's data with named fields you can use |
+| Pipeline (`\|`) | Feeding one command's output straight into the next command |
+| Alias | A short nickname for a cmdlet (`ls`, `dir` both mean `Get-ChildItem`) |
+| Remoting | Running PowerShell commands on another machine over the network |
+| Living off the land | Attackers abusing built-in, trusted tools (like PowerShell) instead of their own malware |
+| Constrained Language Mode | A lock-down mode that limits what scripts are allowed to do |
 
 ---
 

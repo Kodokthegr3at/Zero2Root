@@ -13,18 +13,33 @@
 
 ## Daftar Isi
 
-| # | Bagian |
-|---|--------|
-| 1 | Overview: Apa itu PowerShell |
-| 2 | Navigasi: Navigasi direktori |
-| 3 | Manajemen file & folder |
-| 4 | Informasi sistem |
-| 5 | Perintah jaringan |
-| 6 | User & proses |
-| 7 | Pipeline & objek |
-| 8 | Enumerasi host berizin |
-| 9 | Catatan keamanan: constrained language mode & logging |
-| 10 | Referensi cepat |
+1. Apa itu PowerShell
+2. Navigasi direktori
+3. Manajemen file & folder
+4. Informasi sistem
+5. Perintah jaringan
+6. User & proses
+7. Pipeline & objek
+8. Enumerasi host berizin
+9. Catatan keamanan: constrained language mode & logging
+10. Referensi cepat
+
+---
+
+## Istilah penting
+
+Istilah-istilah ini akan sering muncul di materi.
+
+| Istilah | Artinya |
+|:---|:---|
+| Shell | Program yang menjalankan perintah yang kamu ketik, seperti PowerShell atau CMD |
+| Cmdlet | Perintah PowerShell, selalu bernama `Verb-Noun` (misalnya `Get-Process`) |
+| Objek | Output PowerShell bukan teks biasa; ini data dengan field bernama yang bisa kamu pakai |
+| Pipeline (`\|`) | Mengalirkan output satu perintah langsung ke perintah berikutnya |
+| Alias | Nama pendek untuk cmdlet (`ls`, `dir` sama-sama berarti `Get-ChildItem`) |
+| Remoting | Menjalankan perintah PowerShell di mesin lain lewat jaringan |
+| Living off the land | Penyerang menyalahgunakan tool bawaan yang tepercaya (seperti PowerShell), bukan malware sendiri |
+| Constrained Language Mode | Mode penguncian yang membatasi apa yang boleh dilakukan skrip |
 
 ---
 

@@ -13,17 +13,32 @@
 
 ## Daftar Isi
 
-| # | Topik | Deskripsi |
-|---|-------|-----------|
-| 1 | Overview | Apa itu Command Prompt |
-| 2 | Navigasi | Navigasi direktori |
-| 3 | File & Folder | Manajemen file & folder |
-| 4 | Informasi Sistem | Informasi sistem |
-| 5 | Jaringan | Perintah jaringan |
-| 6 | User & Proses | User & proses |
-| 7 | Enumerasi Host | Enumerasi host (berizin) |
-| 8 | Catatan Keamanan | Audit, kesadaran LOLBin & hardening |
-| 9 | Cheatsheet | Referensi cepat |
+1. Apa itu Command Prompt
+2. Navigasi direktori
+3. Manajemen file & folder
+4. Informasi sistem
+5. Perintah jaringan
+6. User & proses
+7. Enumerasi host (berizin)
+8. Catatan keamanan: audit log & pertahanan LOLBin
+9. Referensi cepat
+
+---
+
+## Istilah penting
+
+Istilah-istilah ini akan sering muncul di materi.
+
+| Istilah | Artinya |
+|:---|:---|
+| Command Prompt (CMD) | Penafsir perintah teks klasik Windows (`cmd.exe`) |
+| Shell | Program yang menjalankan perintah yang kamu ketik |
+| Working directory | Folder tempat perintahmu bekerja saat ini |
+| Environment variable | Nilai bernama yang disimpan sistem, seperti `%USERPROFILE%` |
+| Pipe (`\|`) | Mengirim output satu perintah ke perintah lain |
+| Built-in vs external | Sebagian perintah ada di dalam CMD; lainnya program `.exe` terpisah |
+| LOLBin | "Living off the land binary": tool bawaan yang sah tapi dipakai ulang penyerang untuk tujuan jahat |
+| Enumerasi | Mengumpulkan fakta tentang host (user, share, service) yang kamu berizin memeriksanya |
 
 ---
 

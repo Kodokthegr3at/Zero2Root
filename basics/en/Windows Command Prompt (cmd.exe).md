@@ -13,17 +13,32 @@
 
 ## Table of Contents
 
-| # | Topic | Description |
-|---|-------|-------------|
-| 1 | Overview | What is Command Prompt |
-| 2 | Navigation | Directory navigation |
-| 3 | File & Folder | File & folder management |
-| 4 | System Info | System information |
-| 5 | Network | Network commands |
-| 6 | Users & Processes | Users & processes |
-| 7 | Host Enumeration | Authorized host enumeration |
-| 8 | Security Note | Audit logging & LOLBin defense |
-| 9 | Cheatsheet | Quick reference |
+1. What Command Prompt is
+2. Navigating directories
+3. File & folder management
+4. System information
+5. Network commands
+6. Users & processes
+7. Authorized host enumeration
+8. Security notes: audit logging & LOLBin defense
+9. Quick reference cheatsheet
+
+---
+
+## Key Terms
+
+You'll see these words throughout the lesson.
+
+| Term | Plain meaning |
+|:---|:---|
+| Command Prompt (CMD) | Windows' classic text command interpreter (`cmd.exe`) |
+| Shell | A program that runs typed commands |
+| Working directory | The folder your commands act on right now |
+| Environment variable | A named value the system stores, like `%USERPROFILE%` |
+| Pipe (`\|`) | Sending one command's output into another |
+| Built-in vs external | Some commands live inside CMD; others are separate `.exe` programs |
+| LOLBin | A "living off the land binary": a legitimate built-in tool an attacker reuses for malicious ends |
+| Enumeration | Gathering facts about a host (users, shares, services) you're authorized to inspect |
 
 ---
 
