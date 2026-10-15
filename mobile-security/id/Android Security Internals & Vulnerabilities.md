@@ -30,6 +30,23 @@
 
 ---
 
+## Istilah penting
+
+Istilah-istilah ini akan sering muncul di materi.
+
+| Istilah | Artinya |
+|:---|:---|
+| App sandbox | Tiap app berjalan terisolasi, sebagai user Linux-nya sendiri |
+| UID | ID user Linux unik yang diberikan Android ke tiap app |
+| Permission | Kemampuan yang harus diminta app (kamera, lokasi, SMS) |
+| Component | Blok penyusun sebuah app (activity, service, content provider) |
+| Exported component | Component yang bisa dijangkau app lain — attack surface kalau ceroboh |
+| Binder | Sistem pesan antar-app (IPC) utama Android |
+| APK | File paket tempat sebuah app Android dikemas |
+| Keystore | Tempat aman untuk menyimpan kunci dan rahasia sebuah app |
+
+---
+
 ## 1. Lapisan Arsitektur Keamanan Android
 
 Android adalah sistem berlapis di atas kernel Linux yang dikustomisasi. Keamanannya tidak bergantung pada satu kontrol tunggal, melainkan pertahanan berlapis (Elenkov, Bab 1-2):

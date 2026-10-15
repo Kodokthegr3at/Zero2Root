@@ -31,6 +31,23 @@
 
 ---
 
+## Istilah penting
+
+Istilah-istilah ini akan sering muncul di materi.
+
+| Istilah | Artinya |
+|:---|:---|
+| Perangkat embedded | Komputer kecil bertujuan khusus di dalam sebuah produk |
+| Firmware | Software yang tertanam di sebuah perangkat |
+| Debug port (JTAG/SWD) | Interface hardware untuk debugging — berisiko kalau dibiarkan terbuka |
+| UART | Konsol serial sederhana yang sering ada di board |
+| Secure boot | Hanya membolehkan firmware bertanda tangan yang jalan |
+| Anti-rollback | Menolak memasang firmware lama yang rentan |
+| CAN bus | Jaringan yang menghubungkan komponen di dalam kendaraan |
+| Root of trust | Kunci yang dilindungi hardware, menjadi acuan verifikasi semua yang lain |
+
+---
+
 ## 1. Model Ancaman Embedded / IoT
 
 Perangkat IoT menggabungkan silikon, firmware, radio/jaringan, dan cloud. Ancaman datang dari jalur fisik (debug port), lokal (Wi-Fi/BLE), dan remote (API cloud).

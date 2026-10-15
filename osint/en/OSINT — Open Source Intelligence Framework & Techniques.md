@@ -29,6 +29,23 @@
 
 ---
 
+## Key Terms
+
+You'll see these words throughout the lesson.
+
+| Term | Plain meaning |
+|:---|:---|
+| OSINT | Intelligence built from publicly available, lawfully accessible information |
+| Collection | Gathering the raw information |
+| Analysis | Turning collected data into useful, qualified conclusions |
+| Provenance | A record of where each piece of evidence came from |
+| PIR | Priority Intelligence Requirement: the specific question you're answering |
+| OPSEC | Protecting your own footprint while you research |
+| Corroboration | Confirming a claim with two or more independent sources |
+| Attribution | Linking activity to a person or group (done carefully) |
+
+---
+
 ## 1. What OSINT is (and is not)
 
 Open Source Intelligence (OSINT) is intelligence collected from information that is publicly available and lawfully accessible, then processed into actionable insight.

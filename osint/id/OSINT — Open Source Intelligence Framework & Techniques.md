@@ -29,6 +29,23 @@
 
 ---
 
+## Istilah penting
+
+Istilah-istilah ini akan sering muncul di materi.
+
+| Istilah | Artinya |
+|:---|:---|
+| OSINT | Intelijen yang dibangun dari informasi publik yang legal diakses |
+| Collection | Mengumpulkan informasi mentah |
+| Analisis | Mengubah data terkumpul jadi kesimpulan berguna dan terukur |
+| Provenance | Catatan dari mana tiap bukti berasal |
+| PIR | Priority Intelligence Requirement: pertanyaan spesifik yang kamu jawab |
+| OPSEC | Melindungi jejakmu sendiri saat meneliti |
+| Korroborasi | Mengonfirmasi klaim dengan dua sumber independen atau lebih |
+| Atribusi | Mengaitkan aktivitas ke seseorang/kelompok (dilakukan hati-hati) |
+
+---
+
 ## 1. Apa itu OSINT (dan apa yang bukan)
 
 Open Source Intelligence (OSINT) adalah intelijen yang dikumpulkan dari informasi yang tersedia secara publik dan sah, lalu diproses menjadi insight yang bisa ditindaklanjuti.

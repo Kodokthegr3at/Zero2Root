@@ -30,6 +30,23 @@
 
 ---
 
+## Key Terms
+
+You'll see these words throughout the lesson.
+
+| Term | Plain meaning |
+|:---|:---|
+| App sandbox | Each app runs isolated, as its own Linux user |
+| UID | The unique Linux user ID Android assigns each app |
+| Permission | A capability an app must request (camera, location, SMS) |
+| Component | An app's building blocks (activity, service, content provider) |
+| Exported component | A component other apps can reach — an attack surface if careless |
+| Binder | Android's main inter-app messaging (IPC) system |
+| APK | The package file an Android app ships in |
+| Keystore | The secure place to store an app's keys and secrets |
+
+---
+
 ## 1. Android Security Architecture Stack
 
 Android is a layered system built on top of a customized Linux kernel. Its security does not rely on a single control, but on defense in depth (Elenkov, Ch.1-2):

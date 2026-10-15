@@ -31,6 +31,23 @@
 
 ---
 
+## Key Terms
+
+You'll see these words throughout the lesson.
+
+| Term | Plain meaning |
+|:---|:---|
+| Embedded device | A small special-purpose computer inside a product |
+| Firmware | The software baked into a device |
+| Debug port (JTAG/SWD) | A hardware interface for debugging — a risk if left open |
+| UART | A simple serial console often found on boards |
+| Secure boot | Only letting signed firmware run |
+| Anti-rollback | Refusing to install older, vulnerable firmware |
+| CAN bus | The network connecting components inside a vehicle |
+| Root of trust | The hardware-protected keys everything else is verified against |
+
+---
+
 ## 1. Embedded / IoT Threat Model
 
 An IoT device is silicon, firmware, radio/network, and cloud, all combined. Threats come from physical access (debug ports), local access (Wi-Fi/BLE), and remote access (cloud APIs).
