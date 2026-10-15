@@ -34,6 +34,23 @@
 
 ---
 
+## Istilah penting
+
+Istilah-istilah ini akan sering muncul di materi.
+
+| Istilah | Artinya |
+|:---|:---|
+| Neovim (nvim) | Penulisan ulang editor Vim yang modern dan bisa diperluas |
+| Mode | Neovim bersifat modal: normal (perintah), insert (mengetik), visual (menyeleksi) |
+| Buffer | File terbuka yang disimpan di memori |
+| Window / split | Jendela ke sebuah buffer; layar bisa dibagi jadi beberapa |
+| Motion | Perintah yang menggerakkan kursor (`w`, `}`, `gg`) |
+| Plugin | Tambahan yang memperluas editor |
+| `init.lua` | File konfigurasi Neovim, ditulis dalam Lua |
+| LSP | Language Server Protocol: memberi autocomplete dan diagnostik kode |
+
+---
+
 ## 1. Overview: Apa Itu Neovim
 
 Neovim (nvim) adalah fork modern dari Vim yang dibangun untuk ekstensibilitas, performa, dan kemudahan pengembangan plugin. Neovim mempertahankan filosofi editing modal Vim sambil menambahkan dukungan native untuk Lua scripting, LSP (Language Server Protocol), Treesitter, dan terminal terintegrasi.

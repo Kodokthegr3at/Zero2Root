@@ -34,6 +34,23 @@
 
 ---
 
+## Key Terms
+
+You'll see these words throughout the lesson.
+
+| Term | Plain meaning |
+|:---|:---|
+| Neovim (nvim) | A modern, extensible rewrite of the Vim editor |
+| Mode | Neovim is modal: normal (commands), insert (typing), visual (selecting) |
+| Buffer | An open file held in memory |
+| Window / split | A viewport onto a buffer; the screen can be split into several |
+| Motion | A command that moves the cursor (`w`, `}`, `gg`) |
+| Plugin | An add-on that extends the editor |
+| `init.lua` | Neovim's config file, written in Lua |
+| LSP | Language Server Protocol: gives code completion and diagnostics |
+
+---
+
 ## 1. Overview — What Is Neovim
 
 **Neovim (nvim)** is a modern fork of Vim built for extensibility, performance, and ease of plugin development. Neovim preserves Vim's modal editing philosophy while adding native support for Lua scripting, LSP (Language Server Protocol), Treesitter, and an integrated terminal.
