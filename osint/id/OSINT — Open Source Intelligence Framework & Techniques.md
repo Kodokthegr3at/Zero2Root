@@ -33,9 +33,9 @@
 
 Open Source Intelligence (OSINT) adalah intelijen yang dikumpulkan dari informasi yang tersedia secara publik dan sah, lalu diproses menjadi insight yang bisa ditindaklanjuti.
 
-$$
-\mathsf{OSINT} = \mathsf{Collect}_{\text{legal public}} \rightarrow \mathsf{Process} \rightarrow \mathsf{Analyze} \rightarrow \mathsf{Disseminate}
-$$
+```text
+kumpulkan (sumber publik yang legal) → olah → analisis → bagikan hasilnya
+```
 
 | Termasuk OSINT | Bukan OSINT |
 |:---|:---|
@@ -72,9 +72,9 @@ Kualitas OSINT lebih ditentukan oleh tradecraft daripada "tool rahasia": pertany
 
 Hindari absolutisme. Gunakan skala:
 
-$$
-\mathsf{Confidence} \in \{\mathsf{low},\;\mathsf{moderate},\;\mathsf{high}\}
-$$
+```text
+tingkat keyakinan:  rendah  /  sedang  /  tinggi
+```
 
 Pisahkan dengan jelas antara fakta yang teramati dan inferensi.
 
@@ -86,13 +86,11 @@ PIR yang buruk: "Cari semua tentang X."
 
 PIR yang baik:
 
-1. Apakah organisasi $X$ mengoperasikan ASN / rentang IP publik sendiri?
-2. Domain mana yang terhubung ke merek $X$ menurut data publik WHOIS/CT logs?
+1. Apakah organisasi X mengoperasikan ASN / rentang IP publik sendiri?
+2. Domain mana yang terhubung ke merek X menurut data publik WHOIS/CT logs?
 3. Apakah ada lowongan pekerjaan yang mengungkap stack teknologi mereka (OSINT teknis untuk tujuan defensif)?
 
-$$
-\mathsf{GoodPIR} \iff \mathsf{Answerable} \land \mathsf{TimeBound} \land \mathsf{DecisionLinked}
-$$
+PIR (priority intelligence requirement) yang baik itu bisa dijawab, punya tenggat waktu, dan terkait dengan keputusan yang nyata.
 
 Collection plan: sumber → metode → legal check → storage → analyst.
 
@@ -115,9 +113,9 @@ Collection plan: sumber → metode → legal check → storage → analyst.
 
 Untuk setiap artefak, catat:
 
-$$
-\langle \mathsf{URL},\; \mathsf{UTC},\; \mathsf{hash},\; \mathsf{collector},\; \mathsf{tool},\; \mathsf{notes} \rangle
-$$
+```text
+URL  |  waktu (UTC)  |  hash  |  siapa yang mengumpulkan  |  tool apa  |  catatan
+```
 
 Tanpa provenance, hasil analisis mudah digugat kredibilitasnya.
 
@@ -188,10 +186,7 @@ Geolokasi dalam OSINT berarti memverifikasi klaim lokasi dari foto/video publik,
 | Infrastruktur | Tiang listrik, marka jalan, posisi setir kiri/kanan |
 | EXIF (jika ada) | Hanya jika metadata masih tertanam dan aksesnya legal |
 
-$$
-\mathsf{LocationClaim} \models \mathsf{Corroborated}
-\iff \ge 2\ \mathsf{IndependentSignals}\ \mathsf{agree}
-$$
+Anggap klaim lokasi terkonfirmasi hanya jika minimal dua petunjuk yang saling independen menunjukkan hal yang sama.
 
 Etika: jangan publikasikan alamat rumah pribadi; jangan doxx. Untuk IR/DFIR internal, ikuti kebijakan privasi organisasi.
 
@@ -215,11 +210,9 @@ Personal life  ≠  Investigation workspace
    private            logged, policy-bound, legal
 ```
 
-Formula OPSEC (intuisi):
+OPSEC dalam satu kalimat:
 
-$$
-\mathsf{Exposure} \propto \mathsf{Reuse}(\mathsf{Identity},\;\mathsf{Device},\;\mathsf{Payment},\;\mathsf{LanguageHabits})
-$$
+makin sering kamu memakai identitas, perangkat, metode pembayaran, atau gaya bahasa yang sama di berbagai investigasi, makin mudah kamu dilacak.
 
 Minimalkan penggunaan ulang identitas antar konteks.
 
@@ -260,9 +253,11 @@ Catatan ini tidak memberikan resep untuk membuat persona demi menyusup ke komuni
 
 Uji cepat etika:
 
-$$
-\mathsf{WouldPublish?} \land \mathsf{WouldDefendInCourt?} \land \mathsf{LeastHarm?}
-$$
+```text
+1. Apakah saya nyaman kalau ini dipublikasikan?
+2. Apakah saya bisa mempertanggungjawabkannya di pengadilan?
+3. Apakah ini cara yang paling sedikit merugikan?
+```
 
 Jika salah satu jawabannya "tidak," berhenti dan minta review hukum.
 

@@ -38,11 +38,15 @@ Dalam pemrograman sistem (C/C++) dan bahasa modern (Java, Python), urutan evalua
 
 Secara formal (K. N. King), ekspresi aritmetika bilangan bulat dapat ditulis:
 
-$$
-E ::= n \mid (E) \mid E \;+\; E \mid E \;-\; E \mid E \;\times\; E \mid E \;/\; E \mid E \bmod E
-$$
+```text
+E  ::=  number | ( E ) | E + E | E - E | E * E | E / E | E % E
+```
 
-dengan evaluasi mengikuti asosiatif kiri dan prioritas \(\times,/,\% \;>\; +,-\). Integer overflow pada tipe lebar \(w\) bit terjadi ketika hasil berada di luar \(\bigl[-2^{w-1},\,2^{w-1}-1\bigr]\) (signed two's complement) atau \(\bigl[0,\,2^{w}-1\bigr]\) (unsigned), dan ini sering memicu alokasi buffer yang salah ukuran di C.
+Artinya: sebuah ekspresi bisa berupa angka, ekspresi di dalam tanda kurung, atau dua ekspresi yang digabung dengan `+`, `-`, `*`, `/`, atau `%`.
+
+Operator dengan level yang sama dievaluasi dari kiri ke kanan, dan `*`, `/`, `%` selalu didahulukan sebelum `+` dan `-`.
+
+Integer overflow terjadi kalau hasil perhitungan terlalu besar (atau terlalu kecil) untuk tipenya. `int` 32-bit signed hanya bisa menampung -2.147.483.648 sampai 2.147.483.647; lewat satu langkah dari batas atas, nilainya berputar balik. Di C, ini sering jadi penyebab buffer dialokasikan terlalu kecil.
 
 ```java
 // ── Contoh Java ─────────────────────────────────────────────
@@ -371,7 +375,7 @@ Pemahaman evaluasi ekspresi penting untuk audit dan hardening. Input tidak teper
 4. **Integer overflow (C)**: gunakan tipe lebar cukup, cek sebelum alokasi (`size_t` overflow check), aktifkan sanitizer (`-fsanitize=undefined,integer`), dan ikuti disiplin K. N. King untuk batas tipe.
 5. **Bash / eval surfaces**: jangan `eval` atau `$((...))` atas input mentah, quote variabel, dan utamakan parser terstruktur.
 
-Checklist pertahanan: jangan `eval` input tidak tepercaya, pakai strict equality, batasi kompleksitas regex, pakai checked arithmetic, terapkan aturan WAF/SAST untuk SpEL/OGNL, dan buat unit test untuk nilai batas \(0, 2^{w}-1, -2^{w-1}\).
+Checklist pertahanan: jangan `eval` input tidak tepercaya, pakai strict equality, batasi kompleksitas regex, pakai checked arithmetic, terapkan aturan WAF/SAST untuk SpEL/OGNL, dan buat unit test untuk nilai batas: 0, serta nilai terbesar dan terkecil dari tipenya.
 
 ---
 

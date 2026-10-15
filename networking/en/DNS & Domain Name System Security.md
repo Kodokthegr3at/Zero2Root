@@ -68,16 +68,12 @@ There are three main roles in the resolution process:
 
 The iterative algorithm, intuitively (following Kurose):
 
-$$
-\begin{aligned}
-&Q \leftarrow \text{query}(name, type) \\
-&S \leftarrow \text{root hint set} \\
-&\textbf{while } true: \\
-&\quad R \leftarrow \mathsf{Query}(S, Q) \\
-&\quad \textbf{if } R \text{ is answer or NXDOMAIN:} \; \textbf{return } R \\
-&\quad S \leftarrow \text{referral NS (and glue) from } R
-\end{aligned}
-$$
+```text
+1. start with the root servers
+2. ask the current server for the name
+3. got the answer or NXDOMAIN?   → done
+4. got a referral instead?       → ask the servers it points to, then repeat step 2
+```
 
 ```
 Stub ──Q──► Recursive ──iterative──► Root
@@ -131,19 +127,19 @@ Core components:
 | DS | Digest of the child's DNSKEY, stored at the parent |
 | NSEC/NSEC3 | Proof that a name/type does not exist |
 
-RRSIG verification, conceptually: for RRset $R$ and public key $K$:
+RRSIG verification, conceptually: for RRset R and public key K:
 
-$$
-\mathsf{Verify}\big(K_{\mathsf{pub}},\; R,\; \mathsf{RRSIG}(R)\big) = \mathsf{accept/reject}
-$$
+```text
+Verify(public key, RRset, RRSIG) → accept / reject
+```
 
-Abstractly, with a $\mathsf{Sign}/\mathsf{Verify}$ signature scheme:
+Abstractly, with a Sign/Verify signature scheme:
 
-$$
-\mathsf{RRSIG}(R) = \mathsf{Sign}_{K_{\mathsf{priv}}}(\mathsf{Hash}(R) \;\|\; \mathsf{meta})
-$$
+```text
+RRSIG = Sign(private key, Hash(RRset) + meta)
+```
 
-where $\mathsf{meta}$ includes the algorithm, labels, original TTL, inception/expiration, key tag, and signer name.
+where meta includes the algorithm, labels, original TTL, inception/expiration, key tag, and signer name.
 
 Chain of trust:
 
@@ -208,9 +204,9 @@ Cache poisoning, conceptually, happens when a recursive resolver stores an incor
 
 A high-level threat model (Kaminsky-era intuition): the historical transaction guess-space is too small if
 
-$$
-|\mathcal{S}| = 2^{16}\;(\mathsf{TXID}) \times \#\{\text{src ports}\}
-$$
+```text
+guess space = 2¹⁶ possible TXIDs × number of possible source ports
+```
 
 is small, and an attacker can flood spoofed answers for a query it triggers itself.
 

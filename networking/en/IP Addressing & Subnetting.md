@@ -36,7 +36,7 @@ An IP address is a logical identifier at the network layer (OSI L3 / TCP-IP Inte
 |:---|:---|:---|
 | Length | 32-bit (4 octets) | 128-bit |
 | Notation | Dotted decimal `192.168.1.1` | Hex `2001:db8::1` |
-| Address space | $2^{32} \approx 4.29\times 10^9$ | $2^{128} \approx 3.4\times 10^{38}$ |
+| Address space | 2³² ≈ 4.29 × 10⁹ | 2¹²⁸ ≈ 3.4 × 10³⁸ |
 | Header | 20 to 60 B (with options) | 40 B fixed + extension headers |
 | Configuration | Manual / DHCP | SLAAC / DHCPv6 |
 | Broadcast | Present | Absent (multicast/anycast instead) |
@@ -49,55 +49,62 @@ IPv4 address exhaustion drove the adoption of CIDR, NAT, and eventually IPv6. Se
 
 ### 2.1 Octet
 
-One octet is $8$ bits, with a value of $0..255$:
+One octet is 8 bits, with a value of 0..255:
 
-$$
-v = b_7\cdot 2^7 + b_6\cdot 2^6 + \cdots + b_0\cdot 2^0
-$$
+```text
+bit:     b7   b6   b5   b4   b3   b2   b1   b0
+value:  128   64   32   16    8    4    2    1
+```
+
+To get the decimal value, add up the values of every bit that is 1. For `11000000` that is 128 + 64 = 192.
 
 Example: `192` = `11000000`, `168` = `10101000`.
 
 ### 2.2 Network mask
 
-A prefix length $p$ (CIDR `/p`) means the leftmost $p$ bits are the **network** portion and the rest, $h=32-p$, are the **host** portion (for IPv4):
+A prefix length p (CIDR `/p`) means the leftmost p bits are the **network** portion and the rest, h=32-p, are the **host** portion (for IPv4):
 
-$$
-\mathsf{mask} = \underbrace{1\ldots 1}_{p}\,\underbrace{0\ldots 0}_{32-p}
-$$
+```text
+mask = p ones followed by (32 - p) zeros
+
+/24  →  11111111.11111111.11111111.00000000  =  255.255.255.0
+```
 
 Core operations:
 
-$$
-\begin{aligned}
-\mathsf{NetworkAddress}(A,p) &= A \land \mathsf{mask}(p) \\
-\mathsf{Broadcast}(A,p) &= A \lor \neg\mathsf{mask}(p) \\
-\mathsf{HostBits}(A,p) &= A \land \neg\mathsf{mask}(p)
-\end{aligned}
-$$
+```text
+network address = address AND mask         (all host bits set to 0)
+broadcast       = address OR (NOT mask)    (all host bits set to 1)
+host part       = address AND (NOT mask)
 
-Two addresses $A,B$ sit on the same subnet if and only if:
+Example 192.168.1.77/26:  network = 192.168.1.64,  broadcast = 192.168.1.127
+```
 
-$$
-A \land \mathsf{mask}(p) = B \land \mathsf{mask}(p)
-$$
+Two addresses A,B sit on the same subnet if and only if:
+
+```text
+(A AND mask) = (B AND mask)
+```
+
+In other words, both addresses produce the same network address.
 
 ---
 
 ## 3. Core CIDR formulas
 
-Take a prefix `/p` for IPv4 ($0 \le p \le 32$), with $h = 32 - p$.
+Take a prefix `/p` for IPv4 (0 ≤ p ≤ 32), with h = 32 - p.
 
 | Quantity | Formula |
 |:---|:---|
-| Block size (total addresses) | $N = 2^{h} = 2^{32-p}$ |
-| Usable hosts (classic subnet) | $N_{\text{usable}} = 2^{h} - 2$ (except `/31` point-to-point links under RFC 3021, and `/32` as a host route) |
-| Number of subnets when $n$ bits are borrowed from the parent block | $2^{n}$ |
-| Decimal subnet mask | convert $\mathsf{mask}(p)$ to 4 octets |
-| Increment / stride between subnets | $2^{h}$ in the relevant octet |
+| Block size (total addresses) | N = 2ʰ = 2³²⁻ᵖ |
+| Usable hosts (classic subnet) | N_usable = 2ʰ - 2 (except `/31` point-to-point links under RFC 3021, and `/32` as a host route) |
+| Number of subnets when n bits are borrowed from the parent block | 2ⁿ |
+| Decimal subnet mask | convert mask(p) to 4 octets |
+| Increment / stride between subnets | 2ʰ in the relevant octet |
 
 **Quick mask table:**
 
-| Prefix | Mask | $h$ | Total | Usable |
+| Prefix | Mask | h | Total | Usable |
 |:---:|:---|:---:|:---:|:---:|
 | /8 | 255.0.0.0 | 24 | 16,777,216 | 16,777,214 |
 | /16 | 255.255.0.0 | 16 | 65,536 | 65,534 |
@@ -111,25 +118,27 @@ Take a prefix `/p` for IPv4 ($0 \le p \le 32$), with $h = 32 - p$.
 
 ### VLSM (Variable Length Subnet Mask)
 
-VLSM allocates blocks of uneven size: large subnets for access networks, `/30` or `/31` for router links. The blocks must not overlap and must be aligned on the $2^{h}$ boundary.
+VLSM allocates blocks of uneven size: large subnets for access networks, `/30` or `/31` for router links. The blocks must not overlap and must be aligned on the 2ʰ boundary.
 
 Procedure:
 
 1. Sort host requirements from largest to smallest.
-2. For a requirement of $H$ hosts, pick the smallest $h$ such that $2^{h}-2 \ge H$ (or $2^{h}\ge H$ for special cases such as point-to-point links).
+2. For a requirement of H hosts, pick the smallest h such that 2ʰ-2 ≥ H (or 2ʰ ≥ H for special cases such as point-to-point links).
 3. Take the next prefix that is still free and aligned.
 
 ---
 
 ## 4. Worked example: `192.168.1.0/26`
 
-$$
-p=26,\quad h=6,\quad N=2^6=64,\quad N_{\text{usable}}=62
-$$
+```text
+prefix p = 26   →   host bits h = 32 - 26 = 6
+total addresses = 2⁶ = 64
+usable hosts    = 64 - 2 = 62   (minus the network and broadcast addresses)
+```
 
 Mask: `255.255.255.192` (`11111111.11111111.11111111.11000000`).
 
-Splitting `192.168.1.0/24` into `/26` blocks borrows $n=2$ bits, giving $2^2=4$ subnets:
+Splitting `192.168.1.0/24` into `/26` blocks borrows n=2 bits, giving 2²=4 subnets:
 
 | # | Network | Usable range | Broadcast |
 |:---:|:---|:---|:---|
@@ -168,13 +177,9 @@ Private addresses are not globally unique and may overlap between organizations.
 
 ## 6. Routing: longest prefix match
 
-A router chooses the route with the longest prefix that matches the destination:
+A router chooses the route with the longest prefix that matches the destination.
 
-$$
-\mathsf{route}(D) = \arg\max_{r:\; D\in r.\mathsf{prefix}} |r.p|
-$$
-
-Example: for $D=$ `192.168.1.10`, if the routing table has `192.168.0.0/16` via A and `192.168.1.0/24` via B, the router picks the `/24` route because it is more specific.
+Example: for D= `192.168.1.10`, if the routing table has `192.168.0.0/16` via A and `192.168.1.0/24` via B, the router picks the `/24` route because it is more specific.
 
 Default route: `0.0.0.0/0` for IPv4, `::/0` for IPv6.
 
@@ -192,11 +197,11 @@ NAT (Network Address Translation) maps addresses at a network boundary, typicall
 
 The PAT model, intuitively:
 
-$$
-(sip, sport, dip, dport, proto) \;\leftrightarrow\; (SIP_{pub}, SPORT', dip, dport, proto)
-$$
+```text
+(private IP, private port, dst IP, dst port, proto)  ⇄  (public IP, new port SPORT', dst IP, dst port, proto)
+```
 
-The state table on the NAT device remembers $SPORT'$ so replies get routed back to the correct private host.
+The state table on the NAT device remembers SPORT' so replies get routed back to the correct private host.
 
 Security implication: NAT is not a firewall. The network still needs stateful filtering, a reverse proxy, and hardening. NAT also complicates end-to-end communication (VoIP, IPsec); IPv6 restores direct host-to-host addressability, so security design has to adjust accordingly.
 
@@ -221,7 +226,7 @@ Understand NAT for troubleshooting and architecture, not as an access-control me
 
 ### Traceroute
 
-Traceroute sends packets with $TTL=1,2,3,\ldots$ in sequence. Each hop that decrements the TTL to 0 replies with an ICMP Time Exceeded (Type 11). Building the sequence of replies reconstructs the path hop by hop, though the path may be asymmetric or partially filtered.
+Traceroute sends packets with TTL=1,2,3,... in sequence. Each hop that decrements the TTL to 0 replies with an ICMP Time Exceeded (Type 11). Building the sequence of replies reconstructs the path hop by hop, though the path may be asymmetric or partially filtered.
 
 ---
 

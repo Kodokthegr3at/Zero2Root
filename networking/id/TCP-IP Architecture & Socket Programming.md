@@ -95,9 +95,12 @@ Header minimum berukuran 20 byte (tanpa options):
 | Checksum | Hanya untuk header (IPv4) |
 | Src / Dst | Pengalamatan; src dapat di-spoof jika tidak ada ingress filter |
 
-$$
-\mathsf{Payload\ size} = \mathsf{TotalLength} - 4\cdot\mathsf{IHL}
-$$
+```text
+ukuran header  = IHL × 4 byte
+ukuran payload = Total Length - ukuran header
+
+Contoh: Total Length = 60, IHL = 5  →  header = 20 byte  →  payload = 40 byte
+```
 
 ---
 
@@ -118,9 +121,9 @@ TCP menyediakan stream berorientasi koneksi, reliability (ACK, retransmit), orde
 
 Identitas koneksi berupa 4-tuple (atau 5-tuple jika protokol disertakan):
 
-$$
-(srcIP,\ srcPort,\ dstIP,\ dstPort)
-$$
+```text
+(IP sumber, port sumber, IP tujuan, port tujuan)
+```
 
 ---
 
@@ -154,13 +157,11 @@ Status utama (mengikuti Stevens / diagram klasik):
 
 Pembukaan koneksi:
 
-$$
-\begin{aligned}
-1&\colon\ \mathsf{C \to S}:\ \mathsf{SYN},\ seq=x \\
-2&\colon\ \mathsf{S \to C}:\ \mathsf{SYN\text{+}ACK},\ seq=y,\ ack=x+1 \\
-3&\colon\ \mathsf{C \to S}:\ \mathsf{ACK},\ ack=y+1
-\end{aligned}
-$$
+```text
+1. C → S:  SYN,      seq=x
+2. S → C:  SYN+ACK,  seq=y, ack=x+1
+3. C → S:  ACK,      ack=y+1
+```
 
 ```
   Client                     Server
@@ -188,9 +189,11 @@ Congestion control: pengirim membatasi diri sendiri dengan cwnd (congestion wind
 
 Bytes in flight (intuisi):
 
-$$
-\mathsf{in\_flight} \le \min(\mathsf{cwnd},\, \mathsf{rwnd})
-$$
+```text
+byte in flight ≤ nilai terkecil antara cwnd dan rwnd
+```
+
+Pengirim dibatasi oleh batas yang lebih kecil: kemampuan jaringan (cwnd) atau kemampuan penerima (rwnd).
 
 Fase klasik (intuisi ala Reno; implementasi modern memakai CUBIC, BBR, dan lainnya):
 
@@ -200,9 +203,10 @@ Fase klasik (intuisi ala Reno; implementasi modern memakai CUBIC, BBR, dan lainn
 | Congestion avoidance | Pertumbuhan menjadi lebih linear |
 | Sinyal loss | Triple-dup ACK / RTO menyebabkan `cwnd` diturunkan dan ssthresh disesuaikan |
 
-$$
-\text{slow start (perkiraan):}\quad \mathsf{cwnd} \leftarrow \mathsf{cwnd} + \mathsf{MSS}\ \text{per ACK}
-$$
+```text
+slow start: cwnd bertambah satu MSS untuk setiap ACK yang diterima
+            (jadi kira-kira berlipat dua setiap round trip)
+```
 
 Keterkaitan dengan keamanan: flood UDP/TCP dapat menyebabkan congestive DoS; rate-limit dan capacity planning adalah kontrol operasional untuk itu.
 
@@ -265,15 +269,13 @@ Selalu tentukan byte order dengan jelas (`htons`/`inet_pton`), tangani kemungkin
 
 Konsep: penyerang mengirim banyak segmen SYN (sering di-spoof) agar server mengalokasikan half-open state (SYN_RCVD) sampai tabel atau backlog-nya habis, sehingga client yang sah gagal connect. Ini adalah bentuk DoS.
 
-$$
-\#\{\mathsf{SYN\_RCVD}\} \uparrow\ \Rightarrow\ \mathsf{resource\ exhaustion}
-$$
+Makin banyak koneksi setengah terbuka yang menumpuk, makin dekat server kehabisan sumber daya.
 
 SYN cookies (pertahanan): server tidak menyimpan TCB penuh saat menerima SYN. ISN dikodekan dengan hash rahasia dari 4-tuple ditambah bit timestamp/MSS. State baru dibuat hanya ketika ACK final membawa cookie yang valid.
 
-$$
-\mathsf{ISN}_s \approx \mathsf{Hash}_{k}(addrs, ports,\; t) \;+\; \mathsf{encode}(\mathsf{MSS})
-$$
+```text
+ISN ≈ Hash(secret, addresses, ports, time) + MSS bits
+```
 
 (Implementasi di level kernel bervariasi, tetapi intuisinya sama.)
 

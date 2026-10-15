@@ -28,17 +28,39 @@
 
 ---
 
+## Key Terms
+
+You'll see these words throughout the lesson.
+
+| Term | Plain meaning |
+|:---|:---|
+| Social engineering (SE) | Tricking a person into giving access, information, or taking an action, instead of hacking a computer |
+| Pretext | The fake story the attacker uses ("I'm from IT", "I'm the new vendor") |
+| Rapport | The friendly connection an attacker builds so you lower your guard |
+| OSINT | Open-source intelligence: information anyone can find publicly (LinkedIn, the company website, social media) |
+| Out-of-band verification | Checking a request through a *different* channel you already trust. Example: an email asks for a transfer, so you call the sender at the number in the company directory, not the number in the email |
+| Callback | Hanging up and calling the person back on their official number |
+| Dual control | A sensitive action needs two people to approve it, so one tricked person isn't enough |
+| BEC | Business Email Compromise: an email scam that tricks staff into sending money to the wrong account |
+| SOC | Security Operations Center: the team that receives and handles security reports |
+| RoE | Rules of Engagement: a signed document saying what a security test may and may not do |
+
+---
+
 ## 1. The Human Layer as Attack Surface
 
-Technical security can be bypassed if an attacker convinces a person to grant access, hand over a secret, or take some action. Mitnick (*The Art of Deception*) makes the point that people tend to want to help, avoid conflict, and trust authority that looks legitimate.
+Firewalls and antivirus don't help if an attacker can simply convince an employee to open the door. Mitnick (*The Art of Deception*) points out three human habits attackers rely on: we like to help, we avoid conflict, and we trust anyone who looks like an authority.
 
-$$
-\mathsf{Risk}_{SE} = f(\mathsf{Trust},\; \mathsf{Urgency},\; \mathsf{Access},\; \mathsf{VerificationGap})
-$$
+A social engineering attempt is most likely to work when:
 
-The higher the trust and urgency, and the weaker the verification, the higher the likelihood a social engineering attempt succeeds.
+- the target **trusts** the person contacting them,
+- the request feels **urgent**,
+- the target **has access** to something valuable, and
+- there is **no easy way to verify** the request.
 
-Social engineering (SE) exploits cognitive biases and gaps in organizational process, not primarily memory corruption. Defense is process, culture, and verification channels, not just another firewall rule.
+Take away even one of these, especially the last one, and the attack gets much harder.
+
+So social engineering doesn't attack a bug in software. It attacks how people think and the gaps in a company's procedures. That means the defense is also mostly people and process: clear procedures, a culture where it's fine to say "let me check first," and a reliable way to verify requests.
 
 ```
 ┌──────────────┐     trust / fear / greed      ┌──────────────┐
@@ -53,137 +75,143 @@ Social engineering (SE) exploits cognitive biases and gaps in organizational pro
 
 ## 2. Cialdini's Principles of Influence (Defense Lens)
 
-Hadnagy builds his SE framework on the psychology of influence. Understand these principles to detect manipulation, not to build a deception campaign.
+Psychologist Robert Cialdini described a handful of things that make people say "yes." Hadnagy built his social engineering framework on them. We study them here so you can **spot** manipulation, not use it.
 
-| Principle | Intuition | Manipulation example | Defense |
+| Principle | What it means | How an attacker uses it | How to defend |
 |:---|:---|:---|:---|
-| Reciprocity | A sense of owed favor | "I helped you first, now send me the file" | Policy: a gift never bypasses procedure |
-| Commitment / consistency | Staying consistent with an earlier statement | "You said earlier you could help..." | Still allow a decision to change when new facts appear |
-| Social proof | Following what others do | "Everyone on staff already updated via this link" | Verify through an official source |
-| Authority | Deferring to a boss or uniform | "The IT Director wants this reset now" | Callback to an official number; dual control |
-| Liking | Helping someone you like | Excessive rapport followed by a sensitive ask | Keep friendliness separate from authorization |
-| Scarcity / urgency | Fear of losing out | "Your account closes in 15 minutes" | SLA: no sensitive action under manufactured time pressure |
-| Unity | "We're part of the same group" | A fake community or vendor identity | Verified badges and identity |
+| Reciprocity | We feel we owe people who helped us | "I helped you last week, can you send me that file?" | A favor never replaces the normal procedure |
+| Commitment / consistency | We want to stick with what we said earlier | "You said earlier you could help..." | You're always allowed to change your mind when something feels off |
+| Social proof | We copy what others do | "Everyone on staff already updated through this link" | Check with the official source, not with "everyone" |
+| Authority | We obey bosses and uniforms | "The IT Director wants this reset right now" | Call back on the official number; require a second approver |
+| Liking | We help people we like | Lots of friendly chat, then a sensitive request | Being friendly is not the same as being authorized |
+| Scarcity / urgency | We panic when something might be lost | "Your account closes in 15 minutes" | Rule: no sensitive action under sudden time pressure |
+| Unity | We trust "one of us" | Pretending to be from the same community or partner company | Verify identity, no matter how familiar they seem |
 
-### A simple formalization
+### The pattern behind all of them
 
-$$
-\mathsf{Compliance} \uparrow \;\text{when}\; \sum_i w_i \cdot \mathsf{Principle}_i > \mathsf{VerificationFriction}
-$$
-
-Defense works by raising VerificationFriction (callbacks, tickets, dual approval) without killing productivity.
+Every principle pushes you to act **quickly** and **without checking**. So the defense is always the same idea: add a short checking step (a callback, a ticket, a second approver) before anything sensitive happens. The step should be quick enough that people actually follow it, but firm enough that pressure can't skip it.
 
 ---
 
 ## 3. Social Engineering Narrative Cycle
 
-From *Practical Social Engineering* / Hadnagy (a generic cycle, not an attack playbook):
+Most social engineering attempts follow similar steps (based on *Practical Social Engineering* and Hadnagy). This is a general picture for recognizing attacks, not a guide for running one.
 
 ```
-OSINT (public) → Pretext design → Contact → Rapport → Ask → Exit → Report
+Research → Build a story → Make contact → Build trust → Ask → Leave → (Report)
 ```
 
-| Phase | What happens | Defense control |
+| Step | What the attacker does | How to defend |
 |:---|:---|:---|
-| OSINT | Gathering public info about an org or person | Minimize public footprint; privacy training |
-| Pretext | Constructing a story that sounds plausible | Challenge any story that asks for access |
-| Contact | Email, phone, in person, chat | Official channels + warning banners |
-| Rapport | Building comfort | Watch for a sudden ask right after small talk |
-| Ask | Requesting an action or information | Never skip verification just because a request feels "small" |
-| Exit | Closing out without raising an alarm | Logging & after-action review |
-| Report | (In authorized red team work) documentation | Only under a written rules of engagement |
+| Research (OSINT) | Collects public info about the company or person | Share less publicly; teach staff about privacy |
+| Build a story (pretext) | Creates a believable reason to contact you | Be suspicious of any story that ends with asking for access |
+| Make contact | Email, phone, in person, chat | Use official channels; show warning banners on outside email |
+| Build trust (rapport) | Makes you feel comfortable | Notice when a sudden request comes right after small talk |
+| Ask | Requests an action or information | Never skip checking just because the request seems "small" |
+| Leave | Ends the conversation without raising suspicion | Keep logs; review what happened afterward |
+| Report | (Only in authorized testing) writes up the results | Only allowed with a signed RoE |
 
-A hard note: this repository does not teach how to build a phishing kit, set up Evilginx, craft a BadUSB payload, or write deception scripts. The focus is psychology, detection, and training.
+Important: this repository does not teach how to build phishing kits, set up tools like Evilginx, make BadUSB devices, or write scam scripts. The focus is on psychology, detection, and training.
 
 ---
 
 ## 4. Common Vectors (Concepts)
 
-| Vector | Short description | What it usually asks for |
-|:---|:---|:---|
-| Phishing / spear-phishing | A deceptive message with a call to action | Credentials, a malware click, a wire change |
-| Vishing | Phone / VoIP | Password reset, MFA code, customer data |
-| Smishing | SMS / mobile chat | A "package" or "bank" link |
-| Pretexting (helpdesk) | Impersonating an employee or vendor | Unlock an account, add to a VPN group |
-| Impersonation | Physical / badge surfing | Tailgating, a "vendor guest" |
-| Business Email Compromise (BEC) | Wire or invoice fraud | Changing a payment account |
-| Quid pro quo | "I'll help with IT, just install this..." | Remote access tools |
+A "vector" is simply the route the attack comes through.
 
-$$
-\mathsf{Impact} = \mathsf{PrivilegeGranted} \times \mathsf{DataSensitivity} \times \mathsf{SpeedOfDetection}^{-1}
-$$
+| Vector | What it is | What it usually asks for |
+|:---|:---|:---|
+| Phishing / spear-phishing | A fake message asking you to click or reply. Spear-phishing targets one specific person | Passwords, clicking a malware link, changing a payment |
+| Vishing | Scam phone call (voice phishing) | Password reset, MFA code, customer data |
+| Smishing | Scam SMS or chat message | Clicking a fake "package delivery" or "bank" link |
+| Pretexting (helpdesk) | Calling the helpdesk while pretending to be an employee or vendor | Unlocking an account, adding them to the VPN |
+| Physical impersonation | Showing up in person pretending to belong there | Following staff through a locked door (tailgating) |
+| Business Email Compromise (BEC) | Fake invoice or fake "CEO" email | Changing the bank account a payment goes to |
+| Quid pro quo | "I'll fix your IT problem, just install this" | Installing a remote access tool |
+
+### How bad can it get?
+
+The damage grows when:
+
+- the victim gives **more access** (an admin account is worse than a normal one),
+- the data involved is **more sensitive** (customer data is worse than a lunch menu), and
+- the company **notices later** (an hour of access is far less damaging than a month).
 
 ---
 
 ## 5. Detection Signals: Red Flags
 
-### Language / content
+### In the message itself
 
-- Extreme urgency combined with a threat of punishment.
-- A request to bypass procedure ("don't tell anyone").
-- Mismatched email domains (homoglyphs, odd subdomains).
-- A request for an MFA code, password, or seed phrase; legitimate IT never asks for these.
-- A vendor account change with no dual-channel verification.
+- Extreme urgency plus a threat ("do this now or you'll be fired").
+- A request to skip the normal procedure or keep it secret ("don't tell anyone").
+- An email address that almost matches the real one, like `paypa1.com` instead of `paypal.com`, or a strange subdomain.
+- A request for your MFA code, password, or crypto seed phrase. Real IT staff never ask for these.
+- A vendor changing their bank account without confirming through a second channel.
 
-### Process
+### In how the request is made
 
-- Contact outside normal hours combined with pressure for an immediate response.
-- A request to use a non-standard remote tool.
-- Refusing a ticket or a callback.
+- Contact outside working hours plus pressure to answer right away.
+- Asking you to install an unusual remote-control tool.
+- Refusing to open a ticket or to let you call them back.
 
-### Quick triage table
+### Quick action table
 
-| Signal | Severity | Immediate action |
+| What you notice | Danger | What to do right away |
 |:---|:---:|:---|
-| Asks for password / MFA | High | Stop; report to SOC |
-| Changes wire instructions | High | Dual approval from finance |
-| "Login portal" link | Medium-High | Report; don't click; verify the official portal |
-| "New" vendor with no PO | Medium | Verify through procurement |
-| Tailgating at the door | Medium | Challenge politely; security escort |
+| Asks for a password / MFA code | High | Stop the conversation; report to the SOC |
+| Asks to change payment details | High | Get a second approval from finance |
+| A link to a "login page" | Medium-High | Report it; don't click; open the real site yourself |
+| A "new" vendor with no purchase order | Medium | Check with procurement |
+| Someone following you through a secure door | Medium | Politely ask who they are; call security to escort them |
 
 ---
 
 ## 6. Awareness Training That Works
 
-Bad training is a once-a-year video everyone forgets. Good training is repeated, measured, and never shaming.
+Bad training is a yearly video everyone forgets. Good training happens often, is measured, and never embarrasses anyone.
 
-### Program design
+### How to design the program
 
-1. Baseline: a survey plus an authorized simulation (internal phishing simulation with a written RoE and HR buy-in).
-2. Teach the principles: Cialdini plus callback procedures, not just "don't click links."
-3. Just-in-time: tips during tax season, payroll runs, vendor renewals.
-4. Role-based: finance (BEC), helpdesk (pretexting), executives (whaling).
-5. Measure it: report rate up, repeat-click rate down, time-to-report down.
-6. No-shame culture: fast reporting is the rewarded behavior.
+1. **Start with a baseline.** Run a survey and an authorized phishing simulation (with a signed RoE and HR approval) to see where people stand.
+2. **Teach the why.** Explain the influence principles and the callback habit. "Don't click links" alone isn't enough.
+3. **Time it well.** Send short tips when scams peak: tax season, payroll, vendor renewals.
+4. **Tailor it by role.** Finance learns about BEC, the helpdesk about fake callers, executives about whaling (phishing aimed at senior leaders).
+5. **Measure it.** Good signs: more people report, fewer people click twice, reports arrive faster.
+6. **No shaming.** People who report quickly get praised, even if they clicked first.
 
-$$
-\mathsf{TrainingROI} \propto \frac{\mathsf{ReportRate} \times \mathsf{PreventedLoss}}{\mathsf{ProgramCost}}
-$$
+### Is the training paying off?
 
-### Example 15-minute micro-curriculum
+The training is worth it when more people report suspicious messages and fewer attacks succeed, compared to what the program costs. That's why the report rate is often a better measure than the click rate: one fast report can protect the whole company.
+
+### Example 15-minute session
 
 | Minute | Content |
 |:---:|:---|
 | 0-3 | A real (anonymized) story from your industry |
-| 3-8 | Three red flags and how to verify them |
-| 8-12 | A scenario drill (defending against a vishing script) |
-| 12-15 | How to report, and what happens after you report |
+| 3-8 | Three red flags and how to check each one |
+| 8-12 | Practice: respond to a fake phone call scenario |
+| 12-15 | How to report, and what happens after you do |
 
 ---
 
 ## 7. Organizational Controls
 
-| Control | Implementation | Counters |
+These are the rules and tools a company puts in place so that one tricked person can't cause a disaster.
+
+| Control | How it works | What it stops |
 |:---|:---|:---|
-| Out-of-band verification | Callback to a number in the HR directory | Vishing / BEC |
-| Dual control | Two people required for wires & privilege grants | Single-actor fraud |
-| Least privilege + JIT | Time-limited access | Helpdesk pretexting |
-| Email authentication | SPF, DKIM, DMARC enforced | Domain spoofing |
-| External mail banner | An "External" warning | Fake internal email |
-| Helpdesk identity proof | Employee ID + callback | Social account takeover |
-| Physical access policy | Badges + visitor escort | Tailgating |
-| Phishing-resistant MFA where possible | Passkeys/FIDO2 | Credential theft |
-| Data classification | No sensitive data spoken over the phone | Oversharing |
+| Out-of-band verification | Call back on the number in the HR directory | Phone scams, BEC |
+| Dual control | Two people must approve money transfers and access changes | One person being tricked into fraud |
+| Least privilege + JIT | People only get the access they need, and only for a limited time (just-in-time) | Helpdesk tricks that grant too much access |
+| Email authentication | Turn on SPF, DKIM, and DMARC, which let mail servers detect emails pretending to come from your domain | Fake emails from your own domain |
+| External email banner | An "External" label on mail from outside the company | Fake "internal" emails |
+| Helpdesk identity check | Employee ID plus a callback before any reset | Account takeover through the helpdesk |
+| Physical access policy | Badges and escorts for visitors | Tailgating |
+| Phishing-resistant MFA | Passkeys or FIDO2 security keys, which won't work on a fake site | Stolen passwords |
+| Data classification | Label sensitive data and never share it over the phone | Oversharing |
+
+How a sensitive request should flow:
 
 ```
 Request sensitive action
@@ -208,29 +236,29 @@ Request sensitive action
 
 ## 8. Ethics, Law & Authorized Testing
 
-| Activity | Requirement |
+| Activity | What you need first |
 |:---|:---|
-| Red team SE / phishing simulation | Written RoE, legal, HR, and executive sponsor |
-| OSINT on employees | Restrict to public sources; respect local privacy law |
-| Physical impersonation | Facility permission + a safety stop |
-| Teaching deception techniques in detail | Avoid handing out a "ready-made kit"; focus on detection |
+| Social engineering test / phishing simulation | A signed RoE, plus approval from legal, HR, and an executive |
+| Researching employees (OSINT) | Use public sources only; follow local privacy law |
+| Physical impersonation test | Permission from the building owner and a way to stop the test safely |
+| Teaching deception techniques | Don't hand out ready-to-use kits; focus on detection |
 
-Law varies by jurisdiction (fraud, computer access, call recording). An unauthorized simulation can violate the law and employment contracts.
+Laws differ by country (fraud, computer access, recording calls). A test without permission can break the law and your employment contract.
 
 ---
 
 ## 9. Social Engineering Incident Response
 
-1. Contain: don't continue the deceptive conversation; secure accounts if credentials were exposed.
-2. Preserve: keep email headers, phone numbers, recordings (where legal), and chat logs.
-3. Reset: passwords, sessions, MFA devices as needed; review forwarding rules.
-4. Notify: SOC / IR; finance for a BEC case; legal if customer data is involved.
-5. Hunt: check mailbox rules, new inbox delegates, unusual VPN activity.
-6. Lessons: update training and controls; don't blame the victim who reported it.
+What to do after someone has been tricked:
 
-$$
-t_{\text{detect}} \downarrow \Rightarrow \mathsf{ExpectedLoss} \downarrow
-$$
+1. **Contain:** stop talking to the attacker. If a password was given away, lock or secure the account.
+2. **Preserve evidence:** keep the email (with headers), phone numbers, recordings (if legal), and chat logs.
+3. **Reset:** change passwords, sign out all sessions, and replace MFA devices if needed. Check for email forwarding rules the attacker may have added.
+4. **Notify:** tell the SOC / incident response team, finance for payment fraud, and legal if customer data is involved.
+5. **Hunt:** look for new mailbox rules, new people with access to the inbox, and unusual VPN logins.
+6. **Learn:** update the training and the controls. Never blame the person who reported it; they helped.
+
+**The faster someone reports, the smaller the damage.** This is the most important habit to build.
 
 ---
 
@@ -238,37 +266,37 @@ $$
 
 ```text
 CHECK BEFORE YOU ACT
-[ ] Is there manufactured urgency?
-[ ] Is identity verified through an official channel?
-[ ] Is a normal procedure being skipped?
-[ ] Is a secret being requested (password/MFA/seed)?
-[ ] Is there an account or admin-access change?
+[ ] Is someone rushing me?
+[ ] Did I verify who they are through an official channel?
+[ ] Am I being asked to skip a normal procedure?
+[ ] Am I being asked for a secret (password / MFA code / seed phrase)?
+[ ] Is this about changing a bank account or admin access?
 
-IF YES TO ANY → STOP → TICKET / CALLBACK → REPORT
+IF YES TO ANY → STOP → OPEN A TICKET / CALL BACK → REPORT
 ```
 
-| Role | One golden habit |
+| Role | One habit to keep |
 |:---|:---|
-| Every employee | Report anything suspicious without fear of being wrong |
-| Helpdesk | No reset without policy-defined proof |
-| Finance | Dual channel for any payment change |
-| Exec assistant | A whaling checklist before scheduling or transfers |
-| Security | Measure report rate, not just click rate |
+| Every employee | Report anything suspicious, even if you might be wrong |
+| Helpdesk | No reset without the identity proof the policy requires |
+| Finance | Confirm every payment change through a second channel |
+| Executive assistant | Run the whaling checklist before scheduling or transfers |
+| Security team | Track how many people report, not just how many click |
 
 ---
 
 ## Security Notes: Threats & Defenses
 
-| Threat | Mechanism | Defense |
+| Threat | How it happens | Defense |
 |:---|:---|:---|
-| Credential theft | Fake login / vishing | FIDO2; never share an MFA code; report |
-| BEC fraud | Invoice / CEO fraud | Dual control; vendor callbacks |
-| Helpdesk pretexting | Social reset | Strong identity proof |
-| Tailgating | Physical follow-in | A culture of challenging strangers; turnstiles |
-| Oversharing | Rapport abuse | Classification; need-to-know |
-| Shame culture | Hidden incidents | Reward fast reporting |
+| Password theft | Fake login page / scam call | FIDO2; never share MFA codes; report |
+| BEC fraud | Fake invoice / fake CEO email | Dual control; call the vendor back |
+| Helpdesk pretexting | Caller tricks helpdesk into a reset | Strong identity check |
+| Tailgating | Following someone through a secure door | A culture where asking "who are you?" is normal; turnstiles |
+| Oversharing | Attacker builds trust, then asks for too much | Data classification; share only what's needed |
+| Shame culture | People hide incidents out of embarrassment | Praise fast reporting |
 
-Not covered: building phishing kits, proxy credential harvesting, BadUSB payloads, or ready-made deception scripts.
+Not covered: building phishing kits, credential-stealing proxies, BadUSB payloads, or ready-made scam scripts.
 
 ---
 

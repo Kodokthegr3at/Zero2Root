@@ -95,9 +95,12 @@
 | Checksum | IPv4ではヘッダーのみが対象 |
 | Src / Dst | アドレッシング。ingressフィルタがなければ送信元は偽装できる |
 
-$$
-\mathsf{Payload\ size} = \mathsf{TotalLength} - 4\cdot\mathsf{IHL}
-$$
+```text
+ヘッダー長     = IHL × 4 バイト
+ペイロード長   = Total Length - ヘッダー長
+
+例: Total Length = 60, IHL = 5  →  ヘッダー = 20 バイト  →  ペイロード = 40 バイト
+```
 
 ---
 
@@ -118,9 +121,9 @@ TCPは接続指向のバイトストリームを提供し、信頼性（ACK、�
 
 コネクションの識別は4-tuple（プロトコルを含めれば5-tuple）で行われる。
 
-$$
-(srcIP,\ srcPort,\ dstIP,\ dstPort)
-$$
+```text
+(送信元IP, 送信元ポート, 宛先IP, 宛先ポート)
+```
 
 ---
 
@@ -154,13 +157,11 @@ $$
 
 コネクションの確立:
 
-$$
-\begin{aligned}
-1&\colon\ \mathsf{C \to S}:\ \mathsf{SYN},\ seq=x \\
-2&\colon\ \mathsf{S \to C}:\ \mathsf{SYN\text{+}ACK},\ seq=y,\ ack=x+1 \\
-3&\colon\ \mathsf{C \to S}:\ \mathsf{ACK},\ ack=y+1
-\end{aligned}
-$$
+```text
+1. C → S:  SYN,      seq=x
+2. S → C:  SYN+ACK,  seq=y, ack=x+1
+3. C → S:  ACK,      ack=y+1
+```
 
 ```
   Client                     Server
@@ -188,9 +189,11 @@ $$
 
 飛行中のバイト数（直感的な理解）:
 
-$$
-\mathsf{in\_flight} \le \min(\mathsf{cwnd},\, \mathsf{rwnd})
-$$
+```text
+送信中のバイト数 ≤ cwnd と rwnd の小さいほう
+```
+
+送信側は、ネットワークが処理できる量(cwnd)と受信側が受け取れる量(rwnd)のうち、小さいほうに制限される。
 
 古典的なフェーズ（Reno的な直感、現代の実装はCUBICやBBRなどを使う）:
 
@@ -200,9 +203,10 @@ $$
 | Congestion avoidance | 増加がより線形に近づく |
 | Loss signal | Triple-dup ACKやRTOによって `cwnd` が下がり、ssthreshが調整される |
 
-$$
-\text{slow start（概算）:}\quad \mathsf{cwnd} \leftarrow \mathsf{cwnd} + \mathsf{MSS}\ \text{per ACK}
-$$
+```text
+スロースタート: ACKを1つ受け取るたびに cwnd が1 MSS増える
+               (つまり往復ごとにおよそ2倍になる)
+```
 
 セキュリティとの関連: UDP/TCPフラッドはcongestive DoSを引き起こしうる。レート制限とキャパシティプランニングがその運用上の対策となる。
 
@@ -265,15 +269,13 @@ UDPは `SOCK_DGRAM` を使い、`sendto`/`recvfrom` で通信し、ハンドシ�
 
 概念: 攻撃者は大量のSYNセグメント（多くの場合スプーフィングされている）を送信し、サーバーにhalf-open状態（SYN_RCVD）を割り当てさせ続け、テーブルやbacklogを使い果たさせる。その結果、正規のクライアントが接続できなくなる。これはDoSの一種である。
 
-$$
-\#\{\mathsf{SYN\_RCVD}\} \uparrow\ \Rightarrow\ \mathsf{resource\ exhaustion}
-$$
+ハーフオープンの接続が積み上がるほど、サーバーは資源切れに近づく。
 
 SYN cookie（防御策）: サーバーはSYNを受け取った時点では完全なTCBを保持しない。ISNは、4-tupleとタイムスタンプ/MSSのビットに対する秘密鍵付きハッシュとしてエンコードされる。最終的なACKが有効なcookieを含んでいる場合にのみ、実際の状態が作られる。
 
-$$
-\mathsf{ISN}_s \approx \mathsf{Hash}_{k}(addrs, ports,\; t) \;+\; \mathsf{encode}(\mathsf{MSS})
-$$
+```text
+ISN ≈ Hash(secret, addresses, ports, time) + MSS bits
+```
 
 （カーネルごとに実装は異なるが、基本的な考え方は同じである。）
 

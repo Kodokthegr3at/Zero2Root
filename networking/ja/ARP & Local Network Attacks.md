@@ -31,9 +31,9 @@
 
 Ethernet/IPv4では、フレームを届けるためにL2の宛先MACアドレスが必要になる一方、アプリケーションやルーティングはL3のIPアドレスを使う。ARP（Address Resolution Protocol）はこの2つを橋渡しする。
 
-$$
-\mathsf{ARP}:\ \mathsf{IPv4} \;\longrightarrow\; \mathsf{MAC}
-$$
+```text
+ARP:  IPv4 address  →  MAC address
+```
 
 この解決はローカルリンク、つまり同一ブロードキャストドメイン内でしか機能しない。ルーターは、遠くのホストのためにサブネットをまたいでARPされることはない。ホストは自分のゲートウェイに対してARPを行い、そのゲートウェイのMACアドレス宛にフレームを送る。
 
@@ -57,8 +57,8 @@ ARPはEtherType `0x0806` を持つEthernetフレームに包まれて運ばれ�
 
 | `op` | 名称 | 意味 |
 |:---:|:---|:---|
-| 1 | Request | 「$IP_t$ は誰が持っている？ $IP_s$ に教えてほしい」 |
-| 2 | Reply | 「$IP_t$ は $MAC_t$ にある」 |
+| 1 | Request | 「IPₜ は誰が持っている？ IPₛ に教えてほしい」 |
+| 2 | Reply | 「IPₜ は MACₜ にある」 |
 
 重要なフィールド（Ethernet上のIPv4の場合）:
 
@@ -73,14 +73,12 @@ Requestは通常Ethernetのブロードキャスト（`ff:ff:ff:ff:ff:ff`）と�
 
 標準的な流れ:
 
-$$
-\begin{aligned}
-A &\xrightarrow{\mathsf{ARP\,Req}(TPA=B)} \mathsf{Broadcast} \\
-B &\xrightarrow{\mathsf{ARP\,Rep}(SPA=B,\,SHA=MAC_B)} A
-\end{aligned}
-$$
+```text
+A → broadcast:  "Who has IP_B? Tell A"
+B → A:          "IP_B is at MAC_B"
+```
 
-このやり取りの後、$A$ は `dst MAC = MAC_B` としてIPフレームを送信できるようになる。
+このやり取りの後、A は `dst MAC = MAC_B` としてIPフレームを送信できるようになる。
 
 明示的なrequest/reply以外にも、ホストはカーネルやスタックの実装次第で、受動的に観測したパケットからもマッピングを学習することがある。求めてもいない、あるいは予期しない応答は古典的な整合性の懸念であり、これがDHCPバインディングに照らしてARPを検証するスイッチ機能が存在する理由になっている。
 
@@ -90,9 +88,9 @@ $$
 
 カーネルは一時的なマッピングを保持する。
 
-$$
-\mathsf{Cache}:\ (IP) \mapsto (MAC,\; \mathsf{state},\; \mathsf{iface},\; \mathsf{expiry})
-$$
+```text
+IP  →  (MAC, state, interface, expiry)
+```
 
 | 状態 | 一般的な挙動 |
 |:---|:---|
@@ -130,9 +128,9 @@ $$
 
 これは概念の説明であり、手順書ではない。同一セグメント上の悪意あるホストが、被害者に次のような対応関係を記憶させることに成功したとする。
 
-$$
-IP_{\mathsf{gateway}} \mapsto MAC_{\mathsf{attacker}}
-$$
+```text
+IP of the gateway  →  MAC of the attacker
+```
 
 （さらに逆方向も成立させる場合もある）。このとき、本来ゲートウェイへ向かうはずのフレームが攻撃者へリダイレクトされうる。トラフィックを転送もする攻撃者であれば、暗号化されていないセッションを観測したり改ざんしたりできる。これがL2におけるMITMである。
 

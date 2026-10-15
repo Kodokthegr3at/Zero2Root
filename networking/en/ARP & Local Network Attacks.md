@@ -31,9 +31,9 @@
 
 On Ethernet/IPv4, delivering a frame requires the destination MAC address at L2, while applications and routing work with the IP address at L3. ARP (Address Resolution Protocol) bridges the two:
 
-$$
-\mathsf{ARP}:\ \mathsf{IPv4} \;\longrightarrow\; \mathsf{MAC}
-$$
+```text
+ARP:  IPv4 address  →  MAC address
+```
 
 This resolution only works on the local link, meaning the same broadcast domain. A router is never ARP'd across subnets for a remote host. Instead, the host ARPs its gateway and sends the frame to the gateway's MAC.
 
@@ -57,8 +57,8 @@ ARP is wrapped in an Ethernet frame with EtherType `0x0806`. There are two main 
 
 | `op` | Name | Meaning |
 |:---:|:---|:---|
-| 1 | Request | "Who has $IP_t$? Tell $IP_s$" |
-| 2 | Reply | "$IP_t$ is at $MAC_t$" |
+| 1 | Request | "Who has IPₜ? Tell IPₛ" |
+| 2 | Reply | "IPₜ is at MACₜ" |
 
 Key fields (IPv4 over Ethernet):
 
@@ -73,14 +73,12 @@ A request is usually sent as an Ethernet broadcast (`ff:ff:ff:ff:ff:ff`), with T
 
 Canonical flow:
 
-$$
-\begin{aligned}
-A &\xrightarrow{\mathsf{ARP\,Req}(TPA=B)} \mathsf{Broadcast} \\
-B &\xrightarrow{\mathsf{ARP\,Rep}(SPA=B,\,SHA=MAC_B)} A
-\end{aligned}
-$$
+```text
+A → broadcast:  "Who has IP_B? Tell A"
+B → A:          "IP_B is at MAC_B"
+```
 
-After this exchange, $A$ can send IP frames with `dst MAC = MAC_B`.
+After this exchange, A can send IP frames with `dst MAC = MAC_B`.
 
 Hosts also learn mappings from packets they observe passively, depending on the kernel or stack implementation. Unsolicited or unexpected replies are a classic integrity concern, which is why some switch features validate ARP against DHCP bindings.
 
@@ -90,9 +88,9 @@ Hosts also learn mappings from packets they observe passively, depending on the 
 
 The kernel keeps a temporary mapping:
 
-$$
-\mathsf{Cache}:\ (IP) \mapsto (MAC,\; \mathsf{state},\; \mathsf{iface},\; \mathsf{expiry})
-$$
+```text
+IP  →  (MAC, state, interface, expiry)
+```
 
 | Aspect | Typical behavior |
 |:---|:---|
@@ -130,9 +128,9 @@ Operational tip: after renumbering or a NIC swap, stale ARP/ND entries cause "gh
 
 This is a concept, not a procedure. If a malicious host on the same segment manages to get a victim to store
 
-$$
-IP_{\mathsf{gateway}} \mapsto MAC_{\mathsf{attacker}}
-$$
+```text
+IP of the gateway  →  MAC of the attacker
+```
 
 (optionally the reverse too), frames meant for the gateway can be redirected to the attacker. An attacker who also forwards the traffic can observe or modify cleartext sessions. That is a MITM at layer 2.
 

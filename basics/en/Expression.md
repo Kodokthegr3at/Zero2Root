@@ -38,11 +38,15 @@ In system programming (C/C++) and modern languages (Java, Python), the evaluatio
 
 Formally (per K. N. King), integer arithmetic expressions can be described by the grammar:
 
-$$
-E ::= n \mid (E) \mid E \;+\; E \mid E \;-\; E \mid E \;\times\; E \mid E \;/\; E \mid E \bmod E
-$$
+```text
+E  ::=  number | ( E ) | E + E | E - E | E * E | E / E | E % E
+```
 
-evaluated left-associatively with precedence \(\times,/,\% \;>\; +,-\). Integer overflow on a \(w\)-bit type occurs when a result leaves \(\bigl[-2^{w-1},\,2^{w-1}-1\bigr]\) (signed) or \(\bigl[0,\,2^{w}-1\bigr]\) (unsigned), a common root cause of undersized buffer allocations in C.
+In words: an expression is a number, an expression inside parentheses, or two expressions joined by `+`, `-`, `*`, `/` or `%`.
+
+Operators of the same level are evaluated left to right, and `*`, `/`, `%` always come before `+` and `-`.
+
+Integer overflow happens when a result is too big (or too small) for its type. A 32-bit signed `int` holds -2,147,483,648 to 2,147,483,647; one step past the top wraps around. In C this is a common reason a buffer gets allocated too small.
 
 ```java
 // ── Java Example ─────────────────────────────────────────────
@@ -371,7 +375,7 @@ Understanding expression evaluation matters for audit and hardening. Untrusted i
 4. **Integer Overflow (C)**: widen types, check before allocation (`size_t` overflow checks), enable `-fsanitize=undefined,integer`, and follow K. N. King's type-width discipline.
 5. **Shell arithmetic / eval**: do not `eval` or expand `$((...))` on raw input, quote expansions, and prefer structured parsers.
 
-Defense checklist: no `eval` on untrusted input, strict equality, regex complexity budgets, checked arithmetic, SAST/WAF rules for expression languages, and boundary tests for \(0, 2^{w}-1, -2^{w-1}\).
+Defense checklist: no `eval` on untrusted input, strict equality, regex complexity budgets, checked arithmetic, SAST/WAF rules for expression languages, and boundary tests for 0 and for the largest and smallest values of the type.
 
 ---
 

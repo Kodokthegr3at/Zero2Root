@@ -95,9 +95,12 @@ Minimum header size is 20 bytes (without options):
 | Checksum | Header only (IPv4) |
 | Src / Dst | Addressing; the source can be spoofed without ingress filtering |
 
-$$
-\mathsf{Payload\ size} = \mathsf{TotalLength} - 4\cdot\mathsf{IHL}
-$$
+```text
+header size  = IHL × 4 bytes
+payload size = Total Length - header size
+
+Example: Total Length = 60, IHL = 5  →  header = 20 bytes  →  payload = 40 bytes
+```
 
 ---
 
@@ -118,9 +121,9 @@ TCP provides a connection-oriented byte stream, reliability (ACK, retransmit), o
 
 The connection identity is a 4-tuple (or a 5-tuple if the protocol is included):
 
-$$
-(srcIP,\ srcPort,\ dstIP,\ dstPort)
-$$
+```text
+(source IP, source port, destination IP, destination port)
+```
 
 ---
 
@@ -154,13 +157,11 @@ Main states (following Stevens / the classic diagram):
 
 Connection setup:
 
-$$
-\begin{aligned}
-1&\colon\ \mathsf{C \to S}:\ \mathsf{SYN},\ seq=x \\
-2&\colon\ \mathsf{S \to C}:\ \mathsf{SYN\text{+}ACK},\ seq=y,\ ack=x+1 \\
-3&\colon\ \mathsf{C \to S}:\ \mathsf{ACK},\ ack=y+1
-\end{aligned}
-$$
+```text
+1. C → S:  SYN,      seq=x
+2. S → C:  SYN+ACK,  seq=y, ack=x+1
+3. C → S:  ACK,      ack=y+1
+```
 
 ```
   Client                     Server
@@ -188,9 +189,11 @@ Congestion control: the sender limits itself with cwnd (congestion window) so it
 
 Bytes in flight (intuition):
 
-$$
-\mathsf{in\_flight} \le \min(\mathsf{cwnd},\, \mathsf{rwnd})
-$$
+```text
+bytes in flight ≤ the smaller of cwnd and rwnd
+```
+
+The sender is held back by whichever limit is smaller: what the network can handle (cwnd) or what the receiver can accept (rwnd).
 
 Classic phases (Reno-style intuition; modern implementations use CUBIC, BBR, and others):
 
@@ -200,9 +203,10 @@ Classic phases (Reno-style intuition; modern implementations use CUBIC, BBR, and
 | Congestion avoidance | Growth becomes closer to linear |
 | Loss signal | Triple-dup ACK / RTO causes `cwnd` to drop and ssthresh to adjust |
 
-$$
-\text{slow start (approx.):}\quad \mathsf{cwnd} \leftarrow \mathsf{cwnd} + \mathsf{MSS}\ \text{per ACK}
-$$
+```text
+slow start: cwnd grows by one MSS for every ACK received
+            (so it roughly doubles every round trip)
+```
 
 Security relevance: UDP/TCP floods can cause congestive DoS; rate limiting and capacity planning are the operational controls for it.
 
@@ -265,15 +269,13 @@ Always define byte order explicitly (`htons`/`inet_pton`), handle a partial `sen
 
 Concept: an attacker sends many SYN segments (often spoofed) so the server allocates half-open state (SYN_RCVD) until its table or backlog fills up, causing legitimate clients to fail to connect. This is a form of DoS.
 
-$$
-\#\{\mathsf{SYN\_RCVD}\} \uparrow\ \Rightarrow\ \mathsf{resource\ exhaustion}
-$$
+The more half-open connections pile up, the closer the server gets to running out of resources.
 
 SYN cookies (defense): the server does not store a full TCB on receiving a SYN. The ISN is encoded with a secret hash over the 4-tuple plus timestamp/MSS bits. State is only created once the final ACK carries a valid cookie.
 
-$$
-\mathsf{ISN}_s \approx \mathsf{Hash}_{k}(addrs, ports,\; t) \;+\; \mathsf{encode}(\mathsf{MSS})
-$$
+```text
+ISN ≈ Hash(secret, addresses, ports, time) + MSS bits
+```
 
 (Kernel implementations vary, but the intuition is the same.)
 

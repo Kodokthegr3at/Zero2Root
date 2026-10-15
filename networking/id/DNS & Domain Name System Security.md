@@ -68,16 +68,12 @@ Ada tiga peran utama dalam proses resolusi:
 
 Algoritma iteratifnya, secara intuitif (mengikuti Kurose):
 
-$$
-\begin{aligned}
-&Q \leftarrow \text{query}(name, type) \\
-&S \leftarrow \text{root hint set} \\
-&\textbf{while } true: \\
-&\quad R \leftarrow \mathsf{Query}(S, Q) \\
-&\quad \textbf{if } R \text{ is answer or NXDOMAIN:} \; \textbf{return } R \\
-&\quad S \leftarrow \text{referral NS (and glue) from } R
-\end{aligned}
-$$
+```text
+1. mulai dari root server
+2. tanyakan nama itu ke server saat ini
+3. dapat jawaban atau NXDOMAIN?   → selesai
+4. dapat referral?                → tanya server yang ditunjuk, lalu ulangi langkah 2
+```
 
 ```
 Stub ──Q──► Recursive ──iterative──► Root
@@ -131,19 +127,19 @@ Komponen intinya:
 | DS | Digest DNSKEY milik child, disimpan di parent |
 | NSEC/NSEC3 | Bukti bahwa nama/type tidak ada |
 
-Verifikasi RRSIG secara konsep: untuk RRset $R$ dan kunci publik $K$:
+Verifikasi RRSIG secara konsep: untuk RRset R dan kunci publik K:
 
-$$
-\mathsf{Verify}\big(K_{\mathsf{pub}},\; R,\; \mathsf{RRSIG}(R)\big) = \mathsf{accept/reject}
-$$
+```text
+Verify(public key, RRset, RRSIG) → accept / reject
+```
 
-Secara abstrak, dengan skema tanda tangan $\mathsf{Sign}/\mathsf{Verify}$:
+Secara abstrak, dengan skema tanda tangan Sign/Verify:
 
-$$
-\mathsf{RRSIG}(R) = \mathsf{Sign}_{K_{\mathsf{priv}}}(\mathsf{Hash}(R) \;\|\; \mathsf{meta})
-$$
+```text
+RRSIG = Sign(private key, Hash(RRset) + meta)
+```
 
-di mana $\mathsf{meta}$ mencakup algorithm, labels, original TTL, inception/expiration, key tag, dan signer name.
+di mana meta mencakup algorithm, labels, original TTL, inception/expiration, key tag, dan signer name.
 
 Rantai trust-nya:
 
@@ -208,9 +204,9 @@ Cache poisoning, secara konsep, terjadi ketika recursive resolver menyimpan bind
 
 Model ancaman level tinggi (intuisi dari era Kaminsky): ruang tebakan transaksi historis terlalu kecil kalau
 
-$$
-|\mathcal{S}| = 2^{16}\;(\mathsf{TXID}) \times \#\{\text{src ports}\}
-$$
+```text
+ruang tebakan = 2¹⁶ kemungkinan TXID × jumlah kemungkinan port sumber
+```
 
 bernilai kecil, dan penyerang bisa membanjiri jawaban spoof untuk query yang ia picu sendiri.
 

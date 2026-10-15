@@ -36,7 +36,7 @@ Alamat IP adalah identifier logis pada lapisan jaringan (OSI L3 / TCP/IP Interne
 |:---|:---|:---|
 | Panjang | 32-bit (4 oktet) | 128-bit |
 | Notasi | Dotted decimal `192.168.1.1` | Hex `2001:db8::1` |
-| Ruang alamat | $2^{32} \approx 4.29\times 10^9$ | $2^{128} \approx 3.4\times 10^{38}$ |
+| Ruang alamat | 2³² ≈ 4.29 × 10⁹ | 2¹²⁸ ≈ 3.4 × 10³⁸ |
 | Header | 20–60 B (dengan opsi) | 40 B tetap + extension headers |
 | Konfigurasi | Manual / DHCP | SLAAC / DHCPv6 |
 | Broadcast | Ada | Tidak ada (memakai multicast/anycast) |
@@ -49,55 +49,62 @@ Keterbatasan ruang alamat IPv4 mendorong adopsi CIDR, NAT, dan akhirnya IPv6. To
 
 ### 2.1 Oktet
 
-Satu oktet $= 8$ bit, dengan nilai $0..255$:
+Satu oktet = 8 bit, dengan nilai 0..255:
 
-$$
-v = b_7\cdot 2^7 + b_6\cdot 2^6 + \cdots + b_0\cdot 2^0
-$$
+```text
+bit:     b7   b6   b5   b4   b3   b2   b1   b0
+nilai:  128   64   32   16    8    4    2    1
+```
+
+Untuk mendapat nilai desimalnya, jumlahkan nilai setiap bit yang bernilai 1. Untuk `11000000` hasilnya 128 + 64 = 192.
 
 Contoh: `192` = `11000000`, `168` = `10101000`.
 
 ### 2.2 Network mask
 
-Prefix length $p$ (CIDR `/p`) berarti $p$ bit di sebelah kiri adalah bagian **network**, sisanya $h=32-p$ adalah bagian **host** (untuk IPv4):
+Prefix length p (CIDR `/p`) berarti p bit di sebelah kiri adalah bagian **network**, sisanya h=32-p adalah bagian **host** (untuk IPv4):
 
-$$
-\mathsf{mask} = \underbrace{1\ldots 1}_{p}\,\underbrace{0\ldots 0}_{32-p}
-$$
+```text
+mask = p angka 1 diikuti (32 - p) angka 0
+
+/24  →  11111111.11111111.11111111.00000000  =  255.255.255.0
+```
 
 Operasi inti:
 
-$$
-\begin{aligned}
-\mathsf{NetworkAddress}(A,p) &= A \land \mathsf{mask}(p) \\
-\mathsf{Broadcast}(A,p) &= A \lor \neg\mathsf{mask}(p) \\
-\mathsf{HostBits}(A,p) &= A \land \neg\mathsf{mask}(p)
-\end{aligned}
-$$
+```text
+alamat network = alamat AND mask         (semua bit host jadi 0)
+broadcast      = alamat OR (NOT mask)    (semua bit host jadi 1)
+bagian host    = alamat AND (NOT mask)
 
-Dua alamat $A,B$ berada di subnet yang sama jika dan hanya jika:
+Contoh 192.168.1.77/26:  network = 192.168.1.64,  broadcast = 192.168.1.127
+```
 
-$$
-A \land \mathsf{mask}(p) = B \land \mathsf{mask}(p)
-$$
+Dua alamat A,B berada di subnet yang sama jika dan hanya jika:
+
+```text
+(A AND mask) = (B AND mask)
+```
+
+Dengan kata lain, kedua alamat menghasilkan alamat network yang sama.
 
 ---
 
 ## 3. Rumus inti CIDR
 
-Misalkan prefix `/p` pada IPv4 ($0 \le p \le 32$), dengan $h = 32 - p$.
+Misalkan prefix `/p` pada IPv4 (0 ≤ p ≤ 32), dengan h = 32 - p.
 
 | Kuantitas | Rumus |
 |:---|:---|
-| Ukuran blok (total alamat) | $N = 2^{h} = 2^{32-p}$ |
-| Usable host (subnet klasik) | $N_{\text{usable}} = 2^{h} - 2$ (kecuali `/31` point-to-point menurut RFC 3021, dan `/32` sebagai host route) |
-| Jumlah subnet jika meminjam $n$ bit dari blok induk | $2^{n}$ |
-| Subnet mask desimal | konversi $\mathsf{mask}(p)$ ke 4 oktet |
-| Increment / stride antar subnet | $2^{h}$ pada oktet yang relevan |
+| Ukuran blok (total alamat) | N = 2ʰ = 2³²⁻ᵖ |
+| Usable host (subnet klasik) | N_usable = 2ʰ - 2 (kecuali `/31` point-to-point menurut RFC 3021, dan `/32` sebagai host route) |
+| Jumlah subnet jika meminjam n bit dari blok induk | 2ⁿ |
+| Subnet mask desimal | konversi mask(p) ke 4 oktet |
+| Increment / stride antar subnet | 2ʰ pada oktet yang relevan |
 
 **Tabel mask cepat:**
 
-| Prefix | Mask | $h$ | Total | Usable |
+| Prefix | Mask | h | Total | Usable |
 |:---:|:---|:---:|:---:|:---:|
 | /8 | 255.0.0.0 | 24 | 16,777,216 | 16,777,214 |
 | /16 | 255.255.0.0 | 16 | 65,536 | 65,534 |
@@ -111,25 +118,27 @@ Misalkan prefix `/p` pada IPv4 ($0 \le p \le 32$), dengan $h = 32 - p$.
 
 ### VLSM (Variable Length Subnet Mask)
 
-VLSM mengalokasikan blok yang tidak seragam ukurannya: subnet besar untuk jaringan akses, `/30` atau `/31` untuk link router. Syaratnya, blok tidak boleh overlap dan harus selaras pada boundary $2^{h}$ (aligned prefix).
+VLSM mengalokasikan blok yang tidak seragam ukurannya: subnet besar untuk jaringan akses, `/30` atau `/31` untuk link router. Syaratnya, blok tidak boleh overlap dan harus selaras pada boundary 2ʰ (aligned prefix).
 
 Prosedur:
 
 1. Urutkan kebutuhan host dari yang terbesar ke terkecil.
-2. Untuk kebutuhan $H$ host, pilih $h$ minimum dengan $2^{h}-2 \ge H$ (atau $2^{h}\ge H$ untuk kasus khusus seperti link point-to-point).
+2. Untuk kebutuhan H host, pilih h minimum dengan 2ʰ-2 ≥ H (atau 2ʰ ≥ H untuk kasus khusus seperti link point-to-point).
 3. Ambil prefix berikutnya yang masih bebas dan aligned.
 
 ---
 
 ## 4. Contoh perhitungan: `192.168.1.0/26`
 
-$$
-p=26,\quad h=6,\quad N=2^6=64,\quad N_{\text{usable}}=62
-$$
+```text
+prefix p = 26   →   bit host h = 32 - 26 = 6
+total alamat    = 2⁶ = 64
+host terpakai   = 64 - 2 = 62   (dikurangi alamat network dan broadcast)
+```
 
 Mask: `255.255.255.192` (`11111111.11111111.11111111.11000000`).
 
-Jika `192.168.1.0/24` dipecah menjadi blok `/26`, berarti $n=2$ bit dipinjam sehingga menghasilkan $2^2=4$ subnet:
+Jika `192.168.1.0/24` dipecah menjadi blok `/26`, berarti n=2 bit dipinjam sehingga menghasilkan 2²=4 subnet:
 
 | # | Network | Rentang usable | Broadcast |
 |:---:|:---|:---|:---|
@@ -168,13 +177,9 @@ Alamat private tidak unik secara global, boleh overlap antar organisasi. Konekti
 
 ## 6. Routing: longest prefix match
 
-Router memilih rute dengan prefix terpanjang yang mencocokkan alamat tujuan:
+Router memilih rute dengan prefix terpanjang yang mencocokkan alamat tujuan.
 
-$$
-\mathsf{route}(D) = \arg\max_{r:\; D\in r.\mathsf{prefix}} |r.p|
-$$
-
-Contoh: untuk $D=$ `192.168.1.10`, jika tabel routing punya `192.168.0.0/16` via A dan `192.168.1.0/24` via B, router memilih rute `/24` karena lebih spesifik.
+Contoh: untuk D= `192.168.1.10`, jika tabel routing punya `192.168.0.0/16` via A dan `192.168.1.0/24` via B, router memilih rute `/24` karena lebih spesifik.
 
 Default route: `0.0.0.0/0` untuk IPv4, `::/0` untuk IPv6.
 
@@ -192,11 +197,11 @@ NAT (Network Address Translation) memetakan alamat di boundary jaringan, biasany
 
 Model PAT secara intuitif:
 
-$$
-(sip, sport, dip, dport, proto) \;\leftrightarrow\; (SIP_{pub}, SPORT', dip, dport, proto)
-$$
+```text
+(IP privat, port privat, IP tujuan, port tujuan, proto)  ⇄  (IP publik, port baru SPORT', IP tujuan, port tujuan, proto)
+```
 
-State table di perangkat NAT menyimpan $SPORT'$ supaya paket balasan dapat dikembalikan ke host privat yang benar.
+State table di perangkat NAT menyimpan SPORT' supaya paket balasan dapat dikembalikan ke host privat yang benar.
 
 Implikasi keamanan: NAT bukan firewall. Jaringan tetap membutuhkan filter stateful, reverse proxy, dan hardening tambahan. NAT juga mempersulit komunikasi end-to-end (VoIP, IPsec); IPv6 mengembalikan addressability langsung antar host, sehingga desain keamanan perlu menyesuaikan.
 
@@ -221,7 +226,7 @@ NAT berguna untuk troubleshooting dan pertimbangan arsitektur, tetapi jangan dip
 
 ### Traceroute
 
-Traceroute mengirim paket dengan $TTL=1,2,3,\ldots$ secara berurutan. Setiap hop yang men-decrement TTL menjadi 0 membalas dengan ICMP Time Exceeded (Type 11). Dari balasan berurutan ini, path hop-by-hop dapat dibangun, meskipun path tersebut bisa asimetris atau sebagian difilter.
+Traceroute mengirim paket dengan TTL=1,2,3,... secara berurutan. Setiap hop yang men-decrement TTL menjadi 0 membalas dengan ICMP Time Exceeded (Type 11). Dari balasan berurutan ini, path hop-by-hop dapat dibangun, meskipun path tersebut bisa asimetris atau sebagian difilter.
 
 ---
 

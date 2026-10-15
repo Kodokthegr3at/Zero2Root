@@ -56,18 +56,15 @@ Setiap lapisan menganggap lapisan di atasnya bisa saja sudah dikompromikan. Komp
 
 Saat instalasi, Package Manager mengalokasikan UID Linux yang unik untuk tiap aplikasi (contoh: `u0_a145` sama dengan UID `10145`). Data privat aplikasi berada di:
 
-$$
-\mathsf{AppData}(pkg) = /\mathsf{data}/\mathsf{data}/pkg/
-$$
+```text
+/data/data/<package name>/
+```
 
-dengan ownership $(uid_{pkg}, uid_{pkg})$ dan mode tipikal `0700`.
+dengan ownership (uid_pkg, uid_pkg) dan mode tipikal `0700`.
 
 Model formal isolasi (DAC):
 
-$$
-\mathsf{Access}(A \rightarrow B.\mathsf{data}) = \mathsf{true}
-\iff uid_A = uid_B \lor \mathsf{sharedUserId} \land \mathsf{sameSigningKey}
-$$
+Aplikasi A hanya bisa membaca data privat aplikasi B kalau keduanya berjalan dengan UID yang sama. Itu hanya terjadi kalau keduanya memakai `sharedUserId` dan ditandatangani dengan kunci yang sama.
 
 `sharedUserId` sudah deprecated di API modern, hindari dipakai pada desain baru. Isolasi diperkuat lagi oleh ART dan process isolation: satu proses per aplikasi, kecuali multi-process dideklarasikan secara eksplisit di manifest.
 
@@ -119,13 +116,10 @@ Android punya empat komponen inti:
 
 Aturan aman default:
 
-$$
-\mathsf{exported} =
-\begin{cases}
-\mathsf{false} & \text{jika tidak perlu diakses dari luar app} \\
-\mathsf{true} + \mathsf{permission} & \text{jika IPC publik memang dibutuhkan}
-\end{cases}
-$$
+```text
+tidak perlu diakses dari luar app  → exported = false
+IPC publik memang dibutuhkan      → exported = true + permission
+```
 
 Intent adalah pesan IPC. Intent eksplisit menargetkan komponen tertentu secara pasti; Intent implisit memakai action/category/data, dan lebih rawan hijacking kalau tidak diproteksi.
 
@@ -143,12 +137,10 @@ Pertahanan: jangan ekspor Activity yang sensitif, validasi semua data extra, gun
 
 Binder adalah bus IPC utama di Android (Elenkov, Bab 6). Setiap transaksi membawa identitas pemanggil yang bisa diverifikasi di sisi service:
 
-$$
-\begin{aligned}
-uid_{caller} &= \mathsf{Binder.getCallingUid}() \\
-pid_{caller} &= \mathsf{Binder.getCallingPid}()
-\end{aligned}
-$$
+```text
+uid_caller = Binder.getCallingUid()
+pid_caller = Binder.getCallingPid()
+```
 
 Service yang mengekspos AIDL wajib memvalidasi UID atau permission sebelum menjalankan operasi privileged. Jangan percaya parameter dari client tanpa otorisasi.
 
@@ -165,11 +157,9 @@ Identitas Binder adalah fondasi kepercayaan IPC di Android. Bug desain yang umum
 
 ## 6. SELinux di Android, Ringkasan MAC
 
-SELinux menambahkan Mandatory Access Control di atas DAC. Setiap proses punya security context (user:role:type:sensitivity). Kebijakan type enforcement menentukan apakah domain $D$ boleh melakukan operasi $op$ pada tipe objek $T$:
+SELinux menambahkan Mandatory Access Control di atas DAC. Setiap proses punya security context (user:role:type:sensitivity). Kebijakan type enforcement menentukan apakah domain D boleh melakukan operasi op pada tipe objek T:
 
-$$
-\mathsf{Allow}(D, T, op) \in \mathsf{Policy}
-$$
+Sebuah aksi hanya diizinkan kalau ada aturan di policy yang secara eksplisit mengizinkannya. Selain itu, semuanya ditolak.
 
 Mode produksi Android adalah Enforcing. Mode `permissive` hanya dipakai untuk debugging pada perangkat milik sendiri.
 
@@ -199,9 +189,7 @@ system_server ──✓──▶ framework sockets (policy allow)
 
 Anti-pattern: menyimpan token atau API key di `SharedPreferences` plaintext, di resource XML, atau sebagai string konstanta di dalam DEX.
 
-$$
-\mathsf{Secret}_{ok} \subseteq \mathsf{Keystore}\ \cup\ \mathsf{server\text{-}side}
-$$
+Rahasia hanya boleh disimpan di Android Keystore atau di server.
 
 ---
 

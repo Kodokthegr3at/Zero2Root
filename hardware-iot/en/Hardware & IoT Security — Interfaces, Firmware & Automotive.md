@@ -35,9 +35,7 @@
 
 An IoT device is silicon, firmware, radio/network, and cloud, all combined. Threats come from physical access (debug ports), local access (Wi-Fi/BLE), and remote access (cloud APIs).
 
-$$
-\mathsf{Risk} = \mathsf{AssetValue} \times \mathsf{Exposure} \times \mathsf{WeakControl}
-$$
+Risk is highest when a valuable asset is easy to reach and poorly protected. Lower any one of those three and the risk drops.
 
 Typical assets worth protecting: device keys, cloud credentials, sensor data, and safety functions (automotive, medical, or industrial).
 
@@ -75,9 +73,7 @@ Defense: disable the console in production, require authenticated login, or remo
 JTAG (IEEE 1149.1) is used for boundary scan and debug. Typical pins: `TCK`, `TMS`, `TDI`, `TDO`, `TRST` (optional).
 SWD (ARM) uses two wires: `SWDIO`, `SWCLK`.
 
-$$
-\mathsf{DebugExposure} = [\mathsf{PadsAccessible}] \land [\mathsf{AuthAbsent}] \land [\mathsf{FuseOpen}]
-$$
+A debug port becomes a real danger when all three are true: the pads can be reached, no authentication is required, and the debug fuse is still open.
 
 Defense (vendor side):
 - Disable debug in production via a fuse or lifecycle state.
@@ -136,9 +132,7 @@ Defense: encrypt sensitive non-volatile storage, bind secrets to a hardware root
 4. Review TLS configuration and the certificate store.
 5. Identify component versions to match against known CVEs.
 
-$$
-\mathsf{UpdateSafe} \iff \mathsf{Signed} \land \mathsf{VerifiedChain} \land \mathsf{AntiRollback}
-$$
+A firmware update is only safe if it is signed, the signature chain is verified, and older vulnerable versions cannot be installed again (anti-rollback).
 
 Static analysis concepts: unpack the image (binwalk-class tools in a lab setting), extract the filesystem, triage strings, review configuration.
 Dynamic: run an emulator or test harness against an image you own, not against someone else's deployed fleet.
@@ -169,12 +163,12 @@ dm-verity / app containers (optional)
 | Hardware root of trust | Keys stored in fuse, OTP, or an on-SoC HSM |
 
 ### Signing model
-$$
-\begin{aligned}
-\sigma &= \mathsf{Sign}_{sk_{vendor}}(\mathsf{Hash}(image)) \\
-\mathsf{Accept} &\iff \mathsf{Verify}_{pk}(image,\sigma)=1 \land \mathsf{version} \ge v_{\min}
-\end{aligned}
-$$
+```text
+σ = Sign(vendor private key, Hash(image))
+
+accept the image only if:
+  Verify(pk, image, σ) = OK   and   version ≥ minimum allowed version
+```
 
 Classic failure modes: debug boot left enabled, a leaked vendor private key, or verification implemented in software that can be patched without fuse protection.
 
@@ -192,10 +186,7 @@ Classic failure modes: debug boot left enabled, a leaked vendor private key, or 
 
 Least-privilege device identity: every device should have a unique identity, not one global key shared across the whole fleet.
 
-$$
-\mathsf{CompromiseOne} \not\Rightarrow \mathsf{CompromiseFleet}
-\quad \text{(if keys are unique and rotated)}
-$$
+That way, hacking one device does not hand the attacker every other device in the fleet, as long as keys are unique and rotated.
 
 ---
 
@@ -218,9 +209,9 @@ ECU_A ----+------ ECU_B ------+------ ECU_C
 ```
 
 ### Frame (concept)
-$$
-\mathsf{CANFrame} \approx \langle \mathsf{ID},\; \mathsf{DLC},\; \mathsf{Data}_{0..8},\; \mathsf{CRC} \rangle
-$$
+```text
+CAN frame = ID (what the message is about) | DLC (data length) | Data (0-8 bytes) | CRC (error check)
+```
 
 ISO-TP / UDS use CAN as a transport for diagnostics, a surface that needs tight control.
 
@@ -261,9 +252,7 @@ Infotainment ──X──▶ Safety CAN
    Telematics (auth'd)
 ```
 
-$$
-\mathsf{LateralMoveHard} \propto \mathsf{GatewayPolicyStrength} \times \mathsf{DomainIsolation}
-$$
+The stronger the gateway's filtering rules and the better the domains are separated, the harder it is for an attacker to jump from one part of the car (for example infotainment) to another (for example braking).
 
 Hard rule: this material does not provide CAN injection scripts, replay attack recipes, or immobilizer bypass steps. Understanding the architecture is useful for defensive design and authorized assessment.
 

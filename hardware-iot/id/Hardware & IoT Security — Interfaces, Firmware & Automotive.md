@@ -35,9 +35,7 @@
 
 Perangkat IoT menggabungkan silikon, firmware, radio/jaringan, dan cloud. Ancaman datang dari jalur fisik (debug port), lokal (Wi-Fi/BLE), dan remote (API cloud).
 
-$$
-\mathsf{Risk} = \mathsf{AssetValue} \times \mathsf{Exposure} \times \mathsf{WeakControl}
-$$
+Risiko paling tinggi kalau aset yang berharga mudah dijangkau dan perlindungannya lemah. Turunkan salah satu dari ketiganya, risikonya ikut turun.
 
 Aset tipikal yang perlu dilindungi: kunci perangkat, kredensial cloud, data sensor, dan fungsi keselamatan (di otomotif, medis, atau industri).
 
@@ -75,9 +73,7 @@ Pertahanan: nonaktifkan console di production, autentikasi login, atau hapus she
 JTAG (IEEE 1149.1) dipakai untuk boundary scan dan debug. Pin tipikal: `TCK`, `TMS`, `TDI`, `TDO`, `TRST` (opsional).
 SWD (ARM) memakai 2 kabel: `SWDIO`, `SWCLK`.
 
-$$
-\mathsf{DebugExposure} = [\mathsf{PadsAccessible}] \land [\mathsf{AuthAbsent}] \land [\mathsf{FuseOpen}]
-$$
+Debug port benar-benar berbahaya kalau ketiga hal ini terjadi bersamaan: pad-nya bisa dijangkau, tidak ada autentikasi, dan fuse debug masih terbuka.
 
 Pertahanan (untuk vendor):
 - Nonaktifkan debug di production lewat fuse atau lifecycle state.
@@ -136,9 +132,7 @@ Pertahanan: enkripsi data non-volatile yang sensitif, ikat secret ke hardware ro
 4. Periksa konfigurasi TLS dan certificate store.
 5. Identifikasi versi komponen untuk mencocokkan dengan CVE yang sudah diketahui.
 
-$$
-\mathsf{UpdateSafe} \iff \mathsf{Signed} \land \mathsf{VerifiedChain} \land \mathsf{AntiRollback}
-$$
+Update firmware hanya aman kalau sudah ditandatangani, rantai tanda tangannya diverifikasi, dan versi lama yang rentan tidak bisa dipasang lagi (anti-rollback).
 
 Konsep static analysis: unpack image (tool sekelas binwalk di lab), ekstraksi filesystem, triase string, review konfigurasi.
 Dynamic: pakai emulator atau test harness pada image milik sendiri, bukan menyasar fleet perangkat orang lain.
@@ -169,12 +163,12 @@ dm-verity / app containers (opsional)
 | Hardware root of trust | Kunci disimpan di fuse, OTP, atau HSM on-SoC |
 
 ### Model signing
-$$
-\begin{aligned}
-\sigma &= \mathsf{Sign}_{sk_{vendor}}(\mathsf{Hash}(image)) \\
-\mathsf{Accept} &\iff \mathsf{Verify}_{pk}(image,\sigma)=1 \land \mathsf{version} \ge v_{\min}
-\end{aligned}
-$$
+```text
+σ = Sign(private key vendor, Hash(image))
+
+image hanya diterima jika:
+  Verify(pk, image, σ) = OK   dan   versi ≥ versi minimum yang diizinkan
+```
 
 Kegagalan klasik yang sering terjadi: debug boot masih diaktifkan, kunci privat vendor bocor, atau verifikasi diimplementasikan di software yang mudah di-patch tanpa perlindungan fuse.
 
@@ -192,10 +186,7 @@ Kegagalan klasik yang sering terjadi: debug boot masih diaktifkan, kunci privat 
 
 Identitas device dengan least privilege: setiap device punya identitas unik, jangan pakai satu global key untuk seluruh fleet.
 
-$$
-\mathsf{CompromiseOne} \not\Rightarrow \mathsf{CompromiseFleet}
-\quad \text{(jika key unik dan dirotasi)}
-$$
+Dengan begitu, membobol satu device tidak otomatis memberi penyerang akses ke semua device lain di fleet, asalkan kuncinya unik dan dirotasi.
 
 ---
 
@@ -218,9 +209,9 @@ ECU_A ----+------ ECU_B ------+------ ECU_C
 ```
 
 ### Frame (konsep)
-$$
-\mathsf{CANFrame} \approx \langle \mathsf{ID},\; \mathsf{DLC},\; \mathsf{Data}_{0..8},\; \mathsf{CRC} \rangle
-$$
+```text
+CAN frame = ID (isi pesannya tentang apa) | DLC (panjang data) | Data (0-8 byte) | CRC (cek error)
+```
 
 ISO-TP / UDS memakai CAN sebagai transport untuk diagnostik, ini permukaan yang harus dikontrol ketat.
 
@@ -261,9 +252,7 @@ Infotainment ──X──▶ Safety CAN
    Telematics (auth'd)
 ```
 
-$$
-\mathsf{LateralMoveHard} \propto \mathsf{GatewayPolicyStrength} \times \mathsf{DomainIsolation}
-$$
+Makin ketat aturan filter di gateway dan makin rapi pemisahan domainnya, makin sulit penyerang melompat dari satu bagian mobil (misalnya infotainment) ke bagian lain (misalnya rem).
 
 Aturan tegas: catatan ini tidak menyediakan skrip injeksi CAN, resep replay attack, atau cara bypass immobilizer. Memahami arsitektur berguna untuk desain defensif dan assessment yang berizin.
 

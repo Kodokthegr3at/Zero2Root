@@ -33,9 +33,9 @@
 
 OSINT（Open Source Intelligence）とは、公開されており合法的にアクセスできる情報から収集されたインテリジェンスを、実際に行動につなげられる洞察へと処理したものである。
 
-$$
-\mathsf{OSINT} = \mathsf{Collect}_{\text{legal public}} \rightarrow \mathsf{Process} \rightarrow \mathsf{Analyze} \rightarrow \mathsf{Disseminate}
-$$
+```text
+収集(合法な公開情報源) → 処理 → 分析 → 結果を共有
+```
 
 | OSINTに含まれるもの | OSINTではないもの |
 |:---|:---|
@@ -72,9 +72,9 @@ OSINTの質を決めるのは「秘密のツール」の有無ではなく、ト
 
 絶対的な言い切りは避ける。次のようなスケールを使う。
 
-$$
-\mathsf{Confidence} \in \{\mathsf{low},\;\mathsf{moderate},\;\mathsf{high}\}
-$$
+```text
+確信度:  低  /  中  /  高
+```
 
 観測された事実と推論を明確に区別すること。
 
@@ -86,13 +86,11 @@ $$
 
 良いPIRの例:
 
-1. 組織 $X$ は自前のASNや公開IPレンジを運用しているか。
-2. WHOIS/CTログといった公開データによれば、ブランド $X$ に関連するドメインはどれか。
+1. 組織 X は自前のASNや公開IPレンジを運用しているか。
+2. WHOIS/CTログといった公開データによれば、ブランド X に関連するドメインはどれか。
 3. 求人情報から技術スタックが読み取れるか（防御目的での技術的OSINT）。
 
-$$
-\mathsf{GoodPIR} \iff \mathsf{Answerable} \land \mathsf{TimeBound} \land \mathsf{DecisionLinked}
-$$
+良いPIR(優先情報要求)とは、実際に答えられ、期限があり、現実の意思決定に結びついているものだ。
 
 収集計画: 情報源 → 手法 → 法的チェック → 保管 → 分析担当者、という流れで組み立てる。
 
@@ -115,9 +113,9 @@ $$
 
 すべての証拠について、次を記録する。
 
-$$
-\langle \mathsf{URL},\; \mathsf{UTC},\; \mathsf{hash},\; \mathsf{collector},\; \mathsf{tool},\; \mathsf{notes} \rangle
-$$
+```text
+URL  |  時刻(UTC)  |  ハッシュ  |  収集者  |  使用ツール  |  メモ
+```
 
 Provenanceがなければ、分析結果は容易に疑義を呈される。
 
@@ -188,10 +186,7 @@ OSINTにおけるジオロケーションとは、公開された写真や動画
 | インフラ | 電柱、道路標示、左側通行か右側通行か |
 | EXIF（存在する場合） | メタデータが残っており、かつ合法的にアクセスできる場合のみ |
 
-$$
-\mathsf{LocationClaim} \models \mathsf{Corroborated}
-\iff \ge 2\ \mathsf{IndependentSignals}\ \mathsf{agree}
-$$
+位置の推定は、互いに独立した手がかりが少なくとも2つ一致したときにだけ確定とみなす。
 
 倫理: 個人の自宅住所を公開してはならない。ドキシングをしてはならない。組織内のIR/DFIR業務では、組織のプライバシーポリシーに従うこと。
 
@@ -215,11 +210,9 @@ Personal life  ≠  Investigation workspace
    private            logged, policy-bound, legal
 ```
 
-OPSECの考え方（直感的な式）:
+OPSECをひと言でいうと:
 
-$$
-\mathsf{Exposure} \propto \mathsf{Reuse}(\mathsf{Identity},\;\mathsf{Device},\;\mathsf{Payment},\;\mathsf{LanguageHabits})
-$$
+同じ身元、端末、支払い手段、言葉づかいの癖を複数の調査で使い回すほど、追跡されやすくなる。
 
 コンテキストをまたいだ使い回しを最小限にすること。
 
@@ -260,9 +253,11 @@ $$
 
 倫理の簡易チェック:
 
-$$
-\mathsf{WouldPublish?} \land \mathsf{WouldDefendInCourt?} \land \mathsf{LeastHarm?}
-$$
+```text
+1. これが公開されても問題ないか?
+2. 法廷で正当性を説明できるか?
+3. 最も害の少ないやり方か?
+```
 
 いずれかに「いいえ」と答えるなら、そこで止まり、法務レビューを依頼すること。
 

@@ -80,26 +80,20 @@ PMK (Pairwise Master Key):
 
 - Personal (PSK): PMK diturunkan dari passphrase plus SSID (PBKDF2-HMAC-SHA1, 4096 iterasi pada WPA2-PSK klasik):
 
-$$
-\mathsf{PMK} = \mathsf{PBKDF2}(\mathsf{passphrase},\; \mathsf{SSID},\; 4096,\; 256\text{ bits})
-$$
+```text
+PMK = PBKDF2(passphrase, SSID, 4096 iterations, 256 bits)
+```
 
 - Enterprise: PMK dihasilkan dari EAP / MSK setelah 802.1X berhasil (per sesi/user, lebih baik dibanding PSK yang dipakai bersama).
 
 PTK (Pairwise Transient Key) diturunkan dari PMK ditambah nonce dan alamat MAC:
 
-$$
-\begin{aligned}
-\mathsf{PTK} &= \mathsf{PRF\text{-}X}\big(
-  \mathsf{PMK},\;
-  \texttt{"Pairwise key expansion"},\\
-  &\quad \min(AA,SPA) \,\|\, \max(AA,SPA) \,\|\,
-  \min(ANonce,SNonce) \,\|\, \max(ANonce,SNonce)
-\big)
-\end{aligned}
-$$
+```text
+PTK = PRF(PMK, "Pairwise key expansion",
+          min(AA, SPA) ‖ max(AA, SPA) ‖ min(ANonce, SNonce) ‖ max(ANonce, SNonce))
+```
 
-di mana $AA$ = MAC AP (BSSID), $SPA$ = MAC STA. PTK dipecah menjadi:
+di mana AA = MAC AP (BSSID), SPA = MAC STA. PTK dipecah menjadi:
 
 | Bagian | Fungsi |
 |:---|:---|
@@ -154,9 +148,7 @@ SAE mengubah model ancaman untuk jaringan berbasis passphrase; ini bukan izin un
 
 Banyak management frame klasik (deauth, disassoc) secara historis dikirim tanpa proteksi setara data frame. Akibatnya, pengirim yang berada dalam jangkauan radio bisa memaksa STA terputus dari AP, yang secara konsep merupakan DoS atau gangguan ketersediaan.
 
-$$
-\mathsf{Deauth}:\ \mathsf{STA} \leftrightarrow \mathsf{AP}\ \text{session torn down (state cleared)}
-$$
+Setelah frame deauth diterima, sesi antara perangkat dan access point diputus dan harus dibangun ulang.
 
 Dampak sekunder: pengguna mungkin tersambung ulang ke SSID jahat yang mirip (evil twin) jika kebijakan di perangkat lemah. Mitigasi lewat edukasi pengguna, WPA3, validasi sertifikat Enterprise, dan PMF.
 

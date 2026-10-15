@@ -31,9 +31,9 @@
 
 Pada Ethernet/IPv4, pengiriman frame membutuhkan alamat MAC tujuan di layer 2, sementara aplikasi dan routing memakai alamat IP di layer 3. ARP (Address Resolution Protocol) menjembatani dua dunia ini:
 
-$$
-\mathsf{ARP}:\ \mathsf{IPv4} \;\longrightarrow\; \mathsf{MAC}
-$$
+```text
+ARP:  IPv4 address  →  MAC address
+```
 
 Resolusi ini hanya berlaku di link lokal, yaitu broadcast domain yang sama. Router tidak di-ARP lintas subnet untuk host jauh. Host cukup meng-ARP gateway-nya, lalu mengirim frame ke MAC gateway itu.
 
@@ -57,8 +57,8 @@ ARP dibungkus dalam frame Ethernet dengan EtherType `0x0806`. Ada dua operasi ut
 
 | `op` | Nama | Makna |
 |:---:|:---|:---|
-| 1 | Request | "Who has $IP_t$? Tell $IP_s$" |
-| 2 | Reply | "$IP_t$ is at $MAC_t$" |
+| 1 | Request | "Who has IPₜ? Tell IPₛ" |
+| 2 | Reply | "IPₜ is at MACₜ" |
 
 Field penting (IPv4 over Ethernet):
 
@@ -73,14 +73,12 @@ Request biasanya dikirim sebagai Ethernet broadcast (`ff:ff:ff:ff:ff:ff`), denga
 
 Alur kanonik:
 
-$$
-\begin{aligned}
-A &\xrightarrow{\mathsf{ARP\,Req}(TPA=B)} \mathsf{Broadcast} \\
-B &\xrightarrow{\mathsf{ARP\,Rep}(SPA=B,\,SHA=MAC_B)} A
-\end{aligned}
-$$
+```text
+A → broadcast:  "Who has IP_B? Tell A"
+B → A:          "IP_B is at MAC_B"
+```
 
-Setelah pertukaran ini, $A$ dapat mengirim frame IP dengan `dst MAC = MAC_B`.
+Setelah pertukaran ini, A dapat mengirim frame IP dengan `dst MAC = MAC_B`.
 
 Selain lewat request/reply eksplisit, host juga bisa belajar mapping dari paket yang mereka amati secara pasif, tergantung implementasi kernel/stack-nya. Reply yang tidak diminta atau tidak terduga adalah masalah integritas klasik, dan inilah alasan fitur switch memvalidasi ARP terhadap binding DHCP.
 
@@ -90,9 +88,9 @@ Selain lewat request/reply eksplisit, host juga bisa belajar mapping dari paket 
 
 Kernel menyimpan pemetaan sementara:
 
-$$
-\mathsf{Cache}:\ (IP) \mapsto (MAC,\; \mathsf{state},\; \mathsf{iface},\; \mathsf{expiry})
-$$
+```text
+IP  →  (MAC, state, interface, expiry)
+```
 
 | Aspek | Perilaku umum |
 |:---|:---|
@@ -130,9 +128,9 @@ Tips operasional: setelah renumbering alamat atau penggantian NIC, entri ARP/ND 
 
 Ini konsep, bukan prosedur. Jika host jahat di segmen yang sama berhasil membuat korban menyimpan
 
-$$
-IP_{\mathsf{gateway}} \mapsto MAC_{\mathsf{attacker}}
-$$
+```text
+IP of the gateway  →  MAC of the attacker
+```
 
 (dan secara opsional sebaliknya juga), maka frame yang seharusnya menuju gateway bisa dialihkan ke penyerang. Penyerang yang juga meneruskan trafik dapat mengamati atau mengubah sesi cleartext, dan inilah yang disebut MITM di layer 2.
 

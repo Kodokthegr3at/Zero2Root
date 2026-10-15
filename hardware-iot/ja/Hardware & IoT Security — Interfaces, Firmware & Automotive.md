@@ -35,9 +35,7 @@
 
 IoTデバイスは、シリコン、ファームウェア、無線/ネットワーク、クラウドが組み合わさったものです。脅威は物理的な経路(デバッグポート)、ローカルな経路(Wi-Fi/BLE)、リモートな経路(クラウドAPI)から来ます。
 
-$$
-\mathsf{Risk} = \mathsf{AssetValue} \times \mathsf{Exposure} \times \mathsf{WeakControl}
-$$
+価値の高い資産に簡単に手が届き、しかも守りが弱いとき、リスクは最大になります。この3つのどれか1つを下げれば、リスクも下がります。
 
 守るべき典型的な資産には、デバイス鍵、クラウドの認証情報、センサーデータ、そして(自動車、医療、産業分野における)安全機能が含まれます。
 
@@ -75,9 +73,7 @@ $$
 JTAG(IEEE 1149.1)は境界スキャンとデバッグに使われます。典型的なピンは `TCK`、`TMS`、`TDI`、`TDO`、`TRST`(オプション)です。
 SWD(ARM)は2本の線、`SWDIO` と `SWCLK` を使います。
 
-$$
-\mathsf{DebugExposure} = [\mathsf{PadsAccessible}] \land [\mathsf{AuthAbsent}] \land [\mathsf{FuseOpen}]
-$$
+デバッグポートが本当に危険になるのは、パッドに手が届き、認証がなく、デバッグ用ヒューズがまだ開いている、という3つがそろったときです。
 
 防御策(ベンダー側):
 - 本番環境ではヒューズやライフサイクルステートを使ってデバッグを無効化する。
@@ -136,9 +132,7 @@ PCB edge                 SoC
 4. TLSの設定と証明書ストアを確認する。
 5. コンポーネントのバージョンを特定し、既知のCVEと照合する。
 
-$$
-\mathsf{UpdateSafe} \iff \mathsf{Signed} \land \mathsf{VerifiedChain} \land \mathsf{AntiRollback}
-$$
+ファームウェア更新が安全といえるのは、署名されていて、署名の連鎖が検証され、脆弱な古いバージョンに戻せない(アンチロールバック)場合だけです。
 
 静的解析の概念: イメージの展開(ラボ環境でbinwalk系のツールを使う)、ファイルシステムの抽出、文字列のトリアージ、設定のレビュー。
 動的解析: 自分が所有するイメージに対してエミュレータやテストハーネスを使う。他人が運用しているフリート全体を狙うものではありません。
@@ -169,12 +163,12 @@ dm-verity / app containers (optional)
 | ハードウェアroot of trust | 鍵をヒューズ、OTP、SoC上のHSMに保存する |
 
 ### 署名モデル
-$$
-\begin{aligned}
-\sigma &= \mathsf{Sign}_{sk_{vendor}}(\mathsf{Hash}(image)) \\
-\mathsf{Accept} &\iff \mathsf{Verify}_{pk}(image,\sigma)=1 \land \mathsf{version} \ge v_{\min}
-\end{aligned}
-$$
+```text
+σ = Sign(ベンダーの秘密鍵, Hash(image))
+
+次の両方を満たすときだけイメージを受け入れる:
+  Verify(pk, image, σ) = OK   かつ   バージョン ≥ 許可された最小バージョン
+```
 
 典型的な失敗パターン: デバッグブートが有効なまま残されている、ベンダーの秘密鍵が流出する、あるいは検証処理がヒューズによる保護なしでパッチ可能なソフトウェアとして実装されている、などです。
 
@@ -192,10 +186,7 @@ $$
 
 最小権限のデバイスID: すべてのデバイスは固有のIDを持つべきで、フリート全体で共有する単一のグローバル鍵は使うべきではありません。
 
-$$
-\mathsf{CompromiseOne} \not\Rightarrow \mathsf{CompromiseFleet}
-\quad \text{(鍵が固有でローテーションされている場合)}
-$$
+そうすれば、鍵が固有でローテーションされている限り、1台が破られてもフリート全体を明け渡すことにはなりません。
 
 ---
 
@@ -218,9 +209,9 @@ ECU_A ----+------ ECU_B ------+------ ECU_C
 ```
 
 ### フレーム(概念)
-$$
-\mathsf{CANFrame} \approx \langle \mathsf{ID},\; \mathsf{DLC},\; \mathsf{Data}_{0..8},\; \mathsf{CRC} \rangle
-$$
+```text
+CANフレーム = ID(何のメッセージか) | DLC(データ長) | データ(0〜8バイト) | CRC(エラーチェック)
+```
 
 ISO-TPやUDSは診断用のトランスポートとしてCANを使います。ここは厳しく管理すべき領域です。
 
@@ -261,9 +252,7 @@ Infotainment ──X──▶ Safety CAN
    Telematics (auth'd)
 ```
 
-$$
-\mathsf{LateralMoveHard} \propto \mathsf{GatewayPolicyStrength} \times \mathsf{DomainIsolation}
-$$
+ゲートウェイのフィルタリングが強く、ドメインがしっかり分離されているほど、攻撃者が車のある部分(たとえばインフォテインメント)から別の部分(たとえばブレーキ)へ移るのは難しくなります。
 
 厳格なルール: この教材はCANインジェクションのスクリプト、リプレイ攻撃のレシピ、イモビライザーの回避手順を提供しません。アーキテクチャを理解することは、防御的な設計と認可されたアセスメントのために役立ちます。
 

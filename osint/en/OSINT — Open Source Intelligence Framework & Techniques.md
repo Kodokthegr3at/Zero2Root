@@ -33,9 +33,9 @@
 
 Open Source Intelligence (OSINT) is intelligence collected from information that is publicly available and lawfully accessible, then processed into actionable insight.
 
-$$
-\mathsf{OSINT} = \mathsf{Collect}_{\text{legal public}} \rightarrow \mathsf{Process} \rightarrow \mathsf{Analyze} \rightarrow \mathsf{Disseminate}
-$$
+```text
+collect (legal, public sources) → process → analyze → share the results
+```
 
 | OSINT | Not OSINT |
 |:---|:---|
@@ -72,9 +72,9 @@ OSINT quality depends less on "secret tools" and more on tradecraft: clear quest
 
 Avoid absolutism. Use a scale:
 
-$$
-\mathsf{Confidence} \in \{\mathsf{low},\;\mathsf{moderate},\;\mathsf{high}\}
-$$
+```text
+confidence:  low  /  moderate  /  high
+```
 
 Clearly separate observed fact from inference.
 
@@ -86,13 +86,11 @@ A weak PIR: "Find everything about X."
 
 A good PIR:
 
-1. Does organization $X$ operate its own ASN / public IP range?
-2. Which domains are linked to brand $X$ according to public WHOIS/CT log data?
+1. Does organization X operate its own ASN / public IP range?
+2. Which domains are linked to brand X according to public WHOIS/CT log data?
 3. Do any job postings reveal their technology stack (technical OSINT for defensive purposes)?
 
-$$
-\mathsf{GoodPIR} \iff \mathsf{Answerable} \land \mathsf{TimeBound} \land \mathsf{DecisionLinked}
-$$
+A good PIR (priority intelligence requirement) can actually be answered, has a deadline, and is tied to a real decision.
 
 Collection plan: sources → methods → legal check → storage → analyst.
 
@@ -115,9 +113,9 @@ Collection plan: sources → methods → legal check → storage → analyst.
 
 For every artifact, record:
 
-$$
-\langle \mathsf{URL},\; \mathsf{UTC},\; \mathsf{hash},\; \mathsf{collector},\; \mathsf{tool},\; \mathsf{notes} \rangle
-$$
+```text
+URL  |  time (UTC)  |  hash  |  who collected it  |  which tool  |  notes
+```
 
 Without provenance, an analysis is easy to challenge.
 
@@ -188,10 +186,7 @@ Geolocation in OSINT means verifying a location claim from public photos/videos,
 | Infrastructure | Power poles, road markings, left/right-hand drive |
 | EXIF (if present) | Only when metadata is still embedded and access is lawful |
 
-$$
-\mathsf{LocationClaim} \models \mathsf{Corroborated}
-\iff \ge 2\ \mathsf{IndependentSignals}\ \mathsf{agree}
-$$
+Treat a location claim as confirmed only when at least two independent clues agree.
 
 Ethics: do not publish a private home address; do not doxx. For internal IR/DFIR work, follow the organization's privacy policy.
 
@@ -215,11 +210,9 @@ Personal life  ≠  Investigation workspace
    private            logged, policy-bound, legal
 ```
 
-OPSEC formula (intuition):
+OPSEC in one sentence:
 
-$$
-\mathsf{Exposure} \propto \mathsf{Reuse}(\mathsf{Identity},\;\mathsf{Device},\;\mathsf{Payment},\;\mathsf{LanguageHabits})
-$$
+the more you reuse the same identity, device, payment method, or writing habits across different investigations, the easier you are to trace.
 
 Minimize reuse across contexts.
 
@@ -260,9 +253,11 @@ This note does not provide a recipe for building a persona to infiltrate a commu
 
 Quick ethics check:
 
-$$
-\mathsf{WouldPublish?} \land \mathsf{WouldDefendInCourt?} \land \mathsf{LeastHarm?}
-$$
+```text
+1. Would I be comfortable if this were published?
+2. Could I defend it in court?
+3. Is this the least harmful way to do it?
+```
 
 If any answer is "no," stop and request a legal review.
 

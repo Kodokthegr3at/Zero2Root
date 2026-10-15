@@ -68,16 +68,12 @@ DNSは分散型の階層データベースである。木構造全体を単一�
 
 反復的なアルゴリズムを直感的に表すと（Kuroseの説明に沿う形で）次のようになる。
 
-$$
-\begin{aligned}
-&Q \leftarrow \text{query}(name, type) \\
-&S \leftarrow \text{root hint set} \\
-&\textbf{while } true: \\
-&\quad R \leftarrow \mathsf{Query}(S, Q) \\
-&\quad \textbf{if } R \text{ is answer or NXDOMAIN:} \; \textbf{return } R \\
-&\quad S \leftarrow \text{referral NS (and glue) from } R
-\end{aligned}
-$$
+```text
+1. ルートサーバーから始める
+2. 現在のサーバーに名前を問い合わせる
+3. 答えかNXDOMAINが返った        → 終了
+4. 委任(referral)が返った        → 指示されたサーバーに問い合わせ、手順2に戻る
+```
 
 ```
 Stub ──Q──► Recursive ──iterative──► Root
@@ -131,19 +127,19 @@ DNSSECはDNSデータに認証と完全性を追加するものであり、機�
 | DS | 子ゾーンのDNSKEYのダイジェストで、親ゾーンに保持される |
 | NSEC/NSEC3 | 名前やタイプが存在しないことの証明 |
 
-RRSIGの検証を概念的に表すと、RRset $R$ と公開鍵 $K$ に対して次のようになる。
+RRSIGの検証を概念的に表すと、RRset R と公開鍵 K に対して次のようになる。
 
-$$
-\mathsf{Verify}\big(K_{\mathsf{pub}},\; R,\; \mathsf{RRSIG}(R)\big) = \mathsf{accept/reject}
-$$
+```text
+Verify(public key, RRset, RRSIG) → accept / reject
+```
 
-署名方式 $\mathsf{Sign}/\mathsf{Verify}$ を使って抽象的に書けば、
+署名方式 Sign/Verify を使って抽象的に書けば、
 
-$$
-\mathsf{RRSIG}(R) = \mathsf{Sign}_{K_{\mathsf{priv}}}(\mathsf{Hash}(R) \;\|\; \mathsf{meta})
-$$
+```text
+RRSIG = Sign(private key, Hash(RRset) + meta)
+```
 
-であり、$\mathsf{meta}$ にはアルゴリズム、ラベル数、original TTL、有効開始・終了時刻、key tag、signer nameなどが含まれる。
+であり、meta にはアルゴリズム、ラベル数、original TTL、有効開始・終了時刻、key tag、signer nameなどが含まれる。
 
 信頼の連鎖:
 
@@ -208,9 +204,9 @@ AXFR（フルゾーン転送）とIXFR（差分転送）は、secondaryがprimar
 
 高いレベルでの脅威モデル（Kaminsky時代の直感的な説明）としては、過去のトランザクション推測空間が次のように小さければ危険だった。
 
-$$
-|\mathcal{S}| = 2^{16}\;(\mathsf{TXID}) \times \#\{\text{src ports}\}
-$$
+```text
+推測空間 = 2¹⁶ 通りのTXID × 送信元ポートの数
+```
 
 この値が小さく、かつ攻撃者が自ら引き起こしたクエリに対して偽の応答を大量に送りつけられる場合である。
 

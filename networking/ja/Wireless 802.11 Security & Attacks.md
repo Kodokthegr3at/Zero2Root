@@ -80,26 +80,20 @@ PMK（Pairwise Master Key）:
 
 - Personal（PSK）: PMKはパスフレーズとSSIDから導出される（古典的なWPA2-PSKではPBKDF2-HMAC-SHA1を4096回反復）。
 
-$$
-\mathsf{PMK} = \mathsf{PBKDF2}(\mathsf{passphrase},\; \mathsf{SSID},\; 4096,\; 256\text{ bits})
-$$
+```text
+PMK = PBKDF2(passphrase, SSID, 4096 iterations, 256 bits)
+```
 
 - Enterprise: PMKは802.1Xが成功した後のEAP/MSKから得られる（セッション/ユーザーごとであり、共有PSKより優れている）。
 
 PTK（Pairwise Transient Key）は、PMKにnonceとMACアドレスを加えて導出される。
 
-$$
-\begin{aligned}
-\mathsf{PTK} &= \mathsf{PRF\text{-}X}\big(
-  \mathsf{PMK},\;
-  \texttt{"Pairwise key expansion"},\\
-  &\quad \min(AA,SPA) \,\|\, \max(AA,SPA) \,\|\,
-  \min(ANonce,SNonce) \,\|\, \max(ANonce,SNonce)
-\big)
-\end{aligned}
-$$
+```text
+PTK = PRF(PMK, "Pairwise key expansion",
+          min(AA, SPA) ‖ max(AA, SPA) ‖ min(ANonce, SNonce) ‖ max(ANonce, SNonce))
+```
 
-ここで $AA$ はAPのMAC（BSSID）、$SPA$ はSTAのMACである。PTKは次のように分割される。
+ここで AA はAPのMAC（BSSID）、SPA はSTAのMACである。PTKは次のように分割される。
 
 | 部分 | 機能 |
 |:---|:---|
@@ -154,9 +148,7 @@ SAEはパスフレーズ方式のネットワークにおける脅威モデル�
 
 古典的な管理フレーム（deauth、disassoc）の多くは、歴史的にデータフレームと同等の保護なしで送信されてきた。その結果、電波の届く範囲にいる送信者は、STAを強制的にAPから切断させることができ、これは概念上、DoSまたは可用性の阻害にあたる。
 
-$$
-\mathsf{Deauth}:\ \mathsf{STA} \leftrightarrow \mathsf{AP}\ \text{session torn down (state cleared)}
-$$
+deauthフレームを受け取ると、端末とアクセスポイントの間のセッションは切断され、もう一度確立し直さなければならない。
 
 副次的な影響として、端末側のポリシーが弱い場合、ユーザーが似たような不正なSSID（イービルツイン）に再接続してしまうことがある。緩和策としては、ユーザー教育、WPA3、Enterprise証明書の検証、PMFが挙げられる。
 

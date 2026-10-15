@@ -56,18 +56,15 @@ AndroidはカスタマイズされたLinuxカーネルの上に構築された�
 
 インストール時に、Package Managerは各アプリケーションにユニークなLinux UIDを割り当てる(例: `u0_a145`はUID `10145`に対応する)。アプリのプライベートデータは次の場所に置かれる。
 
-$$
-\mathsf{AppData}(pkg) = /\mathsf{data}/\mathsf{data}/pkg/
-$$
+```text
+/data/data/<package name>/
+```
 
-所有者は$(uid_{pkg}, uid_{pkg})$で、典型的なモードは`0700`だ。
+所有者は(uid_pkg, uid_pkg)で、典型的なモードは`0700`だ。
 
 分離の形式モデル(DAC):
 
-$$
-\mathsf{Access}(A \rightarrow B.\mathsf{data}) = \mathsf{true}
-\iff uid_A = uid_B \lor \mathsf{sharedUserId} \land \mathsf{sameSigningKey}
-$$
+アプリAがアプリBのプライベートデータを読めるのは、両者が同じUIDで動いている場合だけだ。それは、両方が `sharedUserId` を使い、同じ鍵で署名されているときにしか起きない。
 
 `sharedUserId`は現行のAPIレベルでは非推奨であり、新規設計では避けるべきだ。分離はさらにARTとプロセス分離によっても補強されている。マニフェストでマルチプロセスが明示的に宣言されていない限り、アプリごとに1プロセスとなる。
 
@@ -120,13 +117,10 @@ Androidには4つの中核コンポーネントがある。
 
 安全なデフォルトルール:
 
-$$
-\mathsf{exported} =
-\begin{cases}
-\mathsf{false} & \text{アプリの外からアクセスする必要がない場合} \\
-\mathsf{true} + \mathsf{permission} & \text{公開IPCが本当に必要な場合}
-\end{cases}
-$$
+```text
+アプリ外から呼ばれる必要がない   → exported = false
+公開IPCが本当に必要              → exported = true + パーミッション
+```
 
 IntentはIPCメッセージだ。明示的Intentは特定のコンポーネントを直接指定する。暗黙的Intentはaction/category/dataのマッチングに依存し、保護がなければ乗っ取りに対してより無防備になる。
 
@@ -144,12 +138,10 @@ App A ──Intent──▶ ActivityManager ──resolve──▶ App B compone
 
 BinderはAndroidの主要なIPCバスだ(Elenkov, 第6章)。すべてのトランザクションは、サービス側で検証可能な呼び出し元の識別情報を伴う。
 
-$$
-\begin{aligned}
-uid_{caller} &= \mathsf{Binder.getCallingUid}() \\
-pid_{caller} &= \mathsf{Binder.getCallingPid}()
-\end{aligned}
-$$
+```text
+uid_caller = Binder.getCallingUid()
+pid_caller = Binder.getCallingPid()
+```
 
 AIDLインターフェースを公開するサービスは、権限を要する操作を実行する前に、呼び出し元のUIDやパーミッションを必ず検証しなければならない。認可なしにクライアントから渡されたパラメータを信用してはならない。
 
@@ -166,11 +158,9 @@ Binderの識別情報は、AndroidにおけるIPC信頼の基盤だ。よくあ�
 
 ## 6. AndroidにおけるSELinux: MACの概要
 
-SELinuxはDACの上にMandatory Access Controlを追加する。すべてのプロセスはセキュリティコンテキスト(user:role:type:sensitivity)を持つ。Type Enforcementポリシーは、ドメイン$D$がオブジェクトタイプ$T$に対して操作$op$を行えるかどうかを決定する。
+SELinuxはDACの上にMandatory Access Controlを追加する。すべてのプロセスはセキュリティコンテキスト(user:role:type:sensitivity)を持つ。Type Enforcementポリシーは、ドメインDがオブジェクトタイプTに対して操作opを行えるかどうかを決定する。
 
-$$
-\mathsf{Allow}(D, T, op) \in \mathsf{Policy}
-$$
+ポリシーに明示的に許可するルールがある操作だけが許され、それ以外はすべて拒否される。
 
 Androidの本番モードはEnforcingだ。`permissive`モードは、自分が所有する端末でのデバッグ目的にのみ使う。
 
@@ -201,9 +191,7 @@ system_server ──✓──▶ framework sockets (policy allow)
 
 アンチパターン: トークンやAPIキーを、プレーンテキストの`SharedPreferences`、XMLリソース、あるいはDEX内のハードコードされた文字列定数として保存すること。
 
-$$
-\mathsf{Secret}_{ok} \subseteq \mathsf{Keystore}\ \cup\ \mathsf{server\text{-}side}
-$$
+秘密情報を置いてよいのは、Android Keystoreかサーバー側だけだ。
 
 ---
 

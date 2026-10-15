@@ -80,26 +80,20 @@ PMK (Pairwise Master Key):
 
 - Personal (PSK): the PMK is derived from the passphrase plus the SSID (PBKDF2-HMAC-SHA1, 4096 iterations on classic WPA2-PSK):
 
-$$
-\mathsf{PMK} = \mathsf{PBKDF2}(\mathsf{passphrase},\; \mathsf{SSID},\; 4096,\; 256\text{ bits})
-$$
+```text
+PMK = PBKDF2(passphrase, SSID, 4096 iterations, 256 bits)
+```
 
 - Enterprise: the PMK comes from EAP / the MSK after a successful 802.1X exchange (per session/user, an improvement over a shared PSK).
 
 PTK (Pairwise Transient Key) is derived from the PMK plus nonces and MAC addresses:
 
-$$
-\begin{aligned}
-\mathsf{PTK} &= \mathsf{PRF\text{-}X}\big(
-  \mathsf{PMK},\;
-  \texttt{"Pairwise key expansion"},\\
-  &\quad \min(AA,SPA) \,\|\, \max(AA,SPA) \,\|\,
-  \min(ANonce,SNonce) \,\|\, \max(ANonce,SNonce)
-\big)
-\end{aligned}
-$$
+```text
+PTK = PRF(PMK, "Pairwise key expansion",
+          min(AA, SPA) ‖ max(AA, SPA) ‖ min(ANonce, SNonce) ‖ max(ANonce, SNonce))
+```
 
-where $AA$ = the AP's MAC (BSSID), $SPA$ = the STA's MAC. The PTK splits into:
+where AA = the AP's MAC (BSSID), SPA = the STA's MAC. The PTK splits into:
 
 | Part | Function |
 |:---|:---|
@@ -154,9 +148,7 @@ SAE changes the threat model for passphrase-based networks; it is not a license 
 
 Many classic management frames (deauth, disassoc) were historically sent without the same protection as data frames. As a result, a sender within radio range could force a STA to disconnect from its AP, which conceptually is a DoS or availability disruption.
 
-$$
-\mathsf{Deauth}:\ \mathsf{STA} \leftrightarrow \mathsf{AP}\ \text{session torn down (state cleared)}
-$$
+After a deauth frame, the session between the device and the access point is torn down and has to be set up again.
 
 A secondary effect: users may reconnect to a similar-looking rogue SSID (an evil twin) if device policy is weak. Mitigation comes through user education, WPA3, Enterprise certificate validation, and PMF.
 

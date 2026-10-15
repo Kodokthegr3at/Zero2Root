@@ -56,18 +56,15 @@ Each layer assumes the layer above it may already be compromised. A compromise o
 
 At install time, the Package Manager allocates a unique Linux UID for each application (for example, `u0_a145`, which corresponds to UID `10145`). An app's private data lives at:
 
-$$
-\mathsf{AppData}(pkg) = /\mathsf{data}/\mathsf{data}/pkg/
-$$
+```text
+/data/data/<package name>/
+```
 
-owned by $(uid_{pkg}, uid_{pkg})$, typically with mode `0700`.
+owned by (uid_pkg, uid_pkg), typically with mode `0700`.
 
 Formal isolation model (DAC):
 
-$$
-\mathsf{Access}(A \rightarrow B.\mathsf{data}) = \mathsf{true}
-\iff uid_A = uid_B \lor \mathsf{sharedUserId} \land \mathsf{sameSigningKey}
-$$
+App A can read app B's private data only if both run as the same UID. That only happens when both use `sharedUserId` and are signed with the same key.
 
 `sharedUserId` is deprecated on modern API levels and should be avoided in new designs. Isolation is further reinforced by ART and process isolation: one process per app, unless multi-process is explicitly declared in the manifest.
 
@@ -120,13 +117,10 @@ Android has four core components:
 
 Safe default rule:
 
-$$
-\mathsf{exported} =
-\begin{cases}
-\mathsf{false} & \text{if the component does not need to be reached from outside the app} \\
-\mathsf{true} + \mathsf{permission} & \text{if public IPC is genuinely required}
-\end{cases}
-$$
+```text
+not needed from outside the app   → exported = false
+public IPC really required        → exported = true + a permission
+```
 
 An Intent is an IPC message. An explicit Intent targets a specific component directly; an implicit Intent relies on action/category/data matching, and is more exposed to hijacking if left unprotected.
 
@@ -144,12 +138,10 @@ Defense: do not export sensitive Activities, validate all extras, use `PendingIn
 
 Binder is Android's primary IPC bus (Elenkov, Ch.6). Every transaction carries a caller identity that the service side can verify:
 
-$$
-\begin{aligned}
-uid_{caller} &= \mathsf{Binder.getCallingUid}() \\
-pid_{caller} &= \mathsf{Binder.getCallingPid}()
-\end{aligned}
-$$
+```text
+uid_caller = Binder.getCallingUid()
+pid_caller = Binder.getCallingPid()
+```
 
 A service that exposes an AIDL interface must validate the caller's UID or permission before performing any privileged operation. Never trust a parameter coming from the client without authorization.
 
@@ -166,11 +158,9 @@ Binder identity is the foundation of IPC trust on Android. A common design bug i
 
 ## 6. SELinux on Android: A MAC Overview
 
-SELinux adds Mandatory Access Control on top of DAC. Every process has a security context (user:role:type:sensitivity). Type enforcement policy decides whether domain $D$ may perform operation $op$ on object type $T$:
+SELinux adds Mandatory Access Control on top of DAC. Every process has a security context (user:role:type:sensitivity). Type enforcement policy decides whether domain D may perform operation op on object type T:
 
-$$
-\mathsf{Allow}(D, T, op) \in \mathsf{Policy}
-$$
+An action is allowed only if the policy contains a rule that explicitly allows it. Everything else is denied.
 
 Android's production mode is Enforcing. `permissive` mode is used only for debugging on a device you own.
 
@@ -201,9 +191,7 @@ system_server ──✓──▶ framework sockets (policy allow)
 
 Anti-pattern: storing a token or API key in plaintext `SharedPreferences`, in an XML resource, or as a hardcoded string constant inside the DEX.
 
-$$
-\mathsf{Secret}_{ok} \subseteq \mathsf{Keystore}\ \cup\ \mathsf{server\text{-}side}
-$$
+Secrets belong only in the Android Keystore or on the server.
 
 ---
 
