@@ -1,6 +1,6 @@
 # IPアドレッシング、サブネット化、ルーティング
 
-> **LearnCybersecurity** | ネットワーク基礎シリーズ
+> **Zero2Root** | ネットワーク基礎シリーズ
 > 最終更新: 2026年 | 著者: kodoktheGr3at
 > 主要参考文献: Kurose & Ross『Computer Networking』、Stallings『Network Security Essentials』、Benvenuti『Understanding Linux Network Internals』
 
@@ -277,5 +277,5 @@ print(n.network_address, n.broadcast_address, n.num_addresses)"
 > - RFC 1918、RFC 4632(CIDR)、RFC 3021(/31)、RFC 6598(CGNAT)
 > - `man ip`、`man ping`、`man traceroute`
 
-> **リポジトリ:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **リポジトリ:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > 自分が所有する、または検証を許可されたネットワークのための教育用資料とラボ。

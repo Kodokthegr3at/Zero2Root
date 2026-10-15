@@ -1,6 +1,6 @@
 # ARP & Serangan Jaringan Lokal
 
-> **LearnCybersecurity** | Seri Dasar Networking
+> **Zero2Root** | Seri Dasar Networking
 > Terakhir diperbarui: 2026 | Penulis: kodoktheGr3at
 > Referensi utama: Kurose & Ross, *Computer Networking*; Benvenuti, *Understanding Linux Network Internals*; Stallings, *Network Security Essentials*
 
@@ -230,5 +230,5 @@ bridge fdb show
 > - W. Richard Stevens, *UNIX Network Programming, Vol. 1*, `~/Documents/Books/CyberSec/Networking/`
 > - RFC 826 (ARP), RFC 5227 (IPv4 Address Conflict Detection), RFC 4861 (NDP)
 
-> **Repositori:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repositori:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > Materi edukasi dan lab untuk jaringan milik sendiri atau yang kamu berizin menguji. Tidak ada playbook poisoning.

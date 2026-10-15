@@ -1,6 +1,6 @@
 # Hardware & IoT Security, Interfaces, Firmware & Automotive
 
-> **LearnCybersecurity** | Embedded, IoT & Automotive Security Series
+> **Zero2Root** | Embedded, IoT & Automotive Security Series
 > Last updated: 2026 | Author: kodoktheGr3at
 > Primary refs: *Hardware Hacking Handbook*; *Practical IoT Hacking*; *The Car Hacker's Handbook*, `~/Documents/Books/CyberSec/Hardware/`
 > Focus: interface concepts, architecture, and defense. Not vehicle attack recipes or exploit payloads.
@@ -342,5 +342,5 @@ Not covered here: CAN attack scripts, immobilizer defeat, airbag/safety misuse, 
 > - *The Car Hacker's Handbook*, `~/Documents/Books/CyberSec/Hardware/` (adapted here for CAN architecture + defenses)
 > - Industry: UNECE WP.29 / ISO/SAE 21434 (automotive cybersecurity process, overview)
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > For education and securing devices you own or work with in an authorized lab. Not for interfering with someone else's vehicle or device.

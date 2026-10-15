@@ -1,6 +1,6 @@
 # OSI Model
 
-> **LearnCybersecurity** | Networking Fundamentals Series
+> **Zero2Root** | Networking Fundamentals Series
 > Last updated: 2026 | Author: kodoktheGr3at
 
 ---
@@ -379,5 +379,5 @@ MEMORY TRICKS
 > - RFC 793 (TCP), RFC 768 (UDP)
 > - Nmap and Wireshark official documentation, the IANA port number registry
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > Educational material and labs for networks you own or are authorized to test on.

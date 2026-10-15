@@ -2,10 +2,10 @@
 
 # 参考文献ライブラリ: `~/Documents/Books/`
 
-> **LearnCybersecurity** | カリキュラムIDに対応したローカル書籍カタログ
+> **Zero2Root** | カリキュラムIDに対応したローカル書籍カタログ
 > 2026年 | すべてのパスは `/home/kodok/Documents/Books/` からの相対パス
 
-このカタログは、ローカルライブラリ内のすべてのPDFをLearnCybersecurityのレッスンに対応付けている。各`LC-xxx`のノートを読む前後に、対応する章を読むこと。
+このカタログは、ローカルライブラリ内のすべてのPDFをZero2Rootのレッスンに対応付けている。各`LC-xxx`のノートを読む前後に、対応する章を読むこと。
 
 ---
 

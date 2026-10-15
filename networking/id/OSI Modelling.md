@@ -1,6 +1,6 @@
 # Model OSI
 
-> **LearnCybersecurity** | Seri Dasar Networking
+> **Zero2Root** | Seri Dasar Networking
 > Terakhir diperbarui: 2026 | Penulis: kodoktheGr3at
 
 ---
@@ -379,5 +379,5 @@ TRIK MENGHAFAL
 > - RFC 793 (TCP), RFC 768 (UDP)
 > - Dokumentasi resmi Nmap dan Wireshark, registri nomor port IANA
 
-> **Repositori:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repositori:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > Materi edukasi dan lab untuk jaringan milik sendiri atau yang kamu berizin mengujinya.

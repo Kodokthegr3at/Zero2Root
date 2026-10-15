@@ -1,6 +1,6 @@
 # Keamanan & Serangan Wireless 802.11
 
-> **LearnCybersecurity** | Seri Dasar Networking
+> **Zero2Root** | Seri Dasar Networking
 > Terakhir diperbarui: 2026 | Penulis: kodoktheGr3at
 > Referensi utama: *802.11 Wireless Networks: The Definitive Guide*; Stallings, *Network Security Essentials*; Kurose & Ross, *Computer Networking*
 
@@ -217,5 +217,5 @@ iw reg get
 > - IEEE 802.11i / WPA2 RSN, IEEE 802.11w (PMF), spesifikasi WPA3 (Wi-Fi Alliance)
 > - `man iw`, `man nmcli`
 
-> **Repositori:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repositori:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > Materi edukasi dan administrasi untuk WLAN milik sendiri, tanpa prosedur cracking atau injeksi serangan.

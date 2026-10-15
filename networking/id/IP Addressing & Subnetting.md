@@ -1,6 +1,6 @@
 # Pengalamatan IP, Subnetting & Routing Jaringan
 
-> **LearnCybersecurity** | Seri Dasar Networking
+> **Zero2Root** | Seri Dasar Networking
 > Terakhir diperbarui: 2026 | Penulis: kodoktheGr3at
 > Referensi utama: Kurose & Ross, *Computer Networking*; Stallings, *Network Security Essentials*; Benvenuti, *Understanding Linux Network Internals*
 
@@ -277,5 +277,5 @@ print(n.network_address, n.broadcast_address, n.num_addresses)"
 > - RFC 1918, RFC 4632 (CIDR), RFC 3021 (/31), RFC 6598 (CGNAT)
 > - `man ip`, `man ping`, `man traceroute`
 
-> **Repositori:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repositori:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > Materi edukasi dan lab untuk jaringan milik sendiri atau yang kamu berizin mengujinya.

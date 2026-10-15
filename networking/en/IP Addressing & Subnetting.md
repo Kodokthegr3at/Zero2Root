@@ -1,6 +1,6 @@
 # IP Addressing, Subnetting & Network Routing
 
-> **LearnCybersecurity** | Networking Fundamentals Series
+> **Zero2Root** | Networking Fundamentals Series
 > Last updated: 2026 | Author: kodoktheGr3at
 > Primary refs: Kurose & Ross, *Computer Networking*; Stallings, *Network Security Essentials*; Benvenuti, *Understanding Linux Network Internals*
 
@@ -277,5 +277,5 @@ print(n.network_address, n.broadcast_address, n.num_addresses)"
 > - RFC 1918, RFC 4632 (CIDR), RFC 3021 (/31), RFC 6598 (CGNAT)
 > - `man ip`, `man ping`, `man traceroute`
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > Educational material and labs for networks you own or are authorized to test on.

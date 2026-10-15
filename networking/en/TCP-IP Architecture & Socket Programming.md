@@ -1,6 +1,6 @@
 # TCP/IP Architecture & Socket Programming
 
-> **LearnCybersecurity** | Networking Fundamentals Series
+> **Zero2Root** | Networking Fundamentals Series
 > Last updated: 2026 | Author: kodoktheGr3at
 > Primary refs: Kurose & Ross, *Computer Networking*; Stevens, *UNIX Network Programming*; Benvenuti, *Understanding Linux Network Internals*; Stallings, *Network Security Essentials*
 
@@ -307,5 +307,5 @@ sysctl net.core.somaxconn
 > - RFC 791 (IPv4), RFC 9293 (TCP), RFC 4987 (SYN flood / cookies)
 > - `man ss`, `man tcpdump`, `man 7 ip`, `man 7 tcp`
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > Educational material and labs on systems you own, no flood PoCs or exploits.

@@ -1,6 +1,6 @@
 # Social Engineering: Prinsip, Vektor & Pertahanan
 
-> **LearnCybersecurity** | Seri Human Factor Security
+> **Zero2Root** | Seri Human Factor Security
 > Terakhir diperbarui: 2026 | Penulis: kodoktheGr3at
 > Referensi utama: Christopher Hadnagy, *Social Engineering: The Science of Human Hacking*; Kevin Mitnick, *The Art of Deception*; Joe Gray, *Practical Social Engineering*
 
@@ -306,5 +306,5 @@ Yang tidak dibahas: membuat phishing kit, proxy pencuri kredensial, payload BadU
 > - Joe Gray, *Practical Social Engineering*, `~/Documents/Books/CyberSec/Social Engineering/`
 > - Robert Cialdini, *Influence* (prinsip yang dirujuk lewat literatur SE)
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > Edukasi dan pelatihan berizin. Jangan gunakan untuk penipuan atau akses tidak sah.

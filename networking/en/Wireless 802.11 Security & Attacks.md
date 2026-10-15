@@ -1,6 +1,6 @@
 # Wireless 802.11 Security & Attacks
 
-> **LearnCybersecurity** | Networking Fundamentals Series
+> **Zero2Root** | Networking Fundamentals Series
 > Last updated: 2026 | Author: kodoktheGr3at
 > Primary refs: *802.11 Wireless Networks: The Definitive Guide*; Stallings, *Network Security Essentials*; Kurose & Ross, *Computer Networking*
 
@@ -217,5 +217,5 @@ iw reg get
 > - IEEE 802.11i / WPA2 RSN, IEEE 802.11w (PMF), the WPA3 (Wi-Fi Alliance) specification
 > - `man iw`, `man nmcli`
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > Educational material and administration for WLANs you own, no cracking procedures or attack injection.

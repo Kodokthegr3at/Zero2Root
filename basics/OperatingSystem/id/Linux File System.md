@@ -1,6 +1,6 @@
 # Linux File System
 
-> LearnCybersecurity | Basics Series | kodoktheGr3at | 2026
+> Zero2Root | Basics Series | kodoktheGr3at | 2026
 
 ---
 
@@ -879,4 +879,4 @@ sudo umount /mnt/usb             # unmount a device
 > - [HackTheBox Academy - Linux Fundamentals](https://academy.hackthebox.com)
 > - [GTFOBins](https://gtfobins.github.io) — kesadaran defender terhadap SUID/sudo binary berbahaya
 
-> LearnCybersecurity | Basics Series | kodoktheGr3at | 2026
+> Zero2Root | Basics Series | kodoktheGr3at | 2026

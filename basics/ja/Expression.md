@@ -1,6 +1,6 @@
 # 式(Expression): 構文、種類、評価
 
-> **LearnCybersecurity** | 基礎シリーズ | kodoktheGr3at | 2026
+> **Zero2Root** | 基礎シリーズ | kodoktheGr3at | 2026
 
 ---
 
@@ -333,6 +333,6 @@ target.scan();
 > - Dafydd Stuttard & Marcus Pinto, *The Web Application Hacker's Handbook (2nd Edition)* (`~/Documents/Books/CyberSec/Web App/`)
 > - Scott Meyers, *Effective Modern C++* (`~/Documents/Books/Programming/ C++/`)
 
-> **LearnCybersecurity** | 基礎シリーズ | kodoktheGr3at | 2026
-> **リポジトリ:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Zero2Root** | 基礎シリーズ | kodoktheGr3at | 2026
+> **リポジトリ:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > **フィードバックと貢献を歓迎します。** 誤りを見つけたら issue か PR を開いてください。

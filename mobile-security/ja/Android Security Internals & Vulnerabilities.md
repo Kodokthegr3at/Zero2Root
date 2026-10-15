@@ -1,6 +1,6 @@
 # Androidセキュリティ内部構造とアプリケーションの堅牢化
 
-> **LearnCybersecurity** | モバイルアプリケーションセキュリティシリーズ
+> **Zero2Root** | モバイルアプリケーションセキュリティシリーズ
 > 最終更新: 2026年 | 著者: kodoktheGr3at
 > 主要参考文献: Nikolay Elenkov『Android Security Internals』、Android Open Source Project(AOSP)のセキュリティ文書
 
@@ -307,5 +307,5 @@ aapt dump xmltree app.apk AndroidManifest.xml | grep -E 'debuggable|allowBackup'
 > - AOSP, Security & SELinux文書。Android Developers, セキュリティのベストプラクティス
 > - OWASP Mobile Application Security(MAS)/MASVS, 検証カテゴリ
 
-> **リポジトリ:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **リポジトリ:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > 教育目的、自分自身のアプリケーションのレビュー、許可された範囲でのテストに限定する。不正アクセスを目的とするものではない。

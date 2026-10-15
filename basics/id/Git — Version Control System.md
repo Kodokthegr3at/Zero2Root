@@ -1,6 +1,6 @@
 # Git: Sistem Kontrol Versi
 
-> **LearnCybersecurity** | Seri Dasar-Dasar | kodoktheGr3at | 2026
+> **Zero2Root** | Seri Dasar-Dasar | kodoktheGr3at | 2026
 
 ---
 
@@ -685,6 +685,6 @@ trufflehog git file://. --only-verified   # verified secret findings
 > - [TruffleHog secret scanner](https://github.com/trufflesecurity/trufflehog)
 > - [Gitleaks secret scanner](https://github.com/gitleaks/gitleaks)
 
-> **LearnCybersecurity** | Seri Dasar-Dasar | kodoktheGr3at | 2026
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Zero2Root** | Seri Dasar-Dasar | kodoktheGr3at | 2026
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > **Masukan dan kontribusi diterima.** Buka issue atau PR kalau menemukan kesalahan.

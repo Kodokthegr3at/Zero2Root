@@ -1,6 +1,6 @@
 # ARP & Local Network Attacks
 
-> **LearnCybersecurity** | Networking Fundamentals Series
+> **Zero2Root** | Networking Fundamentals Series
 > Last updated: 2026 | Author: kodoktheGr3at
 > Primary refs: Kurose & Ross, *Computer Networking*; Benvenuti, *Understanding Linux Network Internals*; Stallings, *Network Security Essentials*
 
@@ -230,5 +230,5 @@ bridge fdb show
 > - W. Richard Stevens, *UNIX Network Programming, Vol. 1*, `~/Documents/Books/CyberSec/Networking/`
 > - RFC 826 (ARP), RFC 5227 (IPv4 Address Conflict Detection), RFC 4861 (NDP)
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > Educational material and labs for networks you own or are authorized to test on. No poisoning playbook included.

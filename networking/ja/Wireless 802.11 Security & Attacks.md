@@ -1,6 +1,6 @@
 # 無線LAN(802.11)のセキュリティと攻撃
 
-> **LearnCybersecurity** | ネットワーク基礎シリーズ
+> **Zero2Root** | ネットワーク基礎シリーズ
 > 最終更新: 2026年 | 著者: kodoktheGr3at
 > 主要参考文献: 『802.11 Wireless Networks: The Definitive Guide』、Stallings『Network Security Essentials』、Kurose & Ross『Computer Networking』
 
@@ -217,5 +217,5 @@ iw reg get
 > - IEEE 802.11i / WPA2 RSN、IEEE 802.11w(PMF)、WPA3(Wi-Fi Alliance)の仕様
 > - `man iw`、`man nmcli`
 
-> **リポジトリ:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **リポジトリ:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > 自分が所有するWLANのための教育用資料と管理。クラッキング手順や攻撃の注入は含まない。

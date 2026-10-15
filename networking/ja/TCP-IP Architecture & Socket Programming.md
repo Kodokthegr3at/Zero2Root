@@ -1,6 +1,6 @@
 # TCP/IPアーキテクチャとソケットプログラミング
 
-> **LearnCybersecurity** | ネットワーク基礎シリーズ
+> **Zero2Root** | ネットワーク基礎シリーズ
 > 最終更新: 2026年 | 著者: kodoktheGr3at
 > 主要参考文献: Kurose & Ross『Computer Networking』、Stevens『UNIX Network Programming』、Benvenuti『Understanding Linux Network Internals』、Stallings『Network Security Essentials』
 
@@ -307,5 +307,5 @@ sysctl net.core.somaxconn
 > - RFC 791(IPv4)、RFC 9293(TCP)、RFC 4987(SYNフラッド / クッキー)
 > - `man ss`、`man tcpdump`、`man 7 ip`、`man 7 tcp`
 
-> **リポジトリ:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **リポジトリ:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > 自分が所有するシステムのための教育用資料とラボ。フラッドのPoCやエクスプロイトは含まない。

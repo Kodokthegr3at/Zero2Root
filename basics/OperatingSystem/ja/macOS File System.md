@@ -1,6 +1,6 @@
 # macOSファイルシステム
 
-> **LearnCybersecurity** | 基礎シリーズ | kodoktheGr3at | 2026
+> **Zero2Root** | 基礎シリーズ | kodoktheGr3at | 2026
 
 ---
 
@@ -1164,6 +1164,6 @@ codesign -d --entitlements - App.app       # entitlements
 > - [Objective-See - macOS Security Resources](https://objective-see.org)
 > - `man hier` — macOSファイルシステム階層のマニュアルページ
 
-> **LearnCybersecurity** | 基礎シリーズ | kodoktheGr3at | 2026
-> **リポジトリ:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Zero2Root** | 基礎シリーズ | kodoktheGr3at | 2026
+> **リポジトリ:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > **フィードバックと貢献を歓迎します。** 誤りを見つけたらissueかPRを開いてください。

@@ -1,6 +1,6 @@
 # PowerShell
 
-> LearnCybersecurity | Basics Series | kodoktheGr3at | 2026
+> Zero2Root | Basics Series | kodoktheGr3at | 2026
 
 ---
 
@@ -604,6 +604,6 @@ Get-PSSessionConfiguration | Format-Table Name, Permission
 > - [HackTheBox Academy - Windows Fundamentals](https://academy.hackthebox.com)
 > - `Get-Help <cmdlet> -Full`
 
-> LearnCybersecurity | Basics Series | kodoktheGr3at | 2026
-> Repository: [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> Zero2Root | Basics Series | kodoktheGr3at | 2026
+> Repository: [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > Feedback & contributions welcome. Open an issue or PR if you spot any errors.

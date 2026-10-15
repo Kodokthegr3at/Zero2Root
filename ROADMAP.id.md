@@ -1,6 +1,6 @@
 **Bahasa:** [English](ROADMAP.md) | [Bahasa Indonesia](ROADMAP.id.md) | [日本語](ROADMAP.ja.md)
 
-# LearnCybersecurity: Roadmap Utama
+# Zero2Root: Roadmap Utama
 
 > 71 pelajaran dalam 9 fase, masing-masing ditulis secara independen dalam Bahasa Indonesia, Inggris, dan Jepang.
 > Buku: `~/Documents/Books/`, lihat [BOOKS.id.md](BOOKS.id.md) untuk katalog lengkap.

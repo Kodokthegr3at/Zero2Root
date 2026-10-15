@@ -1,6 +1,6 @@
 **Language:** [English](README.md) | [Bahasa Indonesia](README.id.md) | [日本語](README.ja.md)
 
-# LearnCybersecurity
+# Zero2Root
 
 > A trilingual cybersecurity knowledge base and offensive security roadmap, covering Linux internals, networking, web application security, cryptography, reverse engineering, and related fields. This page is the English edition and links only to the English lesson files; open the Bahasa Indonesia or 日本語 edition above for the other two.
 
@@ -29,7 +29,7 @@ Every lesson exists as three independent files, one each in Bahasa Indonesia, En
 ## Repository map
 
 ```
-LearnCybersecurity/
+Zero2Root/
   basics/               # Computing fundamentals, Git, OS filesystems, PowerShell/CMD
   linux/                # Shell, workflow, system administration, networking, hardening (HTB Academy Module 18 structure)
   networking/           # OSI model, TCP/IP, DNS, ARP, subnetting, wireless security
@@ -253,5 +253,5 @@ All documentation, commands, and attack vectors in this repository are for educa
 
 - Maintainer: `kodoktheGr3at`
 - GitHub: [github.com/Kodokthegr3at](https://github.com/Kodokthegr3at)
-- Repository: [github.com/Kodokthegr3at/LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+- Repository: [github.com/Kodokthegr3at/Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 - Feedback, improvements, and pull requests are welcome.

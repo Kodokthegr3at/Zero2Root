@@ -1,6 +1,6 @@
 # OSI参照モデル
 
-> **LearnCybersecurity** | ネットワーク基礎シリーズ
+> **Zero2Root** | ネットワーク基礎シリーズ
 > 最終更新: 2026年 | 著者: kodoktheGr3at
 
 ---
@@ -379,5 +379,5 @@ OSIは「どこで何が起きているか」を*考え、語る*ために使う
 > - RFC 793(TCP)、RFC 768(UDP)
 > - Nmap と Wireshark の公式ドキュメント、IANAのポート番号レジストリ
 
-> **リポジトリ:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **リポジトリ:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > 自分が所有する、または検証を許可されたネットワークのための教育用資料とラボ。

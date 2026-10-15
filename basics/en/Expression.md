@@ -1,6 +1,6 @@
 # Expression: Syntax, Types, and Evaluation
 
-> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
+> **Zero2Root** | Basics Series | kodoktheGr3at | 2026
 
 ---
 
@@ -333,6 +333,6 @@ Expressions turn into vulnerabilities when untrusted input gets evaluated as cod
 > - Dafydd Stuttard & Marcus Pinto, *The Web Application Hacker's Handbook (2nd Edition)* (`~/Documents/Books/CyberSec/Web App/`)
 > - Scott Meyers, *Effective Modern C++* (`~/Documents/Books/Programming/ C++/`)
 
-> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Zero2Root** | Basics Series | kodoktheGr3at | 2026
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > **Feedback and contributions welcome.** Open an issue or PR if you spot any errors.

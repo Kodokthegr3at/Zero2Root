@@ -1,6 +1,6 @@
 # Git: Version Control System
 
-> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
+> **Zero2Root** | Basics Series | kodoktheGr3at | 2026
 
 ---
 
@@ -685,6 +685,6 @@ trufflehog git file://. --only-verified   # verified secret findings
 > - [TruffleHog secret scanner](https://github.com/trufflesecurity/trufflehog)
 > - [Gitleaks secret scanner](https://github.com/gitleaks/gitleaks)
 
-> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Zero2Root** | Basics Series | kodoktheGr3at | 2026
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > **Feedback and contributions welcome.** Open an issue or PR if you spot any errors.

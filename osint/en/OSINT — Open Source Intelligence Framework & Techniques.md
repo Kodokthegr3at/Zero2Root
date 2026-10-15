@@ -1,6 +1,6 @@
 # OSINT: Open Source Intelligence Framework & Techniques
 
-> **LearnCybersecurity** | Intelligence & Reconnaissance Series
+> **Zero2Root** | Intelligence & Reconnaissance Series
 > Last updated: 2026 | Author: kodoktheGr3at
 > Primary refs: Bazzell / community handbooks & *Open Source Intelligence Methods and Tools*, `~/Documents/Books/CyberSec/OSINT/`
 > Note: legal and public sources only; respect the law, ToS, and investigative ethics.
@@ -323,5 +323,5 @@ Not covered: bypassing a paywall with stolen credentials, hacking accounts, malw
 > - Public tradecraft: the intelligence cycle (ICD-style confidence language), source criticism
 > - Platform policies and local computer-crime / privacy statutes (always check current law)
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > Legal and ethical OSINT only. Not a license to compromise systems or people.

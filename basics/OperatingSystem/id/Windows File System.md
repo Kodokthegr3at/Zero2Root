@@ -1,6 +1,6 @@
 # Sistem Berkas Windows
 
-> **LearnCybersecurity** | Seri Dasar-Dasar | kodoktheGr3at | 2026
+> **Zero2Root** | Seri Dasar-Dasar | kodoktheGr3at | 2026
 
 ---
 
@@ -892,4 +892,4 @@ PS> Get-LocalGroupMember Administrators    :: net localgroup administrators
 > - [HackTheBox Academy - Windows Fundamentals](https://academy.hackthebox.com)
 > - [LOLBAS Project](https://lolbas-project.github.io), untuk kesadaran defender
 
-> **LearnCybersecurity** | Seri Dasar-Dasar | kodoktheGr3at | 2026
+> **Zero2Root** | Seri Dasar-Dasar | kodoktheGr3at | 2026

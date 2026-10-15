@@ -1,6 +1,6 @@
 # ARP とローカルネットワークへの攻撃
 
-> **LearnCybersecurity** | ネットワーク基礎シリーズ
+> **Zero2Root** | ネットワーク基礎シリーズ
 > 最終更新: 2026年 | 著者: kodoktheGr3at
 > 主要参考文献: Kurose & Ross『Computer Networking』、Benvenuti『Understanding Linux Network Internals』、Stallings『Network Security Essentials』
 
@@ -230,5 +230,5 @@ bridge fdb show
 > - W. Richard Stevens『UNIX Network Programming, Vol. 1』、`~/Documents/Books/CyberSec/Networking/`
 > - RFC 826(ARP)、RFC 5227(IPv4アドレス衝突検出)、RFC 4861(NDP)
 
-> **リポジトリ:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **リポジトリ:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > 自分が所有する、または検証を許可されたネットワークのための教育用資料とラボ。ポイズニングの手引きは含まない。

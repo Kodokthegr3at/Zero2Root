@@ -1,6 +1,6 @@
 # macOS File System
 
-> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
+> **Zero2Root** | Basics Series | kodoktheGr3at | 2026
 
 ---
 
@@ -1164,6 +1164,6 @@ codesign -d --entitlements - App.app       # entitlements
 > - [Objective-See - macOS Security Resources](https://objective-see.org)
 > - `man hier` — manual page for the macOS filesystem hierarchy
 
-> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Zero2Root** | Basics Series | kodoktheGr3at | 2026
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > **Feedback and contributions welcome.** Open an issue or PR if you spot any errors.

@@ -1,6 +1,6 @@
 # Arsitektur TCP/IP & Socket Programming
 
-> **LearnCybersecurity** | Seri Dasar Networking
+> **Zero2Root** | Seri Dasar Networking
 > Terakhir diperbarui: 2026 | Penulis: kodoktheGr3at
 > Referensi utama: Kurose & Ross, *Computer Networking*; Stevens, *UNIX Network Programming*; Benvenuti, *Understanding Linux Network Internals*; Stallings, *Network Security Essentials*
 
@@ -307,5 +307,5 @@ sysctl net.core.somaxconn
 > - RFC 791 (IPv4), RFC 9293 (TCP), RFC 4987 (SYN flood / cookie)
 > - `man ss`, `man tcpdump`, `man 7 ip`, `man 7 tcp`
 
-> **Repositori:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repositori:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > Materi edukasi dan lab di sistem milik sendiri, tanpa PoC flood atau eksploit.

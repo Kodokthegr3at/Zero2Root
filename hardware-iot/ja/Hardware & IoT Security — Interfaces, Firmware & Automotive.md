@@ -1,6 +1,6 @@
 # ハードウェアとIoTセキュリティ、インタフェース、ファームウェア、自動車
 
-> **LearnCybersecurity** | 組み込み、IoT、自動車セキュリティシリーズ
+> **Zero2Root** | 組み込み、IoT、自動車セキュリティシリーズ
 > 最終更新: 2026年 | 著者: kodoktheGr3at
 > 主要参考文献: *Hardware Hacking Handbook*、*Practical IoT Hacking*、*The Car Hacker's Handbook*、`~/Documents/Books/CyberSec/Hardware/`
 > 焦点: インタフェースの概念、アーキテクチャ、防御。車両への攻撃手順やエクスプロイトのペイロードは扱いません。
@@ -342,5 +342,5 @@ HARDWARE SURFACE CHECK (owner/vendor)
 > - *The Car Hacker's Handbook*、`~/Documents/Books/CyberSec/Hardware/`(CANアーキテクチャと防御策向けに再構成)
 > - 業界資料: UNECE WP.29 / ISO/SAE 21434(自動車サイバーセキュリティプロセスの概要)
 
-> **リポジトリ:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **リポジトリ:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > 自分が所有するデバイス、または認可されたラボでの教育と保護のための教材です。他人の車両やデバイスを妨害する目的では使わないでください。

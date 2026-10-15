@@ -1,6 +1,6 @@
 # OSINT: オープンソースインテリジェンスのフレームワークと技法
 
-> **LearnCybersecurity** | インテリジェンス & 偵察シリーズ
+> **Zero2Root** | インテリジェンス & 偵察シリーズ
 > 最終更新: 2026年 | 著者: kodoktheGr3at
 > 主要参考文献: Bazzellおよびコミュニティのハンドブック、『Open Source Intelligence Methods and Tools』、`~/Documents/Books/CyberSec/OSINT/`
 > 注記: 合法かつ公開された情報源のみを扱う。法律、ToS、調査倫理を尊重すること。
@@ -323,5 +323,5 @@ OPSECをひと言でいうと:
 > - 公開されているトレードクラフト: インテリジェンスサイクル（ICD的なconfidenceの言葉遣い）、情報源への批判的検証
 > - プラットフォームのポリシーおよび現地のコンピュータ犯罪/プライバシー関連法規（常に最新の法律を確認すること）
 
-> **リポジトリ:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **リポジトリ:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > 合法かつ倫理的なOSINTのみを扱う。システムや人物を侵害するためのライセンスではない。

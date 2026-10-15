@@ -1,6 +1,6 @@
 # OSINT: Framework & Teknik Open Source Intelligence
 
-> **LearnCybersecurity** | Seri Intelligence & Reconnaissance
+> **Zero2Root** | Seri Intelligence & Reconnaissance
 > Terakhir diperbarui: 2026 | Penulis: kodoktheGr3at
 > Referensi utama: buku pegangan Bazzell / komunitas & *Open Source Intelligence Methods and Tools*, `~/Documents/Books/CyberSec/OSINT/`
 > Catatan: hanya sumber legal dan publik; hormati hukum, ToS, dan etika investigasi.
@@ -323,5 +323,5 @@ Yang tidak dibahas: bypass paywall dengan kredensial curian, hacking akun, malwa
 > - Tradecraft publik: siklus intelijen (bahasa confidence gaya ICD), kritik sumber
 > - Kebijakan platform & undang-undang kejahatan komputer/privasi lokal (selalu cek hukum yang berlaku saat ini)
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > Hanya OSINT yang legal dan etis. Bukan lisensi untuk menyusupi sistem atau orang.

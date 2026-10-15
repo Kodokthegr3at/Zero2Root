@@ -1,6 +1,6 @@
 # ソーシャルエンジニアリング: 原則、経路、防御
 
-> **LearnCybersecurity** | ヒューマンファクターセキュリティシリーズ
+> **Zero2Root** | ヒューマンファクターセキュリティシリーズ
 > 最終更新: 2026年 | 著者: kodoktheGr3at
 > 主要参考文献: Christopher Hadnagy, *Social Engineering: The Science of Human Hacking*; Kevin Mitnick, *The Art of Deception*; Joe Gray, *Practical Social Engineering*
 
@@ -306,5 +306,5 @@ Request sensitive action
 > - Joe Gray, *Practical Social Engineering*, `~/Documents/Books/CyberSec/Social Engineering/`
 > - Robert Cialdini, *Influence*（SEの文献を通じて参照される原理）
 
-> **リポジトリ:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **リポジトリ:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > 教育および許可されたトレーニング目的専用。詐欺や不正アクセスに使用しないこと。

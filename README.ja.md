@@ -1,6 +1,6 @@
 **言語:** [English](README.md) | [Bahasa Indonesia](README.id.md) | [日本語](README.ja.md)
 
-# LearnCybersecurity
+# Zero2Root
 
 > Linux内部構造、ネットワーキング、Webアプリケーションセキュリティ、暗号技術、リバースエンジニアリングなどを扱う、3言語対応のサイバーセキュリティ知識ベース兼攻撃的セキュリティのロードマップ。このページは日本語版であり、日本語のレッスンファイルにのみリンクしている。他の2言語は上のEnglishまたはBahasa Indonesiaを開くこと。
 
@@ -29,7 +29,7 @@
 ## リポジトリマップ
 
 ```
-LearnCybersecurity/
+Zero2Root/
   basics/               # コンピューティングの基礎、Git、OSファイルシステム、PowerShell/CMD
   linux/                # シェル、ワークフロー、システム管理、ネットワーキング、ハードニング（HTB Academy Module 18の構成に準拠）
   networking/           # OSIモデル、TCP/IP、DNS、ARP、サブネッティング、無線セキュリティ
@@ -253,5 +253,5 @@ UART/JTAG/SPI、ファームウェア抽出、CANバス.
 
 - メンテナー: `kodoktheGr3at`
 - GitHub: [github.com/Kodokthegr3at](https://github.com/Kodokthegr3at)
-- リポジトリ: [github.com/Kodokthegr3at/LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+- リポジトリ: [github.com/Kodokthegr3at/Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 - フィードバック、改善提案、プルリクエストを歓迎する。

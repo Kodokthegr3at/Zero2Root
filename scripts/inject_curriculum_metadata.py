@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Inject standardized curriculum metadata block into LearnCybersecurity markdown files."""
+"""Inject standardized curriculum metadata block into Zero2Root markdown files."""
 from __future__ import annotations
 
 import json

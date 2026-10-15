@@ -1,6 +1,6 @@
 # Sistem Berkas macOS
 
-> **LearnCybersecurity** | Seri Dasar-Dasar | kodoktheGr3at | 2026
+> **Zero2Root** | Seri Dasar-Dasar | kodoktheGr3at | 2026
 
 ---
 
@@ -1164,6 +1164,6 @@ codesign -d --entitlements - App.app       # entitlements
 > - [Objective-See - macOS Security Resources](https://objective-see.org)
 > - `man hier` — halaman manual untuk hierarki filesystem macOS
 
-> **LearnCybersecurity** | Seri Dasar-Dasar | kodoktheGr3at | 2026
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Zero2Root** | Seri Dasar-Dasar | kodoktheGr3at | 2026
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > **Masukan dan kontribusi diterima.** Buka issue atau PR kalau menemukan kesalahan.

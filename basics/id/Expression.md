@@ -1,6 +1,6 @@
 # Expression: Sintaks, Jenis, dan Evaluasi
 
-> **LearnCybersecurity** | Seri Basics | kodoktheGr3at | 2026
+> **Zero2Root** | Seri Basics | kodoktheGr3at | 2026
 
 ---
 
@@ -333,6 +333,6 @@ Expression berubah jadi kerentanan saat input tak tepercaya dievaluasi sebagai k
 > - Dafydd Stuttard & Marcus Pinto, *The Web Application Hacker's Handbook (2nd Edition)* (`~/Documents/Books/CyberSec/Web App/`)
 > - Scott Meyers, *Effective Modern C++* (`~/Documents/Books/Programming/ C++/`)
 
-> **LearnCybersecurity** | Seri Basics | kodoktheGr3at | 2026
-> **Repositori:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Zero2Root** | Seri Basics | kodoktheGr3at | 2026
+> **Repositori:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > **Masukan dan kontribusi diterima.** Buka issue atau PR kalau menemukan kesalahan.

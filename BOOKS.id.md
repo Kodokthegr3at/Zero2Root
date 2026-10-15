@@ -2,10 +2,10 @@
 
 # Perpustakaan Referensi: `~/Documents/Books/`
 
-> **LearnCybersecurity** | Katalog buku lokal yang dipetakan ke ID kurikulum
+> **Zero2Root** | Katalog buku lokal yang dipetakan ke ID kurikulum
 > 2026 | Semua path relatif terhadap `/home/kodok/Documents/Books/`
 
-Katalog ini memetakan setiap PDF di perpustakaan lokal ke pelajaran LearnCybersecurity. Baca bab yang dirujuk sebelum atau sambil membaca tiap catatan `LC-xxx`.
+Katalog ini memetakan setiap PDF di perpustakaan lokal ke pelajaran Zero2Root. Baca bab yang dirujuk sebelum atau sambil membaca tiap catatan `LC-xxx`.
 
 ---
 

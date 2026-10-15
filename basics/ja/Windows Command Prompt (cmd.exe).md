@@ -1,6 +1,6 @@
 # Windows コマンドプロンプト（cmd.exe）
 
-> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
+> **Zero2Root** | Basics Series | kodoktheGr3at | 2026
 
 ---
 
@@ -524,6 +524,6 @@ wevtutil qe Security /c:3 /f:text   :: sample recent Security events
 > - [HackTheBox Academy - Windows Fundamentals](https://academy.hackthebox.com)
 > - `help`, `<command> /?`
 
-> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Zero2Root** | Basics Series | kodoktheGr3at | 2026
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > **フィードバックや貢献を歓迎します。** 誤りを見つけた場合はissueまたはPRを開いてください。

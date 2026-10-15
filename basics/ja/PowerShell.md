@@ -1,6 +1,6 @@
 # PowerShell
 
-> LearnCybersecurity | 基礎シリーズ | kodoktheGr3at | 2026
+> Zero2Root | 基礎シリーズ | kodoktheGr3at | 2026
 
 ---
 
@@ -604,6 +604,6 @@ Get-PSSessionConfiguration | Format-Table Name, Permission
 > - [HackTheBox Academy - Windows Fundamentals](https://academy.hackthebox.com)
 > - `Get-Help <cmdlet> -Full`
 
-> LearnCybersecurity | 基礎シリーズ | kodoktheGr3at | 2026
-> リポジトリ: [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> Zero2Root | 基礎シリーズ | kodoktheGr3at | 2026
+> リポジトリ: [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > フィードバックと貢献を歓迎します。誤りを見つけたらissueかPRを開いてください。

@@ -1,6 +1,6 @@
 # DNS と Domain Name System のセキュリティ
 
-> **LearnCybersecurity** | ネットワーク基礎シリーズ
+> **Zero2Root** | ネットワーク基礎シリーズ
 > 最終更新: 2026年 | 著者: kodoktheGr3at
 > 主要参考文献: Kurose & Ross『Computer Networking』、Stallings『Network Security Essentials』、Benvenuti『Understanding Linux Network Internals』
 
@@ -250,5 +250,5 @@ resolvectl query example.com
 > - RFC 1034/1035(DNS)、RFC 4033-4035(DNSSEC)、RFC 7858(DoT)、RFC 8484(DoH)、RFC 7873(Cookies)
 > - `man dig`、`man resolvectl`
 
-> **リポジトリ:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **リポジトリ:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > 自分が所有する、または検証を許可されたシステム・ゾーンのための教育用資料とラボ。攻撃手順は含まない。

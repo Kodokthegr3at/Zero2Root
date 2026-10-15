@@ -1,6 +1,6 @@
 # Neovim: Tips & Trik
 
-> **LearnCybersecurity** | Seri Penguasaan Editor
+> **Zero2Root** | Seri Penguasaan Editor
 > Terakhir diperbarui: 2026 | Penulis: kodoktheGr3at
 
 ---
@@ -1235,5 +1235,5 @@ Ctrl+\ Ctrl+n                → exit terminal mode
 > - [Vim Adventures, game belajar interaktif](https://vim-adventures.com)
 > - [PayloadsAllTheThings, trik dan escape Linux/Vim](https://github.com/swisskyrepo/PayloadsAllTheThings)
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > **Masukan dan kontribusi diterima.** Buka issue atau PR kalau menemukan kesalahan.

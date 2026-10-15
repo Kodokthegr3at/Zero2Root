@@ -1,6 +1,6 @@
 **Language:** [English](ROADMAP.md) | [Bahasa Indonesia](ROADMAP.id.md) | [日本語](ROADMAP.ja.md)
 
-# LearnCybersecurity: Master Roadmap
+# Zero2Root: Master Roadmap
 
 > 71 lessons across 9 phases, each written independently in Bahasa Indonesia, English, and Japanese.
 > Books: `~/Documents/Books/`, see [BOOKS.md](BOOKS.md) for the full catalog.

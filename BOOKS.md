@@ -2,10 +2,10 @@
 
 # Reference Library: `~/Documents/Books/`
 
-> **LearnCybersecurity** | Local book catalog mapped to curriculum IDs
+> **Zero2Root** | Local book catalog mapped to curriculum IDs
 > 2026 | All paths relative to `/home/kodok/Documents/Books/`
 
-This catalog maps every PDF in the local library to LearnCybersecurity lessons. Read the cited chapters before or alongside each `LC-xxx` note.
+This catalog maps every PDF in the local library to Zero2Root lessons. Read the cited chapters before or alongside each `LC-xxx` note.
 
 ---
 

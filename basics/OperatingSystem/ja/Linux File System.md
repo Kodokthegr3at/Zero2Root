@@ -1,6 +1,6 @@
 # Linuxファイルシステム
 
-> LearnCybersecurity | 基礎シリーズ | kodoktheGr3at | 2026
+> Zero2Root | 基礎シリーズ | kodoktheGr3at | 2026
 
 ---
 
@@ -879,4 +879,4 @@ sudo umount /mnt/usb             # unmount a device
 > - [HackTheBox Academy - Linux Fundamentals](https://academy.hackthebox.com)
 > - [GTFOBins](https://gtfobins.github.io) — 危険なSUID/sudoバイナリに対する防御側の認識向上のために参照
 
-> LearnCybersecurity | 基礎シリーズ | kodoktheGr3at | 2026
+> Zero2Root | 基礎シリーズ | kodoktheGr3at | 2026

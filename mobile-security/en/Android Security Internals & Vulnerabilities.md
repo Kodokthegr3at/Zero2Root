@@ -1,6 +1,6 @@
 # Android Security Internals & Application Hardening
 
-> **LearnCybersecurity** | Mobile Application Security Series
+> **Zero2Root** | Mobile Application Security Series
 > Last updated: 2026 | Author: kodoktheGr3at
 > Primary refs: Nikolay Elenkov, *Android Security Internals*; Android Open Source Project (AOSP) Security docs
 
@@ -307,5 +307,5 @@ aapt dump xmltree app.apk AndroidManifest.xml | grep -E 'debuggable|allowBackup'
 > - AOSP, Security & SELinux documentation; Android Developers, Security best practices
 > - OWASP Mobile Application Security (MAS) / MASVS, verification categories
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > For education, review of your own applications, and authorized testing only. Not for unauthorized access.

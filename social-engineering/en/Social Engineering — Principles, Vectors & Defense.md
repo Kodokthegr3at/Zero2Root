@@ -1,6 +1,6 @@
 # Social Engineering: Principles, Vectors & Defense
 
-> **LearnCybersecurity** | Human Factor Security Series
+> **Zero2Root** | Human Factor Security Series
 > Last updated: 2026 | Author: kodoktheGr3at
 > Primary refs: Christopher Hadnagy, *Social Engineering: The Science of Human Hacking*; Kevin Mitnick, *The Art of Deception*; Joe Gray, *Practical Social Engineering*
 
@@ -306,5 +306,5 @@ Not covered: building phishing kits, credential-stealing proxies, BadUSB payload
 > - Joe Gray, *Practical Social Engineering*, `~/Documents/Books/CyberSec/Social Engineering/`
 > - Robert Cialdini, *Influence* (principles referenced via the SE literature)
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Repository:** [Zero2Root](https://github.com/Kodokthegr3at/Zero2Root)
 > Educational and authorized training use only. Do not use this for fraud or unauthorized access.
