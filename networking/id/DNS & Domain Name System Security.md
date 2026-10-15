@@ -1,35 +1,55 @@
 # DNS & Keamanan Domain Name System
 
-> **LearnCybersecurity** | Seri Networking Fundamentals
+> **LearnCybersecurity** | Seri Dasar Networking
 > Terakhir diperbarui: 2026 | Penulis: kodoktheGr3at
 > Referensi utama: Kurose & Ross, *Computer Networking*; Stallings, *Network Security Essentials*; Benvenuti, *Understanding Linux Network Internals*
 
 ---
 
 <!-- LC-CURRICULUM-START -->
-> **Curriculum ID:** `LC-041` | **Fase 2:** Networking
-> **Estimasi belajar:** 4 jam | **Level:** Intermediate
+> **ID Kurikulum:** `LC-041` | **Fase 2:** Networking
+> **Estimasi belajar:** 4 jam | **Level:** Menengah
 > **Prasyarat:** LC-039
 > **Peta buku:** Kurose & Ross, Computer Networking Ch.2; Stallings, Network Security Essentials Ch.8
 <!-- LC-CURRICULUM-END -->
 
-## Daftar isi
+## Daftar Isi
 
-1. Hierarki DNS (namespace tree)
-2. Algoritma resolusi
-3. Jenis resource record
-4. DNSSEC (tanda tangan & rantai trust)
-5. Privasi DNS (DoT & DoH)
-6. Zone transfer (risiko misconfig)
-7. Cache poisoning (konsep & pertahanan)
-8. Catatan keamanan (deteksi & hardening)
-9. Cheatsheet admin
+1. Apa itu DNS, dan pohon nama
+2. Bagaimana sebuah lookup sebenarnya terjadi
+3. Jenis record yang akan kamu temui
+4. DNSSEC: membuktikan jawaban itu asli
+5. Privasi DNS: DoT dan DoH
+6. Zone transfer: risiko salah konfigurasi
+7. Cache poisoning, dan cara mencegahnya
+8. Catatan keamanan
+9. Cheatsheet
 
 ---
 
-## 1. Hierarki DNS: namespace tree
+## Istilah penting
 
-DNS (Domain Name System) memetakan nama hierarkis ke resource, paling sering alamat IP. Namespace-nya berbentuk pohon terbalik, berakar di root (`.`). Setiap label dipisahkan titik, dan nama FQDN dibaca dari kanan ke kiri:
+Istilah-istilah ini akan sering muncul di materi.
+
+| Istilah | Artinya |
+|:---|:---|
+| DNS | "Buku telepon" Internet: mengubah nama seperti `example.com` menjadi alamat IP |
+| Resolver | Layanan yang melakukan lookup untukmu (biasanya milik ISP atau yang publik) |
+| Authoritative server | Server yang menyimpan jawaban sebenarnya untuk sebuah domain |
+| Record (RR) | Satu entri di DNS: sebuah nama plus nilainya (alamat, mail server, dsb.) |
+| Zone | Kumpulan record satu domain, dikelola sebagai satu kesatuan |
+| TTL | Berapa lama sebuah jawaban boleh disimpan di cache sebelum harus dicari lagi |
+| Cache | Salinan jawaban terbaru yang disimpan, supaya lookup yang sama langsung instan |
+| DNSSEC | Tanda tangan digital pada jawaban DNS, supaya kamu bisa membedakan yang palsu |
+| DoT / DoH | DNS yang dikirim lewat koneksi terenkripsi (lewat TLS, atau lewat HTTPS) |
+
+---
+
+## 1. Apa Itu DNS, dan Pohon Nama
+
+Komputer bicara dalam alamat IP, tapi manusia mengingat nama. **DNS** (Domain Name System) adalah layanan yang menerjemahkan satu ke yang lain: kamu mengetik `example.com`, DNS mengembalikan `93.184.216.34`. Ini buku teleponnya Internet.
+
+Nama diatur sebagai pohon terbalik, dibaca dari **kanan ke kiri**, mulai dari root:
 
 ```
                     .  (root)
@@ -38,237 +58,178 @@ DNS (Domain Name System) memetakan nama hierarkis ke resource, paling sering ala
                 /  \
            example  google
               /
-           www
+           www            →  nama lengkap: www.example.com.
 ```
 
-Nama penuhnya adalah `www.example.com.` (titik di akhir menandakan root).
-
-| Level | Contoh | Peran |
+| Level | Contoh | Siapa yang mengelola |
 |:---|:---|:---|
-| Root | `.` | Ujung hierarki, root NS |
-| TLD | `com`, `id`, `jp` | Dikelola registry |
-| SLD / zone | `example.com` | Organisasi / zona otoritatif |
-| Host / label | `www`, `mail` | Resource dalam zona |
+| Root | `.` | Server root |
+| TLD (top-level domain) | `com`, `id`, `jp` | Sebuah registry |
+| Domain / zone | `example.com` | Sebuah organisasi |
+| Host | `www`, `mail` | Sebuah mesin di dalam domain |
 
-Delegasi bekerja dengan cara: parent menyimpan record NS (plus glue A/AAAA) untuk child zone. Otoritas zona pada dasarnya adalah kumpulan nameserver yang menjawab dengan flag AA (Authoritative Answer) untuk nama di dalam zona itu.
-
-DNS adalah basis data hierarkis yang terdistribusi. Tidak ada satu server pun yang menyimpan seluruh pohon; otoritas didelegasikan ke bawah secara bertingkat. Klien biasanya berbicara dengan recursive resolver, dan resolver itulah yang menyusuri pohon (atau memakai cache) untuk mendapatkan jawaban.
+Tidak ada satu server pun yang tahu seluruh pohon. Tiap level **mendelegasikan** level berikutnya ke bawah ("tanya server `.com`, mereka akan mengarahkanmu ke server `example.com`"). Delegasi itulah yang membuat DNS bisa melayani seluruh Internet.
 
 ---
 
-## 2. Algoritma resolusi
+## 2. Bagaimana Sebuah Lookup Sebenarnya Terjadi
 
-Ada tiga peran utama dalam proses resolusi:
+Ada tiga pemain yang terlibat:
 
-| Peran | Perilaku |
+| Pemain | Peran |
 |:---|:---|
-| Stub resolver | Berjalan di OS/aplikasi, mengirim query ke recursive resolver yang dikonfigurasi |
-| Recursive resolver | Melakukan lookup penuh atas nama yang diminta stub, boleh menyimpan cache |
-| Authoritative server | Hanya menjawab untuk zona yang dilayaninya |
+| Stub resolver | Klien kecil di dalam OS-mu; ia tinggal bertanya ke resolver |
+| Recursive resolver | Mengerjakan pekerjaan beratnya, dan mengingat (cache) jawaban |
+| Authoritative server | Menyimpan record sebenarnya untuk sebuah domain |
 
-Algoritma iteratifnya, secara intuitif (mengikuti Kurose):
+Kalau resolver belum punya jawabannya di cache, ia menelusuri pohon dari atas:
 
 ```text
-1. mulai dari root server
-2. tanyakan nama itu ke server saat ini
-3. dapat jawaban atau NXDOMAIN?   → selesai
-4. dapat referral?                → tanya server yang ditunjuk, lalu ulangi langkah 2
+1. tanya server root         → "aku tidak tahu, tapi tanya server .com"
+2. tanya server .com         → "tanya server example.com"
+3. tanya server example.com  → "www.example.com adalah 93.184.216.34"  ✓
 ```
 
 ```
-Stub ──Q──► Recursive ──iterative──► Root
-                 │                      │
-                 │◄──── referral ───────┘
-                 ├──► TLD NS
-                 │◄── referral
-                 └──► Auth NS ──► Answer (AA)
+Kamu ──► Recursive resolver ──► Root
+                │                 │  "tanya .com"
+                ├──► .com ────────┘
+                │     │  "tanya example.com"
+                └──► example.com ──► Jawaban
+                │
+        meng-cache jawabannya selama TTL, jadi lain kali instan
 ```
 
-Soal caching: TTL pada tiap RR membatasi berapa lama data boleh disimpan di cache. Jawaban negatif juga di-cache (RFC 2308), dengan aturan tersendiri yang terpisah dari jawaban positif.
+Tiap record punya **TTL** yang menyatakan berapa lama boleh di-cache. Caching itulah yang membuat DNS cepat; tanpanya, tiap klik akan menelusuri seluruh pohon lagi.
 
-Rekursi membebaskan klien dari kerja menyusuri pohon DNS sendiri. Idealnya, authoritative server tidak melakukan rekursi untuk publik internet, karena ini memperkecil permukaan untuk amplification/abuse. Memisahkan peran recursive dan authoritative adalah kebersihan operasional standar: jangan mengaktifkan rekursi begitu saja di authoritative server publik.
+Catatan kebersihan: resolver **recursive** (menelusuri pohon untuk klien) dan server **authoritative** (menjawab untuk sebuah domain) adalah dua pekerjaan berbeda. Server authoritative publik sebaiknya tidak sekaligus melakukan recursion terbuka, karena itu jadi magnet penyalahgunaan dan amplifikasi.
 
 ---
 
-## 3. Jenis resource record
+## 3. Jenis Record yang Akan Kamu Temui
 
-| Type | Fungsi singkat | Contoh data |
+| Tipe | Yang disimpan | Contoh |
 |:---|:---|:---|
-| A | Host IPv4 | `93.184.216.34` |
-| AAAA | Host IPv6 | `2606:2800:...` |
-| NS | Delegasi / nameserver zona | `ns1.example.com.` |
-| CNAME | Alias ke nama kanonik | `www → origin.cdn.net.` |
-| MX | Mail exchanger plus preference | `10 mail.example.com.` |
-| TXT | Teks bebas (SPF, verifikasi, dan sejenisnya) | `"v=spf1 ..."` |
-| SOA | Start of Authority (serial, timer) | metadata zona |
-| PTR | Reverse (in-addr.arpa / ip6.arpa) | nama host |
-| SRV | Lokasi service | `_sip._tcp...` |
-| DNSKEY | Kunci publik zona (DNSSEC) | key material |
-| DS | Hash key child yang disimpan di parent (DNSSEC) | digest |
-| RRSIG | Tanda tangan atas RRset | signature |
-| NSEC / NSEC3 | Bukti ketidakberadaan (non-existence) | authenticated denial |
+| A | Alamat IPv4 | `93.184.216.34` |
+| AAAA | Alamat IPv6 | `2606:2800:...` |
+| CNAME | Alias ("nama ini sebenarnya nama itu") | `www → origin.cdn.net.` |
+| MX | Ke mana email untuk domain ini pergi | `10 mail.example.com.` |
+| NS | Server mana yang authoritative untuk zone | `ns1.example.com.` |
+| TXT | Teks bebas (dipakai untuk SPF, verifikasi domain) | `"v=spf1 ..."` |
+| PTR | Kebalikannya: dari IP kembali ke nama | dipakai di reverse lookup |
+| DNSKEY / RRSIG / DS | Kunci dan tanda tangan DNSSEC (Bagian 4) | data kunci / tanda tangan |
 
-RRset adalah semua RR dengan nama, type, dan class yang sama. Operasi DNSSEC menandatangani seluruh RRset, bukan satu RR tunggal yang dipisahkan dari siblings-nya.
-
-Format wire klasiknya lewat UDP/53 (jawaban besar beralih ke TCP/53 atau EDNS0). EDNS0 memperluas ukuran UDP yang diizinkan dan membawa opsi tambahan, seperti DO bit untuk menandai "DNSSEC OK" dan cookies.
+DNS biasanya berjalan lewat UDP port 53 (kecil dan cepat); jawaban besar jatuh ke TCP port 53.
 
 ---
 
-## 4. DNSSEC: tanda tangan & rantai trust
+## 4. DNSSEC: Membuktikan Jawaban Itu Asli
 
-DNSSEC menambahkan otentikasi dan integritas pada data DNS, bukan kerahasiaan. Resolver yang melakukan validasi memastikan jawaban benar berasal dari zona yang tepat dan tidak diubah di jalur transit maupun di cache.
+DNS biasa punya kelemahan: saat sebuah jawaban tiba, tidak ada cara bawaan untuk tahu bahwa jawaban itu benar-benar datang dari tempat yang tepat dan tidak ditukar di tengah jalan. **DNSSEC** memperbaikinya dengan menambahkan **tanda tangan digital** (ide tanda tangan berasal dari LC-055).
 
-Komponen intinya:
+Tiap zone menandatangani record-nya. Resolver yang memvalidasi bisa mengecek tanda tangannya dan yakin jawabannya asli dan tidak diubah:
 
-| RR | Peran |
+```text
+cek:  Verify(public key zone, record-nya, tanda tangannya) → asli / palsu
+```
+
+Kepercayaannya dirantai dari root ke bawah, seperti rantai sertifikat di PKI (LC-057): root menjamin `.com`, `.com` menjamin `example.com`, dan seterusnya. Resolver cukup mempercayai root untuk mempercayai seluruh rantai.
+
+```
+root (titik awal yang dipercaya)
+  │ menjamin
+  ▼
+.com
+  │ menjamin
+  ▼
+example.com  ──menandatangani──►  record-nya sendiri
+```
+
+Penting: DNSSEC membuktikan jawaban itu **asli**, tapi **tidak** menyembunyikannya. Pertanyaan dan jawabannya tetap berjalan terbuka. Untuk privasi, kamu butuh DoT atau DoH (bagian berikutnya).
+
+---
+
+## 5. Privasi DNS: DoT dan DoH
+
+DNS klasik dikirim dalam teks polos, jadi siapa pun di jalur bisa melihat tiap nama yang kamu cari, dan berpotensi mengubahnya. Dua mekanisme mengenkripsinya:
+
+| Mekanisme | Caranya | Port |
+|:---|:---|:---|
+| DNS klasik | Teks polos | UDP/TCP 53 |
+| DoT (DNS over TLS) | DNS dibungkus koneksi TLS | TCP 853 |
+| DoH (DNS over HTTPS) | DNS dibawa lewat HTTPS, jadi menyatu dengan traffic web | TCP 443 |
+
+Manfaatnya adalah menghentikan penyadapan pasif dan perubahan di jalur atas lookup-mu. Tapi ada trade-off: resolver mana pun yang kamu pakai (termasuk penyedia DoH besar) tetap melihat query-mu, jadi pilih yang kebijakan privasinya kamu percaya. Banyak organisasi sengaja memaksa resolver internal dan memblokir DoH dadakan supaya logging keamanan mereka tetap bekerja. Kombinasi terbaik adalah transport terenkripsi (DoT/DoH) **plus** resolver yang memvalidasi DNSSEC.
+
+---
+
+## 6. Zone Transfer: Risiko Salah Konfigurasi
+
+**Zone transfer** (AXFR) adalah fitur yang sah: ia membuat server DNS cadangan bisa menyalin seluruh daftar record dari server utama. Masalahnya muncul kalau dibiarkan terbuka untuk siapa saja.
+
+Kalau orang asing bisa meminta zone transfer, mereka bisa mengunduh **seluruh** daftar hostname internalmu sekaligus: server, skema penamaan, semuanya. Itu tambang emas untuk reconnaissance, diserahkan tanpa serangan sungguhan.
+
+Cara menjaga zone milikmu:
+
+- Izinkan zone transfer hanya ke server cadanganmu yang dikenal, berdasarkan IP.
+- Lindungi transfernya dengan **TSIG** (sebuah rahasia bersama yang dicek kedua server).
+- Jangan mengandalkan hostname rahasia untuk keamanan; tetap terapkan segmentasi dan least privilege.
+
+> Materi ini soal mengenali dan memperbaiki salah konfigurasinya, bukan melakukannya. Pantau log server authoritative-mu untuk percobaan transfer yang tak terduga.
+
+---
+
+## 7. Cache Poisoning, dan Cara Mencegahnya
+
+**Idenya:** resolver meng-cache jawaban apa pun yang diterimanya. Kalau penyerang bisa menyelipkan jawaban **palsu** sebelum yang asli tiba, dan membuatnya tampak valid, resolver meng-cache alamat yang salah dan menyerahkannya ke semua orang selama TTL berlaku. Itu mengirim korban ke server penyerang padahal address bar masih menampilkan nama asli.
+
+Supaya palsunya diterima, ia harus cocok dengan pertanyaan resolver dan beberapa nilai acak. Dulu nilai acak itu terlalu kecil untuk aman. Pertahanan modern semuanya bekerja dengan membuat jawaban palsu jauh lebih sulit dipalsukan atau lebih mudah dideteksi:
+
+| Pertahanan | Yang dilakukan |
 |:---|:---|
-| DNSKEY | Kunci publik zona (ZSK / KSK) |
-| RRSIG | Tanda tangan atas RRset |
-| DS | Digest DNSKEY milik child, disimpan di parent |
-| NSEC/NSEC3 | Bukti bahwa nama/type tidak ada |
+| Port sumber acak + ID query acak | Sangat memperbesar yang harus ditebak penyerang |
+| DNS cookie | Token bersama yang menolak spoofing murah dari luar jalur |
+| Validasi DNSSEC | Jawaban palsu gagal pengecekan tanda tangan lalu dibuang |
+| Transport terenkripsi (DoT/DoH) | Mencegah penyerang di jalur membaca atau menyuntikkan |
 
-Verifikasi RRSIG secara konsep: untuk RRset R dan kunci publik K:
-
-```text
-Verify(public key, RRset, RRSIG) → accept / reject
-```
-
-Secara abstrak, dengan skema tanda tangan Sign/Verify:
-
-```text
-RRSIG = Sign(private key, Hash(RRset) + meta)
-```
-
-di mana meta mencakup algorithm, labels, original TTL, inception/expiration, key tag, dan signer name.
-
-Rantai trust-nya:
-
-```
-Trust Anchor (root KSK, hardcoded/managed)
-        │  validates
-        ▼
-   root DNSKEY ──RRSIG──► root zone data
-        │  DS for .com
-        ▼
-   com DNSKEY ──► … ──DS──► example.com DNSKEY
-                                │
-                                ▼
-                         RRSIG on example.com RRsets
-```
-
-Resolver membutuhkan trust anchor, biasanya di level root. Kalau DS di parent cocok dengan DNSKEY milik child, dan RRSIG valid serta berada dalam jendela waktu yang benar, RRset dianggap Secure. Kegagalan validasi menghasilkan status Bogus, artinya jawaban itu tidak boleh dipakai. Zona yang tidak memakai DNSSEC berstatus Insecure, bukan Bogus.
-
-DNSSEC menghentikan substitusi jawaban palsu yang tidak terdeteksi di sepanjang jalur maupun di cache, dengan syarat validator diaktifkan secara end-to-end. Ia tidak mengenkripsi query; untuk kerahasiaan pertanyaan itu sendiri, gunakan DoT/DoH.
+Tanda bahaya yang perlu diperhatikan: alamat yang tiba-tiba berubah tanpa update yang sah, lonjakan kegagalan resolusi, atau jawaban sebuah resolver yang berbeda dari resolver tepercaya lain. Perlindungan sebenarnya adalah defense in depth: keacakan untuk mempersulit tebakan, **plus** DNSSEC untuk membuat pemalsuan bisa terdeteksi.
 
 ---
 
-## 5. Privasi DNS: DoT & DoH
+## 8. Catatan Keamanan
 
-| Mekanisme | Port / framing | Sifat |
+| Masalah | Risiko | Pertahanan / deteksi |
 |:---|:---|:---|
-| DNS klasik | UDP/TCP 53 | Pertanyaan & jawaban cleartext |
-| DoT (DNS over TLS) | TCP 853 | DNS dibungkus di dalam TLS |
-| DoH (DNS over HTTPS) | TCP 443 | DNS lewat API HTTP(S) |
+| DNS teks polos | Penyadapan dan perubahan di jalur | DoT/DoH, resolver tepercaya |
+| Resolver tanpa validasi | Jawaban palsu lolos tanpa disadari | Aktifkan validasi DNSSEC |
+| Recursive resolver terbuka | Penyalahgunaan dan amplifikasi | Batasi klien; pisahkan recursive dari authoritative |
+| Zone transfer terbuka | Seluruh zone-mu tersedot | Batasi per IP + TSIG; beri alert di log |
+| Resolver nakal lewat DHCP | Lookup-mu diarahkan ulang | DHCP snooping, RA Guard, kebijakan DoH |
 
-Manfaatnya: mencegah pengintaian pasif dan manipulasi on-path terhadap query/response di jalur yang sebelumnya cleartext.
-
-Trade-off operasionalnya perlu dipahami. Resolver terpusat, misalnya vendor DoH tertentu, tetap bisa melihat metadata resolusi, jadi pilih kebijakan privasi secara sadar. Di lingkungan enterprise, resolver internal sering dipaksakan sambil memblokir DoH liar agar logging dan DLP tetap berjalan; ini perlu didokumentasikan dan dikomunikasikan ke pengguna. Kombinasi ideal untuk lab atau produk adalah DoT/DoH menuju resolver yang juga melakukan validasi DNSSEC.
-
----
-
-## 6. Zone transfer: risiko misconfiguration
-
-AXFR (full zone transfer) dan IXFR (incremental) dipakai agar secondary bisa meniru isi zona primary. Ini fitur operasional yang sah, bukan "serangan". Tapi kalau diizinkan ke semua sumber tanpa batas, seluruh isi zona, termasuk host internal dan naming scheme, bisa diunduh oleh pihak luar.
-
-Risiko dari misconfig semacam ini:
-
-- Exposure inventori nama internal
-- Membantu recon sebelum serangan lain dilakukan
-- Kemunculan secondary palsu kalau tidak ada kontrol akses, idealnya ditambah TSIG
-
-Langkah hardening untuk admin zona Anda sendiri:
-
-- Batasi AXFR/IXFR hanya ke IP secondary yang sudah dikenal
-- Pakai TSIG (shared secret berbasis HMAC) antara primary dan secondary
-- Jangan mengandalkan "security through obscurity" pada nama host; tetap terapkan segmentasi dan least privilege
-
-Catatan penting: catatan ini tidak berisi prosedur serangan, hanya kesadaran konfigurasi dan checklist defensif.
-
-Perlakukan zone transfer yang terbuka sebagai cacat konfigurasi. Pantau upaya AXFR yang tidak terduga di log authoritative server.
+Kebersihan lab: hanya uji resolver dan zone milikmu. Saat sebuah jawaban terlihat salah, bandingkan hasil `dig +dnssec` dengan resolver publik tepercaya kedua.
 
 ---
 
-## 7. Cache poisoning: konsep & pertahanan
-
-Cache poisoning, secara konsep, terjadi ketika recursive resolver menyimpan binding nama ke data yang salah karena menerima jawaban palsu yang tampak sah (cocok ID/question) sebelum jawaban asli tiba, atau karena kelemahan dalam prediksi transaksi.
-
-Model ancaman level tinggi (intuisi dari era Kaminsky): ruang tebakan transaksi historis terlalu kecil kalau
-
-```text
-ruang tebakan = 2¹⁶ kemungkinan TXID × jumlah kemungkinan port sumber
-```
-
-bernilai kecil, dan penyerang bisa membanjiri jawaban spoof untuk query yang ia picu sendiri.
-
-Pertahanan modernnya (bukan cookbook serangan):
-
-| Kontrol | Efek |
-|:---|:---|
-| Source port randomization | Memperbesar ruang tebakan transaksi |
-| TXID random | Sudah lama wajib, dikombinasikan dengan randomisasi port |
-| DNS cookies (RFC 7873) | Token klien-server yang mengurangi spoof murah |
-| DNSSEC validation | Jawaban palsu gagal verifikasi, jadi berstatus Bogus |
-| 0x20 encoding / QNAME case | Entropi tambahan di wire, di tempat yang mendukungnya |
-| Network path security | Membatasi siapa yang bisa inject paket di jalur resolver |
-
-Sinyal untuk deteksi: lonjakan SERVFAIL pada zona yang biasanya aman, RRset yang tiba-tiba berubah tanpa ada perubahan zona yang sah, atau ketidakcocokan dengan pandangan resolver validasi lain.
-
-Pertahanan yang benar itu defense-in-depth: entropi pada transaksi query digabung dengan otentikasi kriptografis lewat DNSSEC. Tak satupun dari keduanya cukup sendirian sebagai cerita operasional yang lengkap.
-
----
-
-## 8. Catatan keamanan: pertahanan & deteksi
-
-| Isu | Risiko | Pertahanan / deteksi |
-|:---|:---|:---|
-| DNS cleartext | Sniff / tamper on-path | DoT/DoH, jalur tepercaya |
-| Resolver tanpa validasi | Forgery tidak terdeteksi | Aktifkan validasi DNSSEC |
-| Open recursive | Abuse / amplification | ACL klien, pisahkan auth dari recursive |
-| Open AXFR | Zone dump | ACL + TSIG, alert di log |
-| Rogue resolver (via DHCP/RA) | Redirect resolusi | DHCP snooping, RA Guard, policy DoH |
-| Trust anchor basi | False Bogus / outage | Otomasi RFC 5011, plus monitoring |
-
-Kebersihan lab: uji hanya resolver dan zona milik Anda sendiri. Saat mendiagnosis status Bogus, bandingkan jawaban `dig +dnssec` dengan resolver publik lain yang juga melakukan validasi.
-
----
-
-## 9. Cheatsheet: admin / lab yang sah
+## 9. Cheatsheet
 
 ```bash
-# ── Basic lookup (sistem Anda) ───────────────────────────────
-dig example.com A +noall +answer
-dig example.com AAAA
-dig MX example.com
-dig NS example.com
+# ── Lookup dasar ─────────────────────────────────────────────
+dig example.com A +short       # cuma alamat IPv4-nya
+dig example.com AAAA           # IPv6
+dig MX example.com             # mail server
+dig NS example.com             # name server authoritative
 
-# ── Trace iterative path (observability) ─────────────────────
+# ── Lihat seluruh penelusuran dari root ──────────────────────
 dig +trace example.com
 
-# ── DNSSEC inspection ────────────────────────────────────────
-dig example.com A +dnssec +multi
-dig DNSKEY example.com +multi
-dig DS example.com +short
-delv example.com A          # validating lookup jika dikonfigurasi
+# ── Inspeksi DNSSEC ──────────────────────────────────────────
+dig example.com A +dnssec      # tampilkan tanda tangan (RRSIG)
+delv example.com A             # lookup dengan validasi, kalau dikonfigurasi
 
-# ── Reverse / SOA ────────────────────────────────────────────
+# ── Reverse lookup ───────────────────────────────────────────
 dig -x 93.184.216.34
-dig SOA example.com +noall +answer
 
-# ── Check if YOUR authoritative allows transfer to YOU only ──
-# (jalankan dari secondary yang diizinkan; expect REFUSED dari host lain)
-dig AXFR example.com @ns1.example.com
-
-# ── Local stub / systemd-resolved ────────────────────────────
+# ── Resolver sistemmu sendiri ────────────────────────────────
 resolvectl status
 resolvectl query example.com
 ```
@@ -276,18 +237,18 @@ resolvectl query example.com
 | Perintah | Kegunaan |
 |:---|:---|
 | `dig +short` | Jawaban ringkas |
-| `dig +dnssec` | Tampilkan RRSIG / DO |
-| `dig +trace` | Simulasikan jalan dari root |
-| `delv` | Validasi DNSSEC di sisi klien lewat BIND tools |
+| `dig +dnssec` | Tampilkan tanda tangan DNSSEC |
+| `dig +trace` | Mengamati lookup menelusuri dari root |
+| `resolvectl` | Memeriksa resolver sistem sendiri |
 
 ---
 
 > **Referensi & sumber buku**
-> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/computernetworking.pdf`
-> - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/Network-security-essentials-4th-edition-william-stallings.pdf`
-> - Christian Benvenuti, *Understanding Linux Network Internals*, `~/Documents/Books/CyberSec/Networking/Understanding Linux Network Internals (2005).pdf`
+> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/`
+> - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/`
+> - Christian Benvenuti, *Understanding Linux Network Internals*, `~/Documents/Books/CyberSec/Networking/`
 > - RFC 1034/1035 (DNS), RFC 4033-4035 (DNSSEC), RFC 7858 (DoT), RFC 8484 (DoH), RFC 7873 (Cookies)
 > - `man dig`, `man resolvectl`
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
-> Materi edukasi dan lab pada sistem atau zona milik sendiri atau yang berizin. Tidak ada prosedur serangan di sini.
+> **Repositori:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> Materi edukasi dan lab di sistem atau zone milik sendiri atau yang kamu berizin menguji. Tidak ada prosedur serangan.

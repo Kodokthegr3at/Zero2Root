@@ -1,256 +1,234 @@
 # ARP & Serangan Jaringan Lokal
 
-> **LearnCybersecurity** | Seri Networking Fundamentals
+> **LearnCybersecurity** | Seri Dasar Networking
 > Terakhir diperbarui: 2026 | Penulis: kodoktheGr3at
 > Referensi utama: Kurose & Ross, *Computer Networking*; Benvenuti, *Understanding Linux Network Internals*; Stallings, *Network Security Essentials*
 
 ---
 
 <!-- LC-CURRICULUM-START -->
-> **Curriculum ID:** `LC-042` | **Fase 2:** Networking
-> **Estimasi belajar:** 4 jam | **Level:** Advanced
+> **ID Kurikulum:** `LC-042` | **Fase 2:** Networking
+> **Estimasi belajar:** 4 jam | **Level:** Lanjutan
 > **Prasyarat:** LC-039, LC-040
 > **Peta buku:** Kurose & Ross, Computer Networking Ch.4-5; Stallings, Network Security Essentials Ch.8
 <!-- LC-CURRICULUM-END -->
 
-## Daftar isi
+## Daftar Isi
 
 1. Kenapa ARP ada
-2. ARP Request & Reply
-3. ARP Cache (Neighbor Table)
-4. Mekanisme terkait (Proxy ARP, GARP)
-5. Konsep MITM di jaringan lokal
-6. Pertahanan (DAI, static ARP, segmentasi)
-7. Deteksi & monitoring
-8. Catatan keamanan (ringkasan pertahanan)
-9. Cheatsheet admin
+2. Cara request dan reply bekerja
+3. ARP cache
+4. Mekanisme terkait
+5. Masalah MITM di jaringan lokal
+6. Pertahanan
+7. Deteksi dan pemantauan
+8. Catatan keamanan
+9. Cheatsheet
 
 ---
 
-## 1. Kenapa ARP ada
+## Istilah penting
 
-Pada Ethernet/IPv4, pengiriman frame membutuhkan alamat MAC tujuan di layer 2, sementara aplikasi dan routing memakai alamat IP di layer 3. ARP (Address Resolution Protocol) menjembatani dua dunia ini:
+Istilah-istilah ini akan sering muncul di materi.
 
-```text
-ARP:  IPv4 address  →  MAC address
-```
-
-Resolusi ini hanya berlaku di link lokal, yaitu broadcast domain yang sama. Router tidak di-ARP lintas subnet untuk host jauh. Host cukup meng-ARP gateway-nya, lalu mengirim frame ke MAC gateway itu.
-
-```
-  Host A                    L2 switch                   Host B
-  IP 10.0.0.5               (broadcast domain)          IP 10.0.0.9
-  MAC aa:aa:…  ──────── ARP who-has 10.0.0.9 ────────►
-               ◄─────── ARP is-at bb:bb:… ────────────
-  Frame dst=bb:bb ───────────────────────────────────►
-```
-
-IPv6 memakai NDP (Neighbor Discovery), bukan ARP, dengan konsep serupa (resolusi L3 ke L2) lewat pesan ICMPv6.
-
-ARP sendiri adalah protokol pemetaan bersifat trust-on-first-use dan soft-state, tanpa autentikasi kriptografis bawaan. Karena desain inilah, kontrol integritas di link lokal (DAI, entri statis, segmentasi) menjadi penting.
-
----
-
-## 2. ARP Request & Reply
-
-ARP dibungkus dalam frame Ethernet dengan EtherType `0x0806`. Ada dua operasi utama:
-
-| `op` | Nama | Makna |
-|:---:|:---|:---|
-| 1 | Request | "Who has IPₜ? Tell IPₛ" |
-| 2 | Reply | "IPₜ is at MACₜ" |
-
-Field penting (IPv4 over Ethernet):
-
-| Field | Isi tipikal |
+| Istilah | Artinya |
 |:---|:---|
-| HTYPE / PTYPE | Ethernet / IPv4 |
-| HLEN / PLEN | 6 / 4 |
-| SHA / SPA | Sender MAC / Sender IP |
-| THA / TPA | Target MAC / Target IP |
-
-Request biasanya dikirim sebagai Ethernet broadcast (`ff:ff:ff:ff:ff:ff`), dengan THA sering diisi nol. Reply biasanya dikirim unicast ke SHA peminta, kecuali pada kasus khusus.
-
-Alur kanonik:
-
-```text
-A → broadcast:  "Who has IP_B? Tell A"
-B → A:          "IP_B is at MAC_B"
-```
-
-Setelah pertukaran ini, A dapat mengirim frame IP dengan `dst MAC = MAC_B`.
-
-Selain lewat request/reply eksplisit, host juga bisa belajar mapping dari paket yang mereka amati secara pasif, tergantung implementasi kernel/stack-nya. Reply yang tidak diminta atau tidak terduga adalah masalah integritas klasik, dan inilah alasan fitur switch memvalidasi ARP terhadap binding DHCP.
+| ARP | Protokol yang mencari alamat MAC untuk sebuah IP, di dalam satu jaringan lokal |
+| Alamat MAC | ID hardware kartu jaringan, dipakai untuk pengiriman di dalam jaringan lokal |
+| ARP cache | Tabel jangka pendek yang disimpan perangkat berisi "IP ini = MAC ini" |
+| Broadcast | Pesan yang dikirim ke semua orang di segmen lokal |
+| Gateway | Router yang dipakai perangkat untuk menjangkau jaringan lain |
+| Spoofing / poisoning | Memberi perangkat pemetaan IP-ke-MAC yang palsu |
+| MITM | Man-in-the-middle: diam-diam berada di antara dua pihak dan meneruskan traffic-nya |
+| DAI | Dynamic ARP Inspection: fitur switch yang membuang pesan ARP yang berbohong |
+| Segmentasi | Memecah jaringan jadi zona lebih kecil untuk membatasi sejauh mana penyerang bisa menjangkau |
 
 ---
 
-## 3. ARP Cache (Neighbor Table)
+## 1. Kenapa ARP Ada
 
-Kernel menyimpan pemetaan sementara:
+Di dalam satu jaringan lokal, perangkat mengirim data memakai **alamat MAC** (ID hardware tiap kartu jaringan), bukan alamat IP. Tapi program-programmu dan routing bekerja dalam **alamat IP**. Harus ada yang menghubungkan keduanya. Yang menghubungkannya adalah **ARP** (Address Resolution Protocol):
 
 ```text
-IP  →  (MAC, state, interface, expiry)
+ARP menjawab satu pertanyaan:  "Alamat MAC mana yang punya IP 10.0.0.9?"
 ```
 
-| Aspek | Perilaku umum |
+Ini hanya bekerja di dalam **segmen lokal** (broadcast domain yang sama). Kamu tidak pernah meng-ARP server yang jauh; sebagai gantinya mesinmu meng-ARP **gateway**-nya lalu menyerahkan frame ke MAC gateway, membiarkan router melanjutkannya.
+
+```
+  Host A                    switch                      Host B
+  10.0.0.5                                              10.0.0.9
+         ──── "Siapa yang punya 10.0.0.9? Beri tahu 10.0.0.5" (broadcast) ────►
+         ◄─── "10.0.0.9 ada di bb:bb:bb:bb:bb:bb" (reply) ─────────────────────
+  sekarang mengirim frame ke bb:bb:… ────────────────────────────────────────►
+```
+
+Kelemahan utamanya terpasang di desain ARP sendiri: **tidak ada cara untuk mengecek apakah sebuah reply itu jujur.** Siapa pun yang menjawab lebih dulu, dan paling meyakinkan, menang. Fakta tunggal itulah akar dari setiap serangan di materi ini, dan alasan pertahanan di Bagian 6 ada. (IPv6 memakai protokol serupa bernama NDP, bukan ARP.)
+
+---
+
+## 2. Cara Request dan Reply Bekerja
+
+ARP hanya punya dua pesan utama:
+
+| Operasi | Artinya |
 |:---|:---|
-| Incomplete | Request terkirim, belum ada reply |
-| Reachable / stale | Ada mapping, bisa di-probe ulang |
-| TTL / gc | Entri basi dibuang atau di-refresh |
-| Failures | Retry terbatas lalu error neighbor |
-
-Di Linux modern, `ip neigh` menampilkan state neighbor (ARP untuk IPv4, NDISC untuk IPv6). Memahami state ini membantu troubleshooting kasus "host unreachable on-link".
-
-Aturan update secara intuitif: reply yang tampak sah dapat membuat atau menimpa entri cache. Tanpa validasi L2 tambahan, kebenaran cache sama saja dengan kebenaran siapa saja yang bisa berbicara di segmen tersebut.
-
-Tips operasional: setelah renumbering alamat atau penggantian NIC, entri ARP/ND yang basi bisa menyebabkan konektivitas "hantu" sampai entri itu kedaluwarsa atau di-flush. Lakukan flush hanya pada sistem yang benar-benar Anda kelola sendiri.
-
----
-
-## 4. Mekanisme terkait
-
-| Mekanisme | Ringkasan | Catatan keamanan |
-|:---|:---|:---|
-| Proxy ARP | Router menjawab ARP untuk IP non-lokal seolah on-link | Memperluas trust L2, audit jika tidak disengaja |
-| Gratuitous ARP (GARP) | Pengumuman SPA=TPA | Sah untuk failover/HA, tapi juga vektor spoof jika tidak difilter |
-| Inverse ARP | MAC ke IP (jarang di Ethernet modern) | Konteks khusus (era Frame Relay, dan sejenisnya) |
-| ARP probe / announce (RFC 5227) | Cek konflik alamat sebelum sebuah IP dipakai | Berguna untuk deteksi duplicate address |
-
-```
-  Normal ARP:     "Who has B? Tell A"     →  "B is at MAC_B"
-  Gratuitous:     "A is at MAC_A"         →  (announce / update caches)
-  Proxy:          "Who has X (remote)?"   →  Router replies with own MAC
-```
-
----
-
-## 5. Konsep MITM di jaringan lokal (level tinggi saja)
-
-Ini konsep, bukan prosedur. Jika host jahat di segmen yang sama berhasil membuat korban menyimpan
+| Request | "Siapa yang punya IP ini? Beri tahu aku." (dikirim sebagai broadcast ke semua) |
+| Reply | "IP itu ada di MAC ini." (dikirim balik ke si penanya) |
 
 ```text
-IP of the gateway  →  MAC of the attacker
+A → semua:  "Siapa yang punya IP_B? Beri tahu A"
+B → A:      "IP_B ada di MAC_B"
 ```
 
-(dan secara opsional sebaliknya juga), maka frame yang seharusnya menuju gateway bisa dialihkan ke penyerang. Penyerang yang juga meneruskan trafik dapat mengamati atau mengubah sesi cleartext, dan inilah yang disebut MITM di layer 2.
-
-Ini memanfaatkan sifat dasar ARP: tidak ada autentikasi kriptografis pada binding IP ke MAC.
-
-> Catatan edukasi: langkah demi langkah poisoning, perintah tool untuk spoofing, atau playbook serangan sengaja tidak disertakan di sini. Fokus catatan ini adalah memahami kenapa kontrol switch dan segmentasi diperlukan.
-
-Redirection on-link yang berhasil mematahkan asumsi "frame ke MAC gateway pasti sampai ke gateway". Enkripsi di layer atas (TLS) membatasi dampak terhadap kerahasiaan data, tapi tidak menghilangkan nilai integritas L2 untuk ketersediaan layanan dan untuk protokol yang tidak dienkripsi end-to-end.
+Setelah pertukaran ini, A bisa mengirim frame langsung ke B. Banyak sistem juga diam-diam belajar pemetaan hanya dari traffic ARP yang didengarnya, yang praktis tapi justru itulah kenapa reply yang **tak diminta** atau tak terduga adalah tanda bahaya.
 
 ---
 
-## 6. Pertahanan: DAI, static ARP, segmentasi
+## 3. ARP Cache
 
-| Kontrol | Cara kerja (intuisi) | Cocok untuk |
-|:---|:---|:---|
-| Dynamic ARP Inspection (DAI) | Switch memvalidasi ARP terhadap binding terpercaya (biasanya dari DHCP Snooping) | Access VLAN enterprise |
-| DHCP Snooping | Mencatat (MAC, IP, port, VLAN) dari DHCP yang sah | Fondasi untuk DAI |
-| Static ARP / static neigh | Binding tetap di host/router kritis | Gateway, server kecil, OT |
-| Port security | Membatasi jumlah MAC per port | Access edge |
-| Private VLAN / microsegmentation | Membatasi pergerakan lateral host ke host | Cloud / DC / campus |
-| Separate management plane | Out-of-band atau VRF khusus manajemen | Infrastruktur |
-| RA Guard / kontrol ND | Analog untuk IPv6 | Dual-stack |
+Supaya tidak bertanya tiap kali, tiap perangkat menyimpan tabel jangka pendek:
 
-Segmentasi tetap menjadi kontrol paling kuat secara arsitektural: semakin kecil broadcast domain, semakin kecil blast radius dari snooping atau spoofing di L2.
-
-Model kepercayaan:
-
+```text
+alamat IP  →  (alamat MAC, state, interface, waktu kedaluwarsa)
 ```
-  [User VLAN] --DAI+DHCP Snoop--> [L3 gateway] --ACL--> [Server VLAN]
-        │                              │
-        └──── no hairpin L2 freely ────┘
-```
-
-Static ARP saja tidak bisa scale ke armada DHCP besar. Kombinasikan DAI di access layer dengan monitoring. Untuk enclave kecil yang benar-benar tepercaya, mapping statis di router tetap praktis dipakai.
-
----
-
-## 7. Deteksi & monitoring
-
-Gejala berikut patut diinvestigasi di lab atau produksi milik Anda:
-
-| Sinyal | Makna yang mungkin |
-|:---|:---|
-| MAC gateway berubah di banyak host secara bersamaan | Binding tidak stabil / anomali L2 |
-| IP duplikat (dua MAC mengklaim satu IP) | Konflik atau spoofing |
-| Storm ARP request | Loop, misconfig, atau scan agresif |
-| Drop counter DAI naik | ARP melanggar binding yang tercatat |
-| TLS/VPN tetap OK tapi captive portal aneh | Kemungkinan L2 redirect plus intercept aktif |
-
-Alat defensif untuk host/switch milik Anda sendiri:
 
 ```bash
-# Bandingkan neighbor vs harapan admin
+ip neigh show      # lihat cache ARP/NDP di Linux
+```
+
+Entri-entrinya kedaluwarsa dan diperbarui. Yang penting dipahami adalah ini: **cache hanya sepercaya siapa pun yang boleh bicara di segmen itu.** Kalau sebuah perangkat menerima reply tanpa pengecekan tambahan, reply palsu bisa diam-diam menimpa entri yang benar.
+
+Tips praktis: setelah mengganti kartu jaringan atau renumbering, entri cache yang basi bisa menyebabkan masalah ketersambungan "hantu" sampai ia kedaluwarsa. Flush entri hanya di mesin yang kamu administrasi.
+
+---
+
+## 4. Mekanisme Terkait
+
+| Mekanisme | Apa itu | Catatan keamanan |
+|:---|:---|:---|
+| Proxy ARP | Router menjawab ARP atas nama perangkat yang bukan lokal | Memperluas kepercayaan lokal; audit kalau tak disengaja |
+| Gratuitous ARP | Pengumuman "ini aku" yang tak diminta | Sah untuk failover, tapi juga jalur spoofing kalau tak difilter |
+| ARP probe (RFC 5227) | Cek konflik alamat sebelum memakai sebuah IP | Berguna untuk deteksi alamat ganda |
+
+```
+  Normal:      "Siapa yang punya B?"   →  "B ada di MAC_B"
+  Gratuitous:  "A ada di MAC_A"        →  (pengumuman, memperbarui cache semua orang)
+```
+
+---
+
+## 5. Masalah MITM di Jaringan Lokal
+
+Karena reply ARP tidak diverifikasi, perangkat jahat di segmen yang sama bisa meyakinkan korban bahwa **IP gateway ada di MAC penyerang**. Korban lalu mengirim traffic "ke Internet"-nya ke penyerang, bukan ke router sungguhan.
+
+Kalau penyerang diam-diam meneruskan traffic itu, korban tidak menyadari apa-apa, sementara penyerang duduk di tengah dan bisa membaca atau mengubah apa pun yang tidak terenkripsi. Itulah **man-in-the-middle di layer jaringan lokal**.
+
+```
+  Sebelum:  Korban ───────────────► Gateway ──► Internet
+
+  Sesudah:  Korban ──► Penyerang ──► Gateway ──► Internet
+                     (membaca/mengubah traffic sambil lewat)
+```
+
+> Materi ini menjelaskan **kenapa** serangan ini mungkin dan cara menghentikannya. Instruksi poisoning langkah demi langkah dan tool spoofing sengaja tidak dimasukkan.
+
+Arti defensifnya: jangan menganggap "frame yang dialamatkan ke MAC gateway benar-benar sampai ke gateway." Mengenkripsi layer atas (TLS di mana-mana) membatasi apa yang bisa dibaca penyerang, tapi tidak mengembalikan kepercayaan di layer lokal, terutama untuk ketersediaan dan untuk apa pun yang tidak terenkripsi ujung-ke-ujung. Kamu tetap butuh kontrol di bawah.
+
+---
+
+## 6. Pertahanan
+
+| Kontrol | Cara kerja | Cocok di mana |
+|:---|:---|:---|
+| DHCP Snooping | Switch mencatat (MAC, IP, port) yang sah dari lease DHCP sungguhan | Fondasi untuk DAI |
+| Dynamic ARP Inspection (DAI) | Switch mengecek tiap pesan ARP terhadap catatan itu dan membuang yang berbohong | Jaringan akses enterprise |
+| Entri ARP statis | Pemetaan tetap yang diatur manual di host atau router kritis | Gateway, server kecil |
+| Port security | Membatasi berapa alamat MAC yang diterima sebuah port switch | Tepi akses |
+| Segmentasi / private VLAN | Mencegah perangkat saling menjangkau bebas di layer lokal | Di mana-mana; kontrol arsitektur terkuat |
+
+Ide terkuat di sini adalah **segmentasi**: makin kecil segmen lokal, makin sedikit perangkat yang bisa dijangkau penyerang dengan trik ARP sejak awal. Entri statis tidak skalabel untuk jaringan besar, jadi kombinasi praktisnya adalah DHCP Snooping plus DAI di switch akses, dengan pemantauan di atasnya.
+
+```
+  [ VLAN User ] ──DAI + DHCP Snooping──► [ gateway ] ──filter──► [ VLAN Server ]
+```
+
+---
+
+## 7. Deteksi dan Pemantauan
+
+Sinyal yang layak diselidiki di jaringan yang kamu kelola:
+
+| Sinyal | Kemungkinan artinya |
+|:---|:---|
+| MAC gateway tiba-tiba berubah di banyak host sekaligus | Percobaan spoofing atau binding yang tidak stabil |
+| Dua MAC berbeda sama-sama mengklaim satu IP | Konflik alamat atau spoofing |
+| Badai request ARP | Loop, salah konfigurasi, atau scanning agresif |
+| Penghitung "drop" DAI naik di switch | Pesan ARP yang melanggar binding yang tercatat |
+
+```bash
+# Pengamatan yang sah di host milikmu
 ip neigh show
-bridge fdb show          # jika bridge Linux
-
-# Observasi ARP di interface yang Anda miliki (bukan menyerang)
-sudo tcpdump -ni eth0 arp
+sudo tcpdump -ni eth0 arp     # amati traffic ARP di NIC-mu sendiri
 ```
 
-Korelasikan hasilnya dengan syslog switch (DAI denies) dan inventory DHCP lease.
+Korelasikan yang kamu lihat dengan log DAI milik switch dan daftar lease DHCP.
 
 ---
 
-## 8. Catatan keamanan: ringkasan pertahanan
+## 8. Catatan Keamanan
 
-| Isu | Risiko | Pertahanan |
+| Masalah | Risiko | Pertahanan |
 |:---|:---|:---|
-| ARP tanpa autentikasi | Binding cache palsu | DAI + DHCP Snooping |
-| L2 flat | Lateral MITM / recon mudah dilakukan | VLAN / microsegmentation |
-| GARP tidak dibatasi | Cache overwrite massal | Rate-limit / inspect policy |
-| Static map basi | Outage setelah ganti NIC | Runbook untuk update ARP statis |
-| IPv6 diabaikan | Celah karena fokus hanya di "ARP saja" | RA Guard, ND inspection |
-| Protokol cleartext | Data terbaca kalau MITM berhasil | TLS di mana-mana, plus HSTS |
+| ARP tidak bisa diautentikasi | Binding IP-ke-MAC palsu | DHCP Snooping + DAI |
+| Satu segmen datar besar | MITM lokal dan recon jadi mudah | VLAN / segmentasi |
+| Gratuitous ARP tak difilter | Menimpa cache massal | Rate limiting / inspeksi |
+| Entri statis basi | Gangguan setelah ganti NIC | Runbook untuk memperbaruinya |
+| IPv6 diabaikan | Celah kalau kamu cuma memikirkan ARP | RA Guard, inspeksi ND |
+| Protokol cleartext | Bisa dibaca kalau MITM berhasil | TLS di mana-mana, plus HSTS |
 
-Prinsipnya: anggap L2 lokal hanya bisa dipercaya sejauh policy switch menegakkannya. Enkripsi end-to-end melengkapi, bukan menggantikan, kontrol akses di link.
+Prinsipnya: percayai jaringan lokal hanya sejauh kebijakan switch benar-benar menegakkannya. Enkripsi ujung-ke-ujung melengkapi kontrol di layer link, bukan menggantikannya.
 
 ---
 
-## 9. Cheatsheet: admin / lab sendiri
+## 9. Cheatsheet
 
 ```bash
-# ── Inspect neighbor table ───────────────────────────────────
+# ── Periksa tabel neighbor (host milikmu) ────────────────────
 ip neigh show
 ip -4 neigh show dev eth0
-ip -6 neigh show
+ip -6 neigh show               # padanan IPv6 (NDP)
 
-# ── Manage entries on YOUR host (careful in prod) ────────────
+# ── Kelola entri di host MILIKMU (hati-hati di produksi) ─────
 sudo ip neigh add 10.0.0.1 lladdr aa:bb:cc:dd:ee:ff dev eth0 nud permanent
 sudo ip neigh del 10.0.0.1 dev eth0
 sudo ip neigh flush dev eth0
 
-# ── Trigger resolution (legitimate traffic) ──────────────────
+# ── Picu lookup normal ───────────────────────────────────────
 ping -c 1 10.0.0.9
 ip neigh get 10.0.0.9 dev eth0
 
-# ── Passive observation on interfaces you own ────────────────
-sudo tcpdump -ni eth0 'arp' -vv
-sudo tcpdump -ni eth0 'arp and arp[6:2] == 2'   # replies only
+# ── Amati ARP secara pasif di NIC-mu sendiri ─────────────────
+sudo tcpdump -ni eth0 arp -vv
 
-# ── MAC / FDB visibility (Linux bridge) ──────────────────────
-ip link show
-bridge link show
+# ── MAC learning di Linux bridge ─────────────────────────────
 bridge fdb show
 ```
 
 | Perintah | Kegunaan |
 |:---|:---|
-| `ip neigh` | Lihat/ubah ARP/ND cache |
-| `tcpdump arp` | Audit trafik ARP di NIC Anda |
-| `bridge fdb` | Lihat learning MAC di bridge |
+| `ip neigh` | Melihat atau mengedit cache ARP/NDP |
+| `tcpdump arp` | Mengaudit traffic ARP di NIC-mu sendiri |
+| `bridge fdb` | Melihat MAC learning di Linux bridge |
 
 ---
 
 > **Referensi & sumber buku**
-> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/computernetworking.pdf`
-> - Christian Benvenuti, *Understanding Linux Network Internals*, `~/Documents/Books/CyberSec/Networking/Understanding Linux Network Internals (2005).pdf`
-> - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/Network-security-essentials-4th-edition-william-stallings.pdf`
-> - W. Richard Stevens, *UNIX Network Programming, Vol. 1*, `~/Documents/Books/CyberSec/Networking/UNIX Network Programming Volume 1, 3rd edition - W. Richard Stevens.pdf`
+> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/`
+> - Christian Benvenuti, *Understanding Linux Network Internals*, `~/Documents/Books/CyberSec/Networking/`
+> - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/`
+> - W. Richard Stevens, *UNIX Network Programming, Vol. 1*, `~/Documents/Books/CyberSec/Networking/`
 > - RFC 826 (ARP), RFC 5227 (IPv4 Address Conflict Detection), RFC 4861 (NDP)
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
-> Materi edukasi dan lab pada jaringan milik sendiri atau yang sudah berizin. Tidak ada playbook poisoning di sini.
+> **Repositori:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> Materi edukasi dan lab untuk jaringan milik sendiri atau yang kamu berizin menguji. Tidak ada playbook poisoning.

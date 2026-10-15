@@ -15,21 +15,41 @@
 
 ## Table of contents
 
-1. DNS hierarchy (namespace tree)
-2. Resolution algorithm
-3. Resource record types
-4. DNSSEC (signatures & chain of trust)
-5. DNS privacy (DoT & DoH)
-6. Zone transfer (misconfiguration risk)
-7. Cache poisoning (concept & defenses)
-8. Security notes (detection & hardening)
-9. Admin cheatsheet
+1. What DNS is, and the name tree
+2. How a lookup actually happens
+3. Record types you'll meet
+4. DNSSEC: proving an answer is genuine
+5. DNS privacy: DoT and DoH
+6. Zone transfer: a configuration risk
+7. Cache poisoning, and how it's prevented
+8. Security notes
+9. Cheatsheet
 
 ---
 
-## 1. DNS hierarchy: namespace tree
+## Key Terms
 
-DNS (Domain Name System) maps hierarchical names to resources, most often IP addresses. The namespace is an inverted tree rooted at the root (`.`). Labels are separated by dots, and an FQDN reads right to left:
+You'll see these words throughout the lesson.
+
+| Term | Plain meaning |
+|:---|:---|
+| DNS | The Internet's "phone book": it turns names like `example.com` into IP addresses |
+| Resolver | The service that does lookups for you (usually your ISP's or a public one) |
+| Authoritative server | The server that holds the real answers for a given domain |
+| Record (RR) | One entry in DNS: a name plus a value (an address, a mail server, and so on) |
+| Zone | One domain's set of records, managed as a unit |
+| TTL | How long an answer may be cached before it must be looked up again |
+| Cache | A saved copy of recent answers, so the same lookup is instant next time |
+| DNSSEC | Digital signatures on DNS answers, so you can tell a forged one apart |
+| DoT / DoH | DNS sent over an encrypted connection (over TLS, or over HTTPS) |
+
+---
+
+## 1. What DNS Is, and the Name Tree
+
+Computers talk in IP addresses, but people remember names. **DNS** (Domain Name System) is the service that translates one into the other: you type `example.com`, DNS gives back `93.184.216.34`. It's the Internet's phone book.
+
+Names are organized as an upside-down tree, read **right to left**, starting from the root:
 
 ```
                     .  (root)
@@ -38,237 +58,178 @@ DNS (Domain Name System) maps hierarchical names to resources, most often IP add
                 /  \
            example  google
               /
-           www
+           www            →  full name: www.example.com.
 ```
 
-The full name is `www.example.com.` (the trailing dot marks the root).
-
-| Level | Example | Role |
+| Level | Example | Who runs it |
 |:---|:---|:---|
-| Root | `.` | Top of the hierarchy, root NS |
-| TLD | `com`, `id`, `jp` | Managed by a registry |
-| SLD / zone | `example.com` | An organization / authoritative zone |
-| Host / label | `www`, `mail` | A resource inside the zone |
+| Root | `.` | The root servers |
+| TLD (top-level domain) | `com`, `id`, `jp` | A registry |
+| Domain / zone | `example.com` | An organization |
+| Host | `www`, `mail` | A machine inside the domain |
 
-Delegation works like this: the parent holds an NS record (plus glue A/AAAA) for the child zone. A zone's authority is really just the set of nameservers that answer with the AA (Authoritative Answer) flag for names inside that zone.
-
-DNS is a distributed hierarchical database. No single server holds the whole tree; authority is delegated downward. Clients usually talk to a recursive resolver, and that resolver walks the tree (or uses its cache) to get an answer.
+No single server knows the whole tree. Each level **delegates** the next one downward ("ask the `.com` servers, they'll point you to `example.com`'s servers"). That delegation is what makes DNS scale to the whole Internet.
 
 ---
 
-## 2. Resolution algorithm
+## 2. How a Lookup Actually Happens
 
-There are three main roles in the resolution process:
+Three players are involved:
 
-| Role | Behavior |
+| Player | Role |
 |:---|:---|
-| Stub resolver | Runs in the OS/application, sends queries to the configured recursive resolver |
-| Recursive resolver | Does the full lookup on the stub's behalf, and may cache |
-| Authoritative server | Only answers for the zones it serves |
+| Stub resolver | The tiny client inside your OS; it just asks the resolver |
+| Recursive resolver | Does the legwork, and remembers (caches) answers |
+| Authoritative server | Holds the real records for a domain |
 
-The iterative algorithm, intuitively (following Kurose):
+When the resolver doesn't already have the answer cached, it walks the tree from the top:
 
 ```text
-1. start with the root servers
-2. ask the current server for the name
-3. got the answer or NXDOMAIN?   → done
-4. got a referral instead?       → ask the servers it points to, then repeat step 2
+1. ask a root server          → "I don't know, but ask the .com servers"
+2. ask a .com server          → "ask example.com's servers"
+3. ask example.com's server   → "www.example.com is 93.184.216.34"  ✓
 ```
 
 ```
-Stub ──Q──► Recursive ──iterative──► Root
-                 │                      │
-                 │◄──── referral ───────┘
-                 ├──► TLD NS
-                 │◄── referral
-                 └──► Auth NS ──► Answer (AA)
+You ──► Recursive resolver ──► Root
+                │                │  "ask .com"
+                ├──► .com ───────┘
+                │     │  "ask example.com"
+                └──► example.com ──► Answer
+                │
+        caches the answer for its TTL, so next time is instant
 ```
 
-Caching: the TTL on each RR caps how long it can stay cached. Negative answers get cached too (RFC 2308), under a separate set of rules from positive answers.
+Every record has a **TTL** that says how long it can be cached. Caching is what keeps DNS fast; without it, every click would walk the whole tree again.
 
-Recursion offloads tree-walking from clients. Authoritative servers should typically not recurse for the public internet, since that reduces the amplification/abuse surface. Separating the recursive and authoritative roles is standard operational hygiene: do not casually enable recursion on a public authoritative server.
+A note on hygiene: a **recursive** resolver (walks the tree for clients) and an **authoritative** server (answers for a domain) are different jobs. A public authoritative server should not also do open recursion, because that becomes an abuse and amplification magnet.
 
 ---
 
-## 3. Resource record types
+## 3. Record Types You'll Meet
 
-| Type | Short function | Example data |
+| Type | What it holds | Example |
 |:---|:---|:---|
-| A | IPv4 host | `93.184.216.34` |
-| AAAA | IPv6 host | `2606:2800:...` |
-| NS | Delegation / zone nameserver | `ns1.example.com.` |
-| CNAME | Alias to a canonical name | `www → origin.cdn.net.` |
-| MX | Mail exchanger plus preference | `10 mail.example.com.` |
-| TXT | Free text (SPF, verification, and similar) | `"v=spf1 ..."` |
-| SOA | Start of Authority (serial, timers) | zone metadata |
-| PTR | Reverse (in-addr.arpa / ip6.arpa) | hostname |
-| SRV | Service location | `_sip._tcp...` |
-| DNSKEY | Zone public key (DNSSEC) | key material |
-| DS | Hash of the child's key, stored at the parent (DNSSEC) | digest |
-| RRSIG | Signature over an RRset | signature |
-| NSEC / NSEC3 | Proof of non-existence | authenticated denial |
+| A | An IPv4 address | `93.184.216.34` |
+| AAAA | An IPv6 address | `2606:2800:...` |
+| CNAME | An alias ("this name is really that name") | `www → origin.cdn.net.` |
+| MX | Where email for the domain goes | `10 mail.example.com.` |
+| NS | Which servers are authoritative for the zone | `ns1.example.com.` |
+| TXT | Free text (used for SPF, domain verification) | `"v=spf1 ..."` |
+| PTR | The reverse: an IP back to a name | used in reverse lookups |
+| DNSKEY / RRSIG / DS | DNSSEC keys and signatures (Section 4) | key / signature data |
 
-An RRset is the set of all RRs sharing the same name, type, and class. DNSSEC operations sign the whole RRset, not one RR pulled out separately from its siblings.
-
-The classic wire format runs over UDP/53 (large answers fall back to TCP/53 or EDNS0). EDNS0 extends the allowed UDP size and carries extra options, including the DO bit that flags "DNSSEC OK" and cookies.
+DNS normally travels over UDP port 53 (small and fast); large answers fall back to TCP port 53.
 
 ---
 
-## 4. DNSSEC: signatures & chain of trust
+## 4. DNSSEC: Proving an Answer Is Genuine
 
-DNSSEC adds authentication and integrity to DNS data, not confidentiality. A validating resolver confirms an answer really came from the right zone and was not altered in transit or in cache.
+Plain DNS has a weakness: when an answer arrives, there's no built-in way to know it really came from the right place and wasn't swapped out along the way. **DNSSEC** fixes this by adding **digital signatures** (the signature idea comes from LC-055).
 
-Core components:
-
-| RR | Role |
-|:---|:---|
-| DNSKEY | Zone public key (ZSK / KSK) |
-| RRSIG | Signature over an RRset |
-| DS | Digest of the child's DNSKEY, stored at the parent |
-| NSEC/NSEC3 | Proof that a name/type does not exist |
-
-RRSIG verification, conceptually: for RRset R and public key K:
+Each zone signs its records. A resolver that validates can check the signature and be sure the answer is authentic and unmodified:
 
 ```text
-Verify(public key, RRset, RRSIG) → accept / reject
+check:  Verify(zone's public key, the records, the signature) → genuine / forged
 ```
 
-Abstractly, with a Sign/Verify signature scheme:
-
-```text
-RRSIG = Sign(private key, Hash(RRset) + meta)
-```
-
-where meta includes the algorithm, labels, original TTL, inception/expiration, key tag, and signer name.
-
-Chain of trust:
+The trust is chained from the root downward, like certificate chains in PKI (LC-057): the root vouches for `.com`, `.com` vouches for `example.com`, and so on. A resolver only needs to trust the root to trust the whole chain.
 
 ```
-Trust Anchor (root KSK, hardcoded/managed)
-        │  validates
-        ▼
-   root DNSKEY ──RRSIG──► root zone data
-        │  DS for .com
-        ▼
-   com DNSKEY ──► … ──DS──► example.com DNSKEY
-                                │
-                                ▼
-                         RRSIG on example.com RRsets
+root (trusted starting point)
+  │ vouches for
+  ▼
+.com
+  │ vouches for
+  ▼
+example.com  ──signs──►  its own records
 ```
 
-A resolver needs a trust anchor, usually at the root. If the DS at the parent matches the child's DNSKEY, and the RRSIG is valid and inside its time window, the RRset is Secure. A validation failure produces Bogus, meaning the answer must not be used. A zone that doesn't use DNSSEC at all is Insecure, which is not the same as Bogus.
-
-DNSSEC stops undetected substitution of forged answers along the path or in cache, provided validators are enabled end to end. It does not encrypt queries; use DoT/DoH for confidentiality of the question itself.
+Important: DNSSEC proves answers are **genuine**, but it does **not** hide them. The questions and answers still travel in the clear. For privacy, you need DoT or DoH (next section).
 
 ---
 
-## 5. DNS privacy: DoT & DoH
+## 5. DNS Privacy: DoT and DoH
 
-| Mechanism | Port / framing | Properties |
+Classic DNS is sent in plaintext, so anyone on the path can see every name you look up, and potentially tamper with it. Two mechanisms encrypt it:
+
+| Mechanism | How | Port |
 |:---|:---|:---|
-| Classic DNS | UDP/TCP 53 | Cleartext question & answer |
-| DoT (DNS over TLS) | TCP 853 | DNS wrapped inside TLS |
-| DoH (DNS over HTTPS) | TCP 443 | DNS carried over an HTTP(S) API |
+| Classic DNS | Plaintext | UDP/TCP 53 |
+| DoT (DNS over TLS) | DNS wrapped in a TLS connection | TCP 853 |
+| DoH (DNS over HTTPS) | DNS carried over HTTPS, so it blends in with web traffic | TCP 443 |
 
-The benefit is preventing passive eavesdropping and on-path manipulation of the query/response, which used to travel in cleartext.
-
-There are real operational trade-offs. A centralized resolver, such as a particular DoH vendor, can still see resolution metadata, so pick a privacy policy deliberately. Enterprises often force internal resolvers and block ad hoc DoH so that logging and DLP keep working; document and communicate that choice to users. An ideal combination for a lab or a product is DoT/DoH pointed at a resolver that also validates DNSSEC.
+The benefit is stopping passive snooping and on-path tampering with your lookups. There's a trade-off, though: whichever resolver you use (including a big DoH provider) still sees your queries, so choose one whose privacy policy you trust. Many organizations deliberately force internal resolvers and block ad-hoc DoH so that their security logging keeps working. The best combination is encrypted transport (DoT/DoH) **plus** a resolver that validates DNSSEC.
 
 ---
 
-## 6. Zone transfer: misconfiguration risk
+## 6. Zone Transfer: A Configuration Risk
 
-AXFR (full zone transfer) and IXFR (incremental) let a secondary replicate the primary's zone contents. This is a legitimate operational feature, not an "attack". But if it's allowed from any source without restriction, the entire zone contents, including internal hosts and naming scheme, can be downloaded by an outsider.
+A **zone transfer** (AXFR) is a legitimate feature: it lets a backup DNS server copy the full list of records from the main one. The problem is when it's left open to anyone.
 
-Risks from this kind of misconfiguration:
+If a stranger can request a zone transfer, they can download your **entire** list of internal hostnames at once: servers, naming scheme, the lot. That's a goldmine for reconnaissance, handed over without any real attack.
 
-- Exposure of internal name inventory
-- Helping reconnaissance before some other attack
-- Rogue secondaries appearing if there is no access control, ideally combined with TSIG
+How to keep your own zone safe:
 
-Hardening steps for admins of your own zone:
+- Allow zone transfers only to your known backup servers, by IP.
+- Protect the transfer with **TSIG** (a shared secret that both servers check).
+- Don't rely on secret hostnames for security; keep applying segmentation and least privilege.
 
-- Restrict AXFR/IXFR to known secondary IPs only
-- Use TSIG (an HMAC-based shared secret) between primary and secondary
-- Do not rely on "security through obscurity" for hostnames; keep applying segmentation and least privilege
-
-Note: this document has no attack procedure, only configuration awareness and a defensive checklist.
-
-Treat an open zone transfer as a configuration defect. Monitor for unexpected AXFR attempts in authoritative server logs.
+> This lesson is about recognizing and fixing the misconfiguration, not performing it. Watch your authoritative-server logs for unexpected transfer attempts.
 
 ---
 
-## 7. Cache poisoning: concept & defenses
+## 7. Cache Poisoning, and How It's Prevented
 
-Cache poisoning, conceptually, happens when a recursive resolver stores an incorrect name-to-data binding because it accepted a forged answer that looked valid (matching ID/question) before the real answer arrived, or because of weaknesses in transaction prediction.
+**The idea:** a resolver caches whatever answer it accepts. If an attacker can slip a **forged** answer in before the real one arrives, and make it look valid, the resolver caches the wrong address and hands it to everyone for as long as the TTL lasts. That sends victims to the attacker's server while the address bar still shows the real name.
 
-A high-level threat model (Kaminsky-era intuition): the historical transaction guess-space is too small if
+For the forgery to be accepted, it has to match the resolver's question and a couple of random values. Historically those random values were too small to be safe. The modern defenses all work by making a forged answer far harder to fake or easier to detect:
 
-```text
-guess space = 2¹⁶ possible TXIDs × number of possible source ports
-```
-
-is small, and an attacker can flood spoofed answers for a query it triggers itself.
-
-Modern defenses (not an attack cookbook):
-
-| Control | Effect |
+| Defense | What it does |
 |:---|:---|
-| Source port randomization | Enlarges the transaction guess-space |
-| Random TXID | Mandatory for a long time now, combined with port randomization |
-| DNS cookies (RFC 7873) | A client-server token that cuts down cheap spoofing |
-| DNSSEC validation | A forged answer fails verification and becomes Bogus |
-| 0x20 encoding / QNAME case | Extra entropy on the wire, where supported |
-| Network path security | Limits who can inject packets on the resolver's path |
+| Random source port + random query ID | Hugely increases what an attacker has to guess |
+| DNS cookies | A shared token that rejects cheap off-path spoofing |
+| DNSSEC validation | A forged answer fails the signature check and is thrown out |
+| Encrypted transport (DoT/DoH) | Keeps an on-path attacker from reading or injecting |
 
-Detection signals: a spike in SERVFAIL on a zone that's normally healthy, an RRset that suddenly changes without any legitimate zone update, or a mismatch against another validating resolver's view.
-
-The right defense is defense in depth: entropy on the query transaction combined with cryptographic authenticity through DNSSEC. Neither one alone is a complete operational story.
+Warning signs worth noticing: an address that suddenly changes with no legitimate update, a spike in resolution failures, or a resolver's answer disagreeing with another trusted one. The real protection is defense in depth: randomness to make guessing hard, **plus** DNSSEC to make forgery detectable.
 
 ---
 
-## 8. Security notes: defense & detection
+## 8. Security Notes
 
 | Issue | Risk | Defense / detection |
 |:---|:---|:---|
-| Cleartext DNS | Sniffing / on-path tampering | DoT/DoH, a trusted path |
-| Non-validating resolver | Undetected forgery | Enable DNSSEC validation |
-| Open recursive | Abuse / amplification | Client ACLs, separate auth from recursive |
-| Open AXFR | Zone dump | ACL + TSIG, alert on logs |
-| Rogue resolver (via DHCP/RA) | Resolution redirect | DHCP snooping, RA Guard, DoH policy |
-| Stale trust anchors | False Bogus / outage | RFC 5011 automation, plus monitoring |
+| Plaintext DNS | Snooping and on-path tampering | DoT/DoH, a trusted resolver |
+| Non-validating resolver | Forged answers go unnoticed | Turn on DNSSEC validation |
+| Open recursive resolver | Abuse and amplification | Restrict clients; keep recursive and authoritative separate |
+| Open zone transfer | Your whole zone gets dumped | Restrict by IP + TSIG; alert on logs |
+| Rogue resolver pushed by DHCP | Your lookups get redirected | DHCP snooping, RA Guard, a DoH policy |
 
-Lab hygiene: only test resolvers and zones you own. When diagnosing a Bogus status, compare a `dig +dnssec` answer against another validating public resolver.
+Lab hygiene: only test resolvers and zones you own. When an answer looks wrong, compare a `dig +dnssec` result against a second trusted public resolver.
 
 ---
 
-## 9. Cheatsheet: legitimate admin / lab
+## 9. Cheatsheet
 
 ```bash
-# ── Basic lookup (your system) ────────────────────────────────
-dig example.com A +noall +answer
-dig example.com AAAA
-dig MX example.com
-dig NS example.com
+# ── Basic lookups ────────────────────────────────────────────
+dig example.com A +short       # just the IPv4 address
+dig example.com AAAA           # IPv6
+dig MX example.com             # mail servers
+dig NS example.com             # authoritative name servers
 
-# ── Trace iterative path (observability) ─────────────────────
+# ── See the whole walk from the root ─────────────────────────
 dig +trace example.com
 
 # ── DNSSEC inspection ────────────────────────────────────────
-dig example.com A +dnssec +multi
-dig DNSKEY example.com +multi
-dig DS example.com +short
-delv example.com A          # validating lookup if configured
+dig example.com A +dnssec      # show signatures (RRSIG)
+delv example.com A             # validating lookup, if configured
 
-# ── Reverse / SOA ────────────────────────────────────────────
+# ── Reverse lookup ───────────────────────────────────────────
 dig -x 93.184.216.34
-dig SOA example.com +noall +answer
 
-# ── Check if YOUR authoritative allows transfer to YOU only ──
-# (run from an allowed secondary; expect REFUSED from any other host)
-dig AXFR example.com @ns1.example.com
-
-# ── Local stub / systemd-resolved ────────────────────────────
+# ── Your own system resolver ─────────────────────────────────
 resolvectl status
 resolvectl query example.com
 ```
@@ -276,16 +237,16 @@ resolvectl query example.com
 | Command | Use |
 |:---|:---|
 | `dig +short` | Terse answer |
-| `dig +dnssec` | Show RRSIG / DO |
-| `dig +trace` | Simulate the walk from root |
-| `delv` | Client-side DNSSEC validation via BIND tools |
+| `dig +dnssec` | Show the DNSSEC signatures |
+| `dig +trace` | Watch the lookup walk down from the root |
+| `resolvectl` | Inspect the system's own resolver |
 
 ---
 
 > **References & book sources**
-> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/computernetworking.pdf`
-> - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/Network-security-essentials-4th-edition-william-stallings.pdf`
-> - Christian Benvenuti, *Understanding Linux Network Internals*, `~/Documents/Books/CyberSec/Networking/Understanding Linux Network Internals (2005).pdf`
+> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/`
+> - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/`
+> - Christian Benvenuti, *Understanding Linux Network Internals*, `~/Documents/Books/CyberSec/Networking/`
 > - RFC 1034/1035 (DNS), RFC 4033-4035 (DNSSEC), RFC 7858 (DoT), RFC 8484 (DoH), RFC 7873 (Cookies)
 > - `man dig`, `man resolvectl`
 

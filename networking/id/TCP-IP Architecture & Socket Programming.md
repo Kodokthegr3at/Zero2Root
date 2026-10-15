@@ -1,45 +1,62 @@
-# Arsitektur TCP/IP & Pemrograman Socket
+# Arsitektur TCP/IP & Socket Programming
 
-> **LearnCybersecurity** | Seri Networking Fundamentals
+> **LearnCybersecurity** | Seri Dasar Networking
 > Terakhir diperbarui: 2026 | Penulis: kodoktheGr3at
 > Referensi utama: Kurose & Ross, *Computer Networking*; Stevens, *UNIX Network Programming*; Benvenuti, *Understanding Linux Network Internals*; Stallings, *Network Security Essentials*
 
 ---
 
 <!-- LC-CURRICULUM-START -->
-> **Curriculum ID:** `LC-039` | **Fase 2:** Networking
-> **Estimasi belajar:** 5-6 jam | **Level:** Intermediate
+> **ID Kurikulum:** `LC-039` | **Fase 2:** Networking
+> **Estimasi belajar:** 5-6 jam | **Level:** Menengah
 > **Prasyarat:** LC-038
 > **Peta buku:** Kurose & Ross, Computer Networking Ch.3-4; Stevens, UNIX Network Programming Vol.1 Ch.1-6
 <!-- LC-CURRICULUM-END -->
 
-## Daftar isi
+## Daftar Isi
 
-1. Model 4 lapisan TCP/IP
-2. Header IPv4: field inti
-3. Segmen TCP: field esensial
-4. Mesin status TCP (disederhanakan)
-5. Three-way handshake
-6. Congestion control: intuisi window
-7. Overview Socket API: C & Python
-8. SYN flood: konsep & SYN cookies
-9. Catatan keamanan: hardening stack
+1. Model TCP/IP 4 layer
+2. Isi sebuah paket IP
+3. Isi sebuah segmen TCP
+4. Perjalanan hidup sebuah koneksi TCP
+5. Handshake 3 langkah
+6. Flow control dan congestion control, versi sederhana
+7. Socket: cara program benar-benar memakai jaringan
+8. SYN flood dan SYN cookie
+9. Catatan keamanan
 10. Cheatsheet
 
 ---
 
-## 1. Model 4 lapisan TCP/IP
+## Istilah penting
 
-Model Internet praktis (Kurose) sering digambarkan sebagai empat lapisan, dibandingkan tujuh lapisan OSI:
+Istilah-istilah ini akan sering muncul di materi.
 
-| Layer | Peran | Contoh |
+| Istilah | Artinya |
+|:---|:---|
+| TCP/IP | Model 4 layer sungguhan yang dipakai Internet |
+| Paket / segmen | Potongan data di Internet layer (paket) dan Transport layer (segmen) |
+| Header | Label yang ditempelkan sebuah layer di depan data: dari siapa, untuk siapa, dsb. |
+| Port | Angka yang memilih data itu untuk program yang mana |
+| Socket | "Colokan" program ke jaringan: satu ujung dari sebuah koneksi |
+| 4-tuple | Yang membuat sebuah koneksi unik: IP sumber + port sumber + IP tujuan + port tujuan |
+| TTL | "Time to live": penghitung yang turun satu di tiap router, supaya paket yang tersesat akhirnya mati |
+| SYN / ACK / FIN / RST | Flag TCP: mulai, akui, selesai, dan reset mendadak |
+| Window | Seberapa banyak data yang mau diterima penerima sebelum berhenti dulu |
+| Spoofing | Memalsukan alamat sumber sebuah paket |
+
+---
+
+## 1. Model TCP/IP 4 Layer
+
+Model OSI (LC-038) punya 7 layer untuk mengajar. Jaringan nyata berjalan di atas model **4 layer** yang lebih ramping. Tiap layer membungkus layer di atasnya dengan sebuah header, seperti amplop bersusun.
+
+| Layer | Tugasnya | Contoh |
 |:---|:---|:---|
-| Application | Semantik aplikasi | HTTP, DNS, SSH |
-| Transport | Proses-ke-proses | TCP, UDP, QUIC* |
-| Internet | Routing host-ke-host | IPv4, IPv6, ICMP |
-| Link / Network Access | Hop lokal | Ethernet, Wi-Fi |
-
-*QUIC berjalan di atas UDP tetapi menyediakan reliability/security mirip transport modern.
+| Application | Apa yang sebenarnya ingin dikatakan aplikasi | HTTP, DNS, SSH |
+| Transport | Menyampaikan ke program yang tepat, dengan andal atau cepat | TCP, UDP, QUIC |
+| Internet | Menyampaikan ke mesin yang tepat, melintasi jaringan | IPv4, IPv6, ICMP |
+| Link | Menyampaikan lewat satu lompatan fisik | Ethernet, Wi-Fi |
 
 ```
   ┌─────────────────────────────┐
@@ -51,19 +68,17 @@ Model Internet praktis (Kurose) sering digambarkan sebagai empat lapisan, diband
   ├─────────────────────────────┤
   │  Link         (Eth/802.11)  │
   └─────────────────────────────┘
-         encapsulation ↓
-  [Eth][IP][TCP][App data][FCS]
+         turun ↓
+  [Eth][IP][TCP][data aplikasi][FCS]
 ```
 
-Enkapsulasi: setiap lapisan menambahkan header (dan kadang trailer). Demultiplexing naik memakai EtherType, IP protocol, dan port number.
-
-Kontrol keamanan ada di setiap layer (802.1X, IPsec, TLS, autentikasi aplikasi). Defense in depth berarti tidak bergantung pada jaminan satu layer saja.
+Saat naik, tiap layer membaca dan melepas header-nya sendiri, lalu menentukan menyerahkan sisanya ke siapa (memakai EtherType, field protokol IP, dan nomor port). Kontrol keamanan ada di setiap layer: tidak ada satu layer ajaib, karena itu pertahanan nyata menumpuk beberapa (defense in depth).
 
 ---
 
-## 2. Header IPv4: field inti
+## 2. Isi Sebuah Paket IP
 
-Header minimum berukuran 20 byte (tanpa options):
+Tugas Internet layer adalah pengalamatan dan routing. Header IPv4 minimal 20 byte. Kamu tidak perlu menghafal tata letak bit-nya, tapi sebaiknya mengenali field yang penting untuk keamanan.
 
 ```
  0                   1                   2                   3
@@ -79,277 +94,218 @@ Header minimum berukuran 20 byte (tanpa options):
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |                    Destination Address                        |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                    Options (if IHL > 5) …                     |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ```
 
-| Field | Makna keamanan / operasional |
+| Field | Kenapa penting |
 |:---|:---|
-| Version | 4 vs 6 |
-| IHL | Panjang header; options jarang dipakai dan sering difilter |
-| DSCP/ECN | QoS / notifikasi kongesti |
-| Total Length | Ukuran datagram |
-| ID / Flags / Offset | Fragmentasi, berisiko terhadap serangan reassembly jika stack lemah (OS modern jauh lebih tahan) |
-| TTL | Hop limit; mencegah loop; dipakai sebagai heuristik OS |
-| Protocol | 6=TCP, 17=UDP, 1=ICMP, dan seterusnya |
-| Checksum | Hanya untuk header (IPv4) |
-| Src / Dst | Pengalamatan; src dapat di-spoof jika tidak ada ingress filter |
+| Version | 4 atau 6 |
+| Total Length | Seberapa besar seluruh paketnya |
+| Fragmentation (ID/Flags/Offset) | Memecah paket besar; stack lama bisa ditipu saat penyusunan ulang, yang modern menanganinya dengan baik |
+| TTL | Turun 1 tiap router; mencegah paket berputar selamanya, dan membocorkan petunjuk OS pengirim |
+| Protocol | Isinya apa: 6 = TCP, 17 = UDP, 1 = ICMP |
+| Source / Destination | Alamatnya; **sumber bisa dipalsukan** kecuali jaringan memfilternya |
 
 ```text
 ukuran header  = IHL × 4 byte
-ukuran payload = Total Length - ukuran header
+ukuran payload = Total Length − ukuran header
 
 Contoh: Total Length = 60, IHL = 5  →  header = 20 byte  →  payload = 40 byte
 ```
 
+Poin keamanan terpenting di sini: alamat sumber sebuah paket IP **hanyalah klaim**. Tanpa filter di tepi jaringan, penyerang bisa menulis alamat sumber apa pun yang dia mau (spoofing).
+
 ---
 
-## 3. Segmen TCP: field esensial
+## 3. Isi Sebuah Segmen TCP
 
-TCP menyediakan stream berorientasi koneksi, reliability (ACK, retransmit), ordering, dan flow control.
+TCP mengubah pengiriman IP yang "sebisanya" dan tidak andal menjadi aliran byte yang andal dan berurutan. Caranya lewat field-field di header-nya.
 
-| Field | Fungsi |
+| Field | Gunanya |
 |:---|:---|
-| Src / Dst Port | Demultiplexing ke socket |
-| Seq | Byte offset stream pengirim |
-| Ack | Byte berikutnya yang diharapkan (jika flag ACK diset) |
-| Data Offset | Ukuran header TCP |
-| Flags | SYN, ACK, FIN, RST, PSH, URG, ECE, CWR, dan seterusnya |
-| Window | Flow control dari sisi receiver |
-| Checksum | Menghitung pseudo-header IP + TCP |
-| Urgent / Options | SACK, Timestamp, MSS, Window Scale, dan seterusnya |
+| Port Sumber / Tujuan | Program mana di tiap ujung |
+| Sequence number | Posisi data ini di dalam aliran |
+| Acknowledgement number | "Aku sudah menerima semua sampai di sini" |
+| Flags | SYN (mulai), ACK (akui), FIN (selesai), RST (reset), dan lainnya |
+| Window | Seberapa banyak lagi yang bisa diterima penerima saat ini |
+| Checksum | Menangkap data yang rusak |
 
-Identitas koneksi berupa 4-tuple (atau 5-tuple jika protokol disertakan):
+Satu koneksi dikenali oleh empat hal sekaligus, si **4-tuple**:
 
 ```text
 (IP sumber, port sumber, IP tujuan, port tujuan)
 ```
 
+Dua tab browser ke situs yang sama hanya berbeda di port sumber, dan itu sudah cukup untuk memisahkannya.
+
 ---
 
-## 4. Mesin status TCP (disederhanakan)
+## 4. Perjalanan Hidup Sebuah Koneksi TCP
 
-Status utama (mengikuti Stevens / diagram klasik):
+Koneksi TCP melewati serangkaian state, seperti panggilan telepon dari memanggil, lalu bicara, lalu menutup.
 
 ```
-  CLOSED ──passive open──► LISTEN ──SYN──► SYN_RCVD ──ACK──► ESTABLISHED
-  CLOSED ──active open───► SYN_SENT ──────────SYN+ACK──► ESTABLISHED
+  CLOSED ──listen──► LISTEN ──SYN──► SYN_RCVD ──ACK──► ESTABLISHED
+  CLOSED ──connect─► SYN_SENT ───────SYN+ACK──► ESTABLISHED
 
-  ESTABLISHED ──FIN──► FIN_WAIT_1 ──► FIN_WAIT_2 ──► TIME_WAIT ──► CLOSED
-  ESTABLISHED ──FIN──► CLOSE_WAIT ──► LAST_ACK ──► CLOSED
+  ESTABLISHED ──FIN──► FIN_WAIT ──► TIME_WAIT ──► CLOSED
 ```
 
-| State | Arti singkat |
+| State | Artinya |
 |:---|:---|
-| LISTEN | Menunggu SYN |
-| SYN_SENT / SYN_RCVD | Handshake baru separuh jalan |
-| ESTABLISHED | Transfer data berlangsung |
-| TIME_WAIT | Menunggu 2×MSL agar segmen lama benar-benar mati |
-| CLOSE_WAIT | Peer sudah mengirim FIN; aplikasi lokal harus close |
+| LISTEN | Server menunggu ada yang menyambung |
+| SYN_SENT / SYN_RCVD | Handshake sedang berjalan |
+| ESTABLISHED | Tersambung, data mengalir |
+| TIME_WAIT | Baru ditutup; menunggu sebentar supaya paket lama yang tersesat mati |
+| CLOSE_WAIT | Pihak lain menutup; aplikasimu masih perlu menutup |
 
-`ss -tan` menampilkan state pada host Linux Anda, berguna untuk mendiagnosis kebocoran koneksi atau flood.
+```bash
+ss -tan      # lihat semua koneksi TCP dan state-nya (Linux)
+```
 
-`TIME_WAIT` sering dikira bug, padahal ini fitur untuk menjaga korektnes protokol. Melakukan tuning membutuhkan pemahaman soal MSL dan apakah sistem Anda lebih berat sebagai client atau server. Jangan menonaktifkannya begitu saja tanpa memahami konsekuensinya.
+Kebingungan yang umum: banyaknya entri `TIME_WAIT` terlihat seperti bug padahal normal dan sehat. Jangan mematikan `TIME_WAIT` tanpa paham kenapa ada; ia melindungi dari paket lama yang disalahartikan sebagai paket baru.
 
 ---
 
-## 5. Three-way handshake
+## 5. Handshake 3 Langkah
 
-Pembukaan koneksi:
-
-```text
-1. C → S:  SYN,      seq=x
-2. S → C:  SYN+ACK,  seq=y, ack=x+1
-3. C → S:  ACK,      ack=y+1
-```
+Sebelum data mengalir, kedua pihak menyelaraskan diri dalam tiga langkah. Anggap saja: "Kamu dengar aku?" — "Ya, kamu dengar aku?" — "Ya."
 
 ```
   Client                     Server
-    │  SYN, seq=x               │
+    │  SYN, seq=x               │   1. "Ayo bicara, counter-ku mulai dari x"
     │──────────────────────────►│
-    │  SYN+ACK, seq=y, ack=x+1  │
+    │  SYN+ACK, seq=y, ack=x+1  │   2. "Oke, punyaku mulai dari y, x-mu kuterima"
     │◄──────────────────────────│
-    │  ACK, ack=y+1             │
+    │  ACK, ack=y+1             │   3. "y-mu kuterima, ayo mulai"
     │──────────────────────────►│
     │      ESTABLISHED          │
 ```
 
-Kedua sisi menyepakati initial sequence number (ISN) masing-masing. ISN modern dibuat dengan cara yang diperkuat, bukan sekadar counter naif, untuk mengurangi risiko spoofing yang bisa diprediksi.
-
-Teardown: umumnya FIN/ACK empat arah, atau RST untuk abort paksa.
-
-Middlebox dan load balancer harus menangani state handshake dengan hati-hati. Asimetri jalur dan SYN timeout saling berinteraksi dengan mekanisme pertahanan DoS seperti SYN cookies.
+Tiap pihak memilih angka awal (**initial sequence number**, ISN). Sistem modern membuat ISN dengan cara yang sulit ditebak, jadi penyerang dari luar jalur tidak mudah menebaknya dan menyuntikkan data palsu. Penutupan adalah pertukaran sopan serupa berupa FIN/ACK, atau satu RST untuk menutup koneksi secara paksa.
 
 ---
 
-## 6. Congestion control: intuisi window
+## 6. Flow Control dan Congestion Control, Versi Sederhana
 
-Flow control: `rwnd` berasal dari receiver (field Window, yang diskalakan).
-Congestion control: pengirim membatasi diri sendiri dengan cwnd (congestion window) agar tidak merusak jalur bersama dengan trafik lain.
+TCP terus menjawab dua pertanyaan: "Apakah penerima mengikuti?" dan "Apakah jaringan mengikuti?"
 
-Bytes in flight (intuisi):
-
-```text
-byte in flight ≤ nilai terkecil antara cwnd dan rwnd
-```
-
-Pengirim dibatasi oleh batas yang lebih kecil: kemampuan jaringan (cwnd) atau kemampuan penerima (rwnd).
-
-Fase klasik (intuisi ala Reno; implementasi modern memakai CUBIC, BBR, dan lainnya):
-
-| Fase | Perilaku |
-|:---|:---|
-| Slow start | `cwnd` tumbuh eksponensial per RTT hingga mencapai ssthresh |
-| Congestion avoidance | Pertumbuhan menjadi lebih linear |
-| Sinyal loss | Triple-dup ACK / RTO menyebabkan `cwnd` diturunkan dan ssthresh disesuaikan |
+- **Flow control** melindungi *penerima*: ia mengumumkan **window** (`rwnd`) yang menyatakan seberapa banyak yang sanggup diterima.
+- **Congestion control** melindungi *jaringan*: pengirim menjaga batasnya sendiri (`cwnd`) supaya tidak membanjiri jalur bersama.
 
 ```text
-slow start: cwnd bertambah satu MSS untuk setiap ACK yang diterima
-            (jadi kira-kira berlipat dua setiap round trip)
+data yang boleh "melayang" ≤ nilai terkecil antara cwnd dan rwnd
 ```
 
-Keterkaitan dengan keamanan: flood UDP/TCP dapat menyebabkan congestive DoS; rate-limit dan capacity planning adalah kontrol operasional untuk itu.
+Pengirim dibatasi oleh yang lebih kecil. Saat koneksi mulai, `cwnd` tumbuh cepat (**slow start**, yang sebenarnya berlipat dua tiap round trip), lalu tumbuh hati-hati, dan mundur tajam saat paket mulai hilang.
 
-Tuning `cwnd` secara manual jarang dilakukan; yang biasa diamati adalah RTT, tingkat retransmisi, dan bufferbloat. BBR memodelkan bottleneck bandwidth dan RTT, bukan hanya bereaksi terhadap loss seperti algoritma lama.
+```text
+slow start: cwnd bertambah satu segmen tiap ACK
+            → kira-kira berlipat dua tiap round trip
+```
+
+Kamu jarang mengaturnya manual. Yang kamu amati adalah round-trip time, retransmisi, dan penundaan akibat buffer. Sisi keamanan: banjir traffic TCP atau UDP bisa membuat jalur macet sampai jadi denial of service, karena itu rate limiting dan perencanaan kapasitas penting.
 
 ---
 
-## 7. Overview Socket API: C & Python
+## 7. Socket: Cara Program Benar-Benar Memakai Jaringan
 
-Socket adalah abstraksi endpoint komunikasi (istilah Stevens). Pola server TCP:
+**Socket** adalah pegangan program atas sebuah koneksi jaringan, satu ujung percakapan. Server TCP mengikuti resep yang tetap:
 
-1. `socket` → 2. `bind` → 3. `listen` → 4. loop `accept` → 5. `recv`/`send` → 6. `close`
-
-Pola client: `socket` → `connect` → `send`/`recv` → `close`.
-
-### C (sketsa)
-
-```c
-int s = socket(AF_INET, SOCK_STREAM, 0);
-struct sockaddr_in addr = {0};
-addr.sin_family = AF_INET;
-addr.sin_port = htons(8080);
-addr.sin_addr.s_addr = htonl(INADDR_ANY);
-bind(s, (struct sockaddr*)&addr, sizeof addr);
-listen(s, 128);
-int c = accept(s, NULL, NULL);
-/* read/write on c */
-close(c); close(s);
+```text
+socket  →  bind  →  listen  →  accept (loop)  →  recv / send  →  close
 ```
 
-### Python 3
+Client lebih sederhana: `socket → connect → send / recv → close`.
+
+### Contoh Python 3
 
 ```python
 import socket
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    s.bind(("0.0.0.0", 8080))
+    s.bind(("0.0.0.0", 8080))   # listen di port 8080
     s.listen(128)
-    conn, peer = s.accept()
+    conn, peer = s.accept()     # tunggu sebuah client
     with conn:
         data = conn.recv(4096)
         conn.sendall(b"OK\n")
 ```
 
-| Call | Makna |
+| Panggilan | Yang dilakukan |
 |:---|:---|
-| `bind` | Mengaitkan alamat/port lokal |
-| `listen` | Antrian SYN / backlog |
-| `accept` | Mengambil koneksi yang sudah established |
-| `connect` | Active open |
-| `SO_REUSEADDR` | Mengizinkan rebind cepat (perlu paham implikasi TIME_WAIT) |
+| `bind` | Mengklaim alamat dan port lokal |
+| `listen` | Mulai menerima koneksi (dengan antrean) |
+| `accept` | Mengambil koneksi berikutnya yang siap |
+| `connect` | Menghubungi server (sisi client) |
 
-UDP memakai `SOCK_DGRAM`, dengan `sendto`/`recvfrom`, tanpa handshake.
+UDP lebih sederhana: tanpa handshake, pakai `sendto` / `recvfrom`.
 
-Selalu tentukan byte order dengan jelas (`htons`/`inet_pton`), tangani kemungkinan `send` parsial, dan perlakukan jaringan sebagai lingkungan yang tidak dapat dipercaya: validasi input, set timeout, dan gunakan pembungkus TLS (modul `ssl` / OpenSSL) untuk aplikasi yang sensitif.
+Anggap jaringan itu bermusuhan. Validasi semua yang kamu baca, pasang timeout supaya peer yang macet tidak menggantungmu selamanya, dan bungkus traffic sensitif dengan TLS (modul `ssl` di Python), bukan menciptakan proteksi sendiri.
 
 ---
 
-## 8. SYN flood: konsep & SYN cookies
+## 8. SYN Flood dan SYN Cookie
 
-Konsep: penyerang mengirim banyak segmen SYN (sering di-spoof) agar server mengalokasikan half-open state (SYN_RCVD) sampai tabel atau backlog-nya habis, sehingga client yang sah gagal connect. Ini adalah bentuk DoS.
+**Masalahnya:** di handshake, ketika server menerima SYN, ia menyisihkan sedikit memori untuk koneksi yang belum selesai lalu menunggu ACK terakhir. Penyerang bisa mengirim banjir SYN (sering dengan alamat sumber palsu) dan tidak pernah menyelesaikannya. Server penuh oleh koneksi setengah terbuka dan kehabisan ruang untuk pengguna sungguhan. Itulah **SYN flood**, sejenis denial of service.
 
-Makin banyak koneksi setengah terbuka yang menumpuk, makin dekat server kehabisan sumber daya.
-
-SYN cookies (pertahanan): server tidak menyimpan TCB penuh saat menerima SYN. ISN dikodekan dengan hash rahasia dari 4-tuple ditambah bit timestamp/MSS. State baru dibuat hanya ketika ACK final membawa cookie yang valid.
+**Pertahanannya — SYN cookie:** alih-alih memesan memori tiap SYN, server menyandikan informasi yang dibutuhkan ke dalam sequence number yang dikirimnya balik, dilindungi oleh sebuah rahasia. Server baru membuat state koneksi sungguhan ketika ACK terakhir yang valid kembali membawa nilai sandi itu. Banjir SYN yang tidak pernah selesai jadi nyaris tidak membebani server.
 
 ```text
-ISN ≈ Hash(secret, addresses, ports, time) + MSS bits
+sequence number balasan ≈ Hash(rahasia, 4-tuple, waktu) + info ukuran
 ```
 
-(Implementasi di level kernel bervariasi, tetapi intuisinya sama.)
+Pertahanan lain: ukuran antrean koneksi yang masuk akal, membatasi laju SYN per sumber, dan proxy penanganan SYN atau layanan scrubbing di depan server publik.
 
-Kontrol lain yang relevan: `tcp_syncookies`, backlog yang wajar, rate-limit SYN atau SYN proxy di load balancer, serta anycast scrubbing untuk layanan publik.
-
-Catatan: tidak ada PoC flood atau perintah tool ofensif di catatan ini.
-
-Untuk VIP yang menghadap Internet, aktifkan dan pantau metrik SYN cookie / SYN proxy. Kombinasikan dengan connection limit per prefix sumber bila relevan.
+> Materi ini menjelaskan konsep dan pertahanannya, bukan cara menjalankan flood.
 
 ---
 
-## 9. Catatan keamanan: hardening stack
+## 9. Catatan Keamanan
 
-| Isu | Risiko | Pertahanan |
+| Masalah | Risiko | Pertahanan |
 |:---|:---|:---|
-| SYN flood | Menghabiskan slot half-open | SYN cookies, rate-limit, capacity planning |
-| Src yang di-spoof | Reflection / penyalahgunaan SYN | BCP38 / uRPF |
-| Injeksi RST | Memutus sesi (jika sequence bisa ditebak) | Transport terenkripsi; ISN modern |
-| Aplikasi TCP cleartext | Sniffing / MITM | TLS 1.3 |
-| Bind terbuka ke `0.0.0.0` | Eksposur tidak sengaja | Bind ke interface internal; firewall |
-| Backlog terlalu besar | Tekanan memori | Tuning plus monitoring lewat `ss` |
-| Trik fragmentasi | Evasi IDS (pada stack lama) | Normalisasi; default stack modern sudah lebih baik |
+| SYN flood | Memenuhi slot setengah terbuka server | SYN cookie, rate limiting, perencanaan kapasitas |
+| Sumber dipalsukan | Penyalahgunaan reflection dan flood | Filter alamat sumber di tepi (BCP38 / uRPF) |
+| Injeksi RST | Mematikan session kalau sequence-nya bisa ditebak | Transport terenkripsi; ISN yang sulit ditebak |
+| Aplikasi TCP cleartext | Penyadapan dan perubahan | TLS 1.3 |
+| Listen di `0.0.0.0` | Terekspos ke tiap jaringan tanpa sengaja | Bind ke interface internal; firewall |
 
-Kebersihan lab: eksperimen handshake dan socket hanya pada host/VM milik Anda sendiri; pantau dengan `ss` dan `tcpdump` secara defensif.
+Kebersihan lab: bereksperimen dengan handshake dan socket hanya di mesin milikmu, dan amati secara defensif dengan `ss` dan `tcpdump`.
 
 ---
 
-## 10. Cheatsheet: admin, observasi, kode lab minimal
+## 10. Cheatsheet
 
 ```bash
-# ── Connection tables ────────────────────────────────────────
-ss -tan
-ss -tanp state syn-recv
-ss -s
-ip -s link
+# ── Lihat state koneksi ──────────────────────────────────────
+ss -tan                 # semua koneksi TCP + state
+ss -tanp state syn-recv # koneksi setengah terbuka (gejala flood)
+ss -s                   # ringkasan jumlah
 
-# ── Capture YOUR interface traffic (troubleshooting) ─────────
-sudo tcpdump -ni eth0 'tcp[tcpflags] & (tcp-syn) != 0'
+# ── Amati interface milikmu ──────────────────────────────────
+sudo tcpdump -ni eth0 'tcp[tcpflags] & tcp-syn != 0'   # paket SYN
 sudo tcpdump -ni lo port 8080 -vv
 
-# ── Kernel knobs (read; change only on lab hosts you own) ────
+# ── Baca setting kernel (ubah hanya di host lab milikmu) ─────
 sysctl net.ipv4.tcp_syncookies
 sysctl net.core.somaxconn
-sysctl net.ipv4.tcp_max_syn_backlog
-
-# ── Quick local listener / client (Python) ───────────────────
-python3 - <<'PY'
-import socket, threading
-def serve():
-    with socket.socket() as s:
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind(("127.0.0.1", 8080)); s.listen(1)
-        c,_=s.accept(); print(c.recv(64)); c.close()
-threading.Thread(target=serve, daemon=True).start()
-with socket.create_connection(("127.0.0.1", 8080)) as c:
-    c.sendall(b"hello"); print("sent")
-PY
 ```
 
-| Alat | Kegunaan |
+| Tool | Kegunaan |
 |:---|:---|
-| `ss` | State TCP/UDP modern (pengganti `netstat`) |
-| `tcpdump` | Observasi flag SYN/FIN/RST |
-| `sysctl` | Parameter stack pada host lab |
+| `ss` | Tampilan modern state TCP/UDP (pengganti `netstat`) |
+| `tcpdump` | Mengamati flag SYN / FIN / RST di NIC-mu |
+| `sysctl` | Membaca atau mengatur setting stack di host lab |
 
 ---
 
 > **Referensi & sumber buku**
-> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/computernetworking.pdf`
-> - W. Richard Stevens, *UNIX Network Programming, Volume 1 (3rd Edition)*, `~/Documents/Books/CyberSec/Networking/UNIX Network Programming Volume 1, 3rd edition - W. Richard Stevens.pdf`
-> - Christian Benvenuti, *Understanding Linux Network Internals*, `~/Documents/Books/CyberSec/Networking/Understanding Linux Network Internals (2005).pdf`
-> - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/Network-security-essentials-4th-edition-william-stallings.pdf`
-> - RFC 791 (IPv4), RFC 9293 (TCP), RFC 4987 (tinjauan literatur SYN cookies)
+> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/`
+> - W. Richard Stevens, *UNIX Network Programming, Volume 1 (3rd Edition)*, `~/Documents/Books/CyberSec/Networking/`
+> - Christian Benvenuti, *Understanding Linux Network Internals*, `~/Documents/Books/CyberSec/Networking/`
+> - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/`
+> - RFC 791 (IPv4), RFC 9293 (TCP), RFC 4987 (SYN flood / cookie)
 > - `man ss`, `man tcpdump`, `man 7 ip`, `man 7 tcp`
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
-> Edukasi dan lab pada sistem milik sendiri, tanpa PoC flood atau exploit.
+> **Repositori:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> Materi edukasi dan lab di sistem milik sendiri, tanpa PoC flood atau eksploit.

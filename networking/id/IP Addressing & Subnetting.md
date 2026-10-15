@@ -1,286 +1,281 @@
 # Pengalamatan IP, Subnetting & Routing Jaringan
 
-> **LearnCybersecurity** | Seri Networking Fundamentals
+> **LearnCybersecurity** | Seri Dasar Networking
 > Terakhir diperbarui: 2026 | Penulis: kodoktheGr3at
 > Referensi utama: Kurose & Ross, *Computer Networking*; Stallings, *Network Security Essentials*; Benvenuti, *Understanding Linux Network Internals*
 
 ---
 
 <!-- LC-CURRICULUM-START -->
-> **Curriculum ID:** `LC-040` | **Fase 2:** Networking
-> **Estimasi belajar:** 4-5 jam | **Level:** Intermediate
+> **ID Kurikulum:** `LC-040` | **Fase 2:** Networking
+> **Estimasi belajar:** 4-5 jam | **Level:** Menengah
 > **Prasyarat:** LC-038
 > **Peta buku:** Kurose & Ross, Computer Networking Ch.4; Stallings, Network Security Essentials Ch.2
 <!-- LC-CURRICULUM-END -->
 
-## Daftar isi
+## Daftar Isi
 
 1. IPv4 vs IPv6
-2. Representasi biner & aljabar mask
-3. Rumus inti CIDR
-4. Contoh perhitungan: `192.168.1.0/26`
-5. RFC 1918 & rentang khusus
-6. Routing: longest prefix match
-7. NAT & PAT
-8. ICMP & diagnostik
+2. Membaca alamat dalam biner
+3. Subnet mask dan CIDR
+4. Contoh: memecah sebuah jaringan
+5. Rentang alamat privat dan khusus
+6. Cara router memilih jalur
+7. NAT: berbagi satu alamat publik
+8. ICMP, ping, dan traceroute
 9. Catatan keamanan
 10. Cheatsheet
 
 ---
 
-## 1. IPv4 vs IPv6
+## Istilah penting
 
-Alamat IP adalah identifier logis pada lapisan jaringan (OSI L3 / TCP/IP Internet layer) yang memungkinkan paket di-route antar jaringan.
+Istilah-istilah ini akan sering muncul di materi.
 
-| Karakteristik | IPv4 | IPv6 |
-|:---|:---|:---|
-| Panjang | 32-bit (4 oktet) | 128-bit |
-| Notasi | Dotted decimal `192.168.1.1` | Hex `2001:db8::1` |
-| Ruang alamat | 2³² ≈ 4.29 × 10⁹ | 2¹²⁸ ≈ 3.4 × 10³⁸ |
-| Header | 20–60 B (dengan opsi) | 40 B tetap + extension headers |
-| Konfigurasi | Manual / DHCP | SLAAC / DHCPv6 |
-| Broadcast | Ada | Tidak ada (memakai multicast/anycast) |
-
-Keterbatasan ruang alamat IPv4 mendorong adopsi CIDR, NAT, dan akhirnya IPv6. Tooling keamanan perlu memahami kedua stack ini, termasuk host dual-stack dan eksposur IPv6 yang kadang tidak disadari administratornya.
+| Istilah | Artinya |
+|:---|:---|
+| Alamat IP | Alamat logis sebuah perangkat di jaringan, misalnya `192.168.1.10` |
+| Oktet | Salah satu dari empat angka di alamat IPv4 (masing-masing 8 bit, 0–255) |
+| Subnet | Potongan lebih kecil yang diiris dari jaringan yang lebih besar |
+| Subnet mask | Penanda yang menyatakan bagian mana dari alamat itu "network" dan mana "host" |
+| CIDR `/n` | Cara singkat menulis mask: `/24` berarti 24 bit pertama adalah bagian network |
+| Alamat network | Alamat pertama di sebuah subnet; menamai subnet itu sendiri |
+| Alamat broadcast | Alamat terakhir di sebuah subnet; pesan untuk semua yang ada di dalamnya |
+| Gateway | Router yang dituju perangkat saat tujuannya ada di jaringan lain |
+| NAT | Membuat banyak perangkat privat berbagi satu alamat IP publik |
+| Alamat privat | Alamat (seperti `192.168.x.x`) yang hanya bisa dipakai di jaringan lokal, bukan di Internet publik |
 
 ---
 
-## 2. Representasi biner & aljabar mask
+## 1. IPv4 vs IPv6
 
-### 2.1 Oktet
+**Alamat IP** adalah nama logis yang dipakai perangkat di jaringan (OSI Layer 3). Inilah yang memungkinkan sebuah paket diarahkan dari satu jaringan ke jaringan lain.
 
-Satu oktet = 8 bit, dengan nilai 0..255:
+| | IPv4 | IPv6 |
+|:---|:---|:---|
+| Panjang | 32 bit | 128 bit |
+| Bentuknya | `192.168.1.1` | `2001:db8::1` |
+| Jumlah alamat | sekitar 4,3 miliar | sekitar 3,4 × 10³⁸ (praktis tak terbatas) |
+| Pengaturan | manual atau DHCP | otomatis (SLAAC) atau DHCPv6 |
+| Broadcast | ada | tidak (pakai multicast) |
+
+IPv4 kehabisan alamat, dan itulah kenapa NAT (Bagian 7) lalu akhirnya IPv6 muncul. Alat keamanan perlu memahami keduanya, karena sebuah perangkat sering punya **keduanya sekaligus** (dual-stack), dan alamat IPv6 yang tak terpantau mudah terlupakan.
+
+---
+
+## 2. Membaca Alamat dalam Biner
+
+Tiap dari keempat angka di alamat IPv4 (tiap **oktet**) sebenarnya adalah 8 bit. Tiap bit mewakili sebuah nilai:
 
 ```text
 bit:     b7   b6   b5   b4   b3   b2   b1   b0
 nilai:  128   64   32   16    8    4    2    1
 ```
 
-Untuk mendapat nilai desimalnya, jumlahkan nilai setiap bit yang bernilai 1. Untuk `11000000` hasilnya 128 + 64 = 192.
-
-Contoh: `192` = `11000000`, `168` = `10101000`.
-
-### 2.2 Network mask
-
-Prefix length p (CIDR `/p`) berarti p bit di sebelah kiri adalah bagian **network**, sisanya h=32-p adalah bagian **host** (untuk IPv4):
+Untuk mengubah bit menjadi angka desimal, jumlahkan nilai di mana bit-nya 1:
 
 ```text
-mask = p angka 1 diikuti (32 - p) angka 0
-
-/24  →  11111111.11111111.11111111.00000000  =  255.255.255.0
+11000000  →  128 + 64            = 192
+10101000  →  128 +    32 + 8     = 168
 ```
 
-Operasi inti:
-
-```text
-alamat network = alamat AND mask         (semua bit host jadi 0)
-broadcast      = alamat OR (NOT mask)    (semua bit host jadi 1)
-bagian host    = alamat AND (NOT mask)
-
-Contoh 192.168.1.77/26:  network = 192.168.1.64,  broadcast = 192.168.1.127
-```
-
-Dua alamat A,B berada di subnet yang sama jika dan hanya jika:
-
-```text
-(A AND mask) = (B AND mask)
-```
-
-Dengan kata lain, kedua alamat menghasilkan alamat network yang sama.
+Jadi `11000000.10101000.00000001.00000001` hanyalah `192.168.1.1`. Subnetting intinya soal di mana kamu menarik garis di 32 bit itu.
 
 ---
 
-## 3. Rumus inti CIDR
+## 3. Subnet Mask dan CIDR
 
-Misalkan prefix `/p` pada IPv4 (0 ≤ p ≤ 32), dengan h = 32 - p.
+Sebuah alamat punya dua bagian: bagian **network** (aku ada di jaringan mana?) dan bagian **host** (aku perangkat yang mana?). **Subnet mask** menandai batasnya. Dalam notasi CIDR, `/n` berarti "n bit pertama adalah network, sisanya host."
 
-| Kuantitas | Rumus |
-|:---|:---|
-| Ukuran blok (total alamat) | N = 2ʰ = 2³²⁻ᵖ |
-| Usable host (subnet klasik) | N_usable = 2ʰ - 2 (kecuali `/31` point-to-point menurut RFC 3021, dan `/32` sebagai host route) |
-| Jumlah subnet jika meminjam n bit dari blok induk | 2ⁿ |
-| Subnet mask desimal | konversi mask(p) ke 4 oktet |
-| Increment / stride antar subnet | 2ʰ pada oktet yang relevan |
+```text
+/24  →  11111111.11111111.11111111.00000000  =  255.255.255.0
+        └────── 24 bit network ───────┘└ 8 bit host ┘
+```
 
-**Tabel mask cepat:**
+Dari mask, kamu bisa menghitung tiga alamat kunci sebuah subnet:
 
-| Prefix | Mask | h | Total | Usable |
+```text
+alamat network = alamat terendah (semua bit host 0)  → menamai subnet
+broadcast      = alamat tertinggi (semua bit host 1) → "semua yang di sini"
+host terpakai  = semua yang di antaranya
+
+Contoh, 192.168.1.0/24:
+  network   = 192.168.1.0
+  broadcast = 192.168.1.255
+  terpakai  = 192.168.1.1  …  192.168.1.254   (254 perangkat)
+```
+
+Dua alamat ada di **subnet yang sama** hanya kalau bagian network-nya sama. Itulah yang menentukan apakah komputermu bicara langsung ke perangkat lain, atau harus mengirim lewat gateway.
+
+### Referensi mask cepat
+
+| CIDR | Mask | Bit host | Total alamat | Perangkat terpakai |
 |:---:|:---|:---:|:---:|:---:|
-| /8 | 255.0.0.0 | 24 | 16,777,216 | 16,777,214 |
-| /16 | 255.255.0.0 | 16 | 65,536 | 65,534 |
 | /24 | 255.255.255.0 | 8 | 256 | 254 |
 | /25 | 255.255.255.128 | 7 | 128 | 126 |
 | /26 | 255.255.255.192 | 6 | 64 | 62 |
 | /27 | 255.255.255.224 | 5 | 32 | 30 |
 | /28 | 255.255.255.240 | 4 | 16 | 14 |
 | /30 | 255.255.255.252 | 2 | 4 | 2 |
-| /32 | 255.255.255.255 | 0 | 1 | 1 (host) |
 
-### VLSM (Variable Length Subnet Mask)
-
-VLSM mengalokasikan blok yang tidak seragam ukurannya: subnet besar untuk jaringan akses, `/30` atau `/31` untuk link router. Syaratnya, blok tidak boleh overlap dan harus selaras pada boundary 2ʰ (aligned prefix).
-
-Prosedur:
-
-1. Urutkan kebutuhan host dari yang terbesar ke terkecil.
-2. Untuk kebutuhan H host, pilih h minimum dengan 2ʰ-2 ≥ H (atau 2ʰ ≥ H untuk kasus khusus seperti link point-to-point).
-3. Ambil prefix berikutnya yang masih bebas dan aligned.
+Polanya: tiap tambahan satu bit ruang host **menggandakan** jumlah alamat. "Terpakai" selalu dua lebih sedikit, karena alamat network dan broadcast tidak bisa diberikan ke perangkat. (`/30` dengan 2 host terpakai adalah pilihan klasik untuk link antara dua router.)
 
 ---
 
-## 4. Contoh perhitungan: `192.168.1.0/26`
+## 4. Contoh: Memecah Sebuah Jaringan
 
-```text
-prefix p = 26   →   bit host h = 32 - 26 = 6
-total alamat    = 2⁶ = 64
-host terpakai   = 64 - 2 = 62   (dikurangi alamat network dan broadcast)
-```
+Misalkan kamu punya `192.168.1.0/24` (256 alamat) dan ingin memecahnya menjadi **empat subnet yang sama besar**.
 
-Mask: `255.255.255.192` (`11111111.11111111.11111111.11000000`).
+Empat potong berarti meminjam 2 bit lagi dari bagian host (karena 2² = 4), yang mengubah `/24` menjadi `/26`. Tiap `/26` punya 64 alamat:
 
-Jika `192.168.1.0/24` dipecah menjadi blok `/26`, berarti n=2 bit dipinjam sehingga menghasilkan 2²=4 subnet:
-
-| # | Network | Rentang usable | Broadcast |
+| # | Network | Rentang terpakai | Broadcast |
 |:---:|:---|:---|:---|
-| 0 | 192.168.1.0/26 | .1 – .62 | .63 |
-| 1 | 192.168.1.64/26 | .65 – .126 | .127 |
-| 2 | 192.168.1.128/26 | .129 – .190 | .191 |
-| 3 | 192.168.1.192/26 | .193 – .254 | .255 |
+| 1 | 192.168.1.0/26 | .1 – .62 | .63 |
+| 2 | 192.168.1.64/26 | .65 – .126 | .127 |
+| 3 | 192.168.1.128/26 | .129 – .190 | .191 |
+| 4 | 192.168.1.192/26 | .193 – .254 | .255 |
 
-Cek alignment: network address harus habis dibagi 64 pada oktet terakhir.
+Dua aturan membuat ini mudah dihitung di kepala:
 
-Aturan verifikasi yang selalu berlaku: `broadcast = network + size - 1`, dan subnet berikutnya dimulai dari `network + size`.
+- Tiap subnet lebarnya 64, jadi network-nya melangkah tiap 64: `.0, .64, .128, .192`.
+- Broadcast selalu `network berikutnya − 1`.
+
+Kalau subnet yang berbeda butuh ukuran yang berbeda (LAN kantor besar, link router kecil berisi 2 alamat), beri masing-masing subnet terkecil yang muat, mulai dari yang terbesar, tanpa tumpang tindih. Ini disebut **VLSM** (Variable Length Subnet Mask).
 
 ---
 
-## 5. RFC 1918 & rentang khusus
+## 5. Rentang Alamat Privat dan Khusus
+
+Beberapa rentang dicadangkan untuk dipakai di dalam jaringan lokal. Alamat ini tidak unik di seluruh dunia, jadi tidak bisa muncul langsung di Internet publik; ia menjangkau Internet lewat NAT (Bagian 7).
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│ RFC 1918 PRIVATE BLOCKS                                    │
-│  10.0.0.0/8        (10.0.0.0 – 10.255.255.255)             │
-│  172.16.0.0/12     (172.16.0.0 – 172.31.255.255)           │
-│  192.168.0.0/16    (192.168.0.0 – 192.168.255.255)         │
+│ PRIVAT (RFC 1918) — bebas dipakai di jaringanmu sendiri    │
+│  10.0.0.0/8        10.0.0.0     – 10.255.255.255           │
+│  172.16.0.0/12     172.16.0.0   – 172.31.255.255           │
+│  192.168.0.0/16    192.168.0.0  – 192.168.255.255          │
 ├────────────────────────────────────────────────────────────┤
-│ SPECIAL                                                    │
-│  127.0.0.0/8       loopback                                │
-│  169.254.0.0/16    link-local (APIPA)                      │
-│  224.0.0.0/4       IPv4 multicast                          │
-│  0.0.0.0/8         "this network" / unspecified            │
-│  100.64.0.0/10     CGNAT (RFC 6598)                        │
+│ KHUSUS                                                     │
+│  127.0.0.0/8       loopback ("mesin ini")                  │
+│  169.254.0.0/16    link-local (muncul saat DHCP gagal)     │
+│  224.0.0.0/4       multicast                               │
 └────────────────────────────────────────────────────────────┘
 ```
 
-Alamat private tidak unik secara global, boleh overlap antar organisasi. Konektivitas ke Internet publik membutuhkan NAT atau dual-stack publik.
+Melihat alamat `169.254.x.x` di sebuah mesin adalah petunjuk yang berguna: biasanya artinya DHCP tidak menjawab, jadi perangkat memilih alamat sendiri.
 
 ---
 
-## 6. Routing: longest prefix match
+## 6. Cara Router Memilih Jalur
 
-Router memilih rute dengan prefix terpanjang yang mencocokkan alamat tujuan.
-
-Contoh: untuk D= `192.168.1.10`, jika tabel routing punya `192.168.0.0/16` via A dan `192.168.1.0/24` via B, router memilih rute `/24` karena lebih spesifik.
-
-Default route: `0.0.0.0/0` untuk IPv4, `::/0` untuk IPv6.
-
----
-
-## 7. NAT & PAT
-
-NAT (Network Address Translation) memetakan alamat di boundary jaringan, biasanya antara ruang private dan public.
-
-| Tipe | Mapping | Penggunaan |
-|:---|:---|:---|
-| Static NAT | 1 ke 1 tetap | Server yang perlu IP publik stabil |
-| Dynamic NAT | Dari pool publik | Jarang dipakai murni di SOHO |
-| PAT / overload | Many ke 1 via port | Setup rumah/kantor tipikal |
-
-Model PAT secara intuitif:
+Sebuah router mungkin tahu beberapa rute yang cocok untuk sebuah tujuan. Aturannya sederhana: **yang paling spesifik menang** (longest prefix match).
 
 ```text
-(IP privat, port privat, IP tujuan, port tujuan, proto)  ⇄  (IP publik, port baru SPORT', IP tujuan, port tujuan, proto)
+Tujuan: 192.168.1.10
+
+Rute A: 192.168.0.0/16  via router X   (luas: seluruh /16)
+Rute B: 192.168.1.0/24  via router Y   (spesifik: cuma /24 ini)
+
+→ router memilih B, karena /24 lebih spesifik dari /16
 ```
 
-State table di perangkat NAT menyimpan SPORT' supaya paket balasan dapat dikembalikan ke host privat yang benar.
-
-Implikasi keamanan: NAT bukan firewall. Jaringan tetap membutuhkan filter stateful, reverse proxy, dan hardening tambahan. NAT juga mempersulit komunikasi end-to-end (VoIP, IPsec); IPv6 mengembalikan addressability langsung antar host, sehingga desain keamanan perlu menyesuaikan.
-
-NAT berguna untuk troubleshooting dan pertimbangan arsitektur, tetapi jangan diperlakukan sebagai mekanisme access-control tersendiri.
+Kalau tidak ada yang cocok, traffic jatuh ke **default route** `0.0.0.0/0` (`::/0` untuk IPv6), dan begitulah mesinmu menjangkau Internet luas lewat gateway-nya.
 
 ---
 
-## 8. ICMP & diagnostik
+## 7. NAT: Berbagi Satu Alamat Publik
 
-### Ping
+Rumahmu punya satu IP publik tapi banyak perangkat. **NAT** (Network Address Translation) membuat semuanya berbagi IP itu. Router menulis ulang alamat sumber privat dari traffic keluar menjadi alamat publiknya sendiri, dan mengingat percakapan mana milik perangkat internal mana (dengan melacak nomor port) supaya balasannya kembali ke yang benar.
 
-- IPv4: Echo Request Type 8, Echo Reply Type 0.
-- Ping mengukur reachability dan sampel RTT, bukan throughput.
+```text
+laptop 192.168.1.10:51000  →  router  →  publik 203.0.113.5:62000  →  Internet
+                                 (mengingat pemetaannya)
+balasan ←───────────────────── router  ←────────────────────────────  balasan
+```
 
-**Heuristik TTL / Hop Limit** (kasar, bisa diubah admin):
+| Tipe | Yang dilakukan |
+|:---|:---|
+| Static NAT | Pemetaan 1-ke-1 tetap, untuk server yang butuh IP publik tetap |
+| PAT / "overload" | Banyak perangkat di balik satu IP publik (setup rumah/kantor biasa) |
 
-| Initial TTL yang teramati | Perkiraan OS |
+Poin keamanan penting: **NAT bukan firewall.** NAT menyembunyikan alamat internal sebagai efek samping, tapi tidak menentukan apa yang diizinkan. Kamu tetap butuh filter sungguhan. IPv6 sering melewati NAT sama sekali (alamatnya cukup banyak), jadi jangan menganggap "kita punya NAT" berarti "kita terlindungi."
+
+---
+
+## 8. ICMP, Ping, dan Traceroute
+
+**ICMP** adalah protokol pembawa pesan di network layer: ia membawa pengecekan ketersambungan dan laporan error.
+
+**Ping** mengirim ICMP "kamu di sana?" dan menunggu balasan. Ia memberi tahu apakah sebuah host bisa dijangkau dan kira-kira berapa lama satu perjalanan bolak-balik, tidak lebih.
+
+**TTL** di balasan memberi petunjuk kasar tentang sistem lawan (ini cuma default dan bisa diubah):
+
+| TTL terlihat | Kemungkinan sistem |
 |:---:|:---|
-| ~64 | Kebanyakan Linux/Unix |
-| ~128 | Kebanyakan Windows |
-| ~255 | Kebanyakan perangkat jaringan |
+| ~64 | Linux / Unix / macOS |
+| ~128 | Windows |
+| ~255 | Perangkat jaringan (router, switch) |
 
-### Traceroute
+**Traceroute** adalah pemanfaatan TTL yang cerdik. Ia mengirim paket dengan TTL = 1, lalu 2, lalu 3, dan seterusnya. Tiap router yang membuang paket saat TTL mencapai 0 akan melapor balik, jadi kamu tahu jalurnya lompatan demi lompatan.
 
-Traceroute mengirim paket dengan TTL=1,2,3,... secara berurutan. Setiap hop yang men-decrement TTL menjadi 0 membalas dengan ICMP Time Exceeded (Type 11). Dari balasan berurutan ini, path hop-by-hop dapat dibangun, meskipun path tersebut bisa asimetris atau sebagian difilter.
+```bash
+ping -c 4 1.1.1.1      # terjangkau? berapa waktu bolak-baliknya?
+traceroute -n 1.1.1.1  # lewat jalur mana?
+```
 
 ---
 
-## 9. Catatan keamanan
+## 9. Catatan Keamanan
 
-| Isu | Risiko | Pertahanan |
+| Masalah | Risiko | Pertahanan |
 |:---|:---|:---|
-| IP spoofing | Menyamarkan sumber paket, sering dipakai untuk reflection attack | uRPF, ACL ingress/egress, BCP38 |
-| L3 yang terlalu flat | Lateral movement mudah dilakukan jika satu host di-compromise | Segmentasi VLAN/subnet plus firewall east-west |
-| Management exposed | SSH/RDP berada di segmen user biasa | VRF/VLAN manajemen terpisah |
-| Shadow IPv6 | Host dual-stack yang tidak terpantau | Inventory IPv6, RA Guard |
-| Kebijakan ICMP yang terlalu terbuka | Recon dan penyalahgunaan | Rate-limit; jangan blokir semua ICMP secara membabi buta (PMTUD butuh Type 3 Code 4) |
+| IP spoofing | Memalsukan sumber untuk bersembunyi atau memantulkan serangan ke orang lain | Filter sumber di tepi (BCP38 / uRPF) |
+| Satu jaringan datar besar | Kalau satu host dibobol, penyerang mudah menjangkau semuanya | Pecah jadi subnet/VLAN dengan filter di antaranya |
+| Manajemen terekspos | SSH/RDP berada di jaringan user biasa | Subnet manajemen terpisah |
+| IPv6 terlupakan | Host dual-stack yang tak dipantau di v6 | Inventarisasi IPv6 juga; RA Guard |
+| Memblokir semua ICMP | Merusak diagnostik berguna dan path-MTU discovery | Rate-limit, bukan blokir total |
 
-Kebersihan lab: petakan interface dan rute pada mesin milik Anda sendiri (`ip addr`, `ip route`) sebelum bereksperimen dengan routing atau firewall. Kesalahan konfigurasi prefix sering menjadi root cause outage.
+Kebersihan lab: lihat interface dan rute milikmu (`ip addr`, `ip route`) sebelum mengubah apa pun. Subnet mask atau rute yang salah adalah salah satu penyebab gangguan yang paling umum.
 
 ---
 
 ## 10. Cheatsheet
 
-### Mental math CIDR
+### Hitung cepat di kepala
 
-- `/24` → 256 alamat, stride 1 di oktet terakhir
-- `/25` → 128 alamat, stride 128
-- `/26` → 64 alamat, stride 64
-- `/27` → 32 alamat, stride 32
-- `/28` → 16 alamat, stride 16
-- `/30` → 4 alamat, stride 4 (tipikal untuk link point-to-point)
+- `/24` → 256 alamat, network melangkah tiap 1 di oktet terakhir
+- `/25` → 128 alamat, langkah 128
+- `/26` → 64 alamat, langkah 64
+- `/27` → 32 alamat, langkah 32
+- `/28` → 16 alamat, langkah 16
+- `/30` → 4 alamat (2 terpakai), link router-ke-router klasik
 
 ```bash
-# ── Inspeksi (host Anda) ──────────────────────────────────────
+# ── Periksa mesinmu sendiri ──────────────────────────────────
 ip -c addr show
 ip route show
-ip -4 route get 1.1.1.1
+ip -4 route get 1.1.1.1    # rute/gateway mana yang akan dipakai?
 ip neighbor show
 
-# ── Diagnostik ─────────────────────────────────────────────────
+# ── Diagnostik ───────────────────────────────────────────────
 ping -c 4 1.1.1.1
 traceroute -n 1.1.1.1
-mtr -n 1.1.1.1
+mtr -n 1.1.1.1             # traceroute langsung dan terus-menerus
 
-# ── Helper kalkulator subnet ────────────────────────────────────
-ipcalc 192.168.1.0/26          # jika terpasang
-python3 -c "import ipaddress as i; n=i.ip_network('192.168.1.0/26');
+# ── Kalkulator subnet ────────────────────────────────────────
+ipcalc 192.168.1.0/26       # kalau terpasang
+python3 -c "import ipaddress as i; n=i.ip_network('192.168.1.0/26'); \
 print(n.network_address, n.broadcast_address, n.num_addresses)"
 ```
 
 ---
 
 > **Referensi & sumber buku**
-> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/computernetworking.pdf`
+> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/`
 > - Christian Benvenuti, *Understanding Linux Network Internals*, `~/Documents/Books/CyberSec/Networking/`
 > - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/`
 > - RFC 1918, RFC 4632 (CIDR), RFC 3021 (/31), RFC 6598 (CGNAT)
 > - `man ip`, `man ping`, `man traceroute`
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
-> Edukasi dan lab pada jaringan milik sendiri atau yang sudah berizin.
+> **Repositori:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> Materi edukasi dan lab untuk jaringan milik sendiri atau yang kamu berizin mengujinya.

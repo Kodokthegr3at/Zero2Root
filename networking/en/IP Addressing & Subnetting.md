@@ -16,267 +16,262 @@
 ## Table of contents
 
 1. IPv4 vs IPv6
-2. Binary representation & mask algebra
-3. Core CIDR formulas
-4. Worked example: `192.168.1.0/26`
-5. RFC 1918 & special ranges
-6. Routing: longest prefix match
-7. NAT & PAT
-8. ICMP & diagnostics
+2. Reading an address in binary
+3. Subnet masks and CIDR
+4. A worked example: splitting a network
+5. Private and special address ranges
+6. How routers choose a path
+7. NAT: sharing one public address
+8. ICMP, ping, and traceroute
 9. Security notes
 10. Cheatsheet
 
 ---
 
-## 1. IPv4 vs IPv6
+## Key Terms
 
-An IP address is a logical identifier at the network layer (OSI L3 / TCP-IP Internet layer) that lets packets be routed between networks.
+You'll see these words throughout the lesson.
 
-| Characteristic | IPv4 | IPv6 |
-|:---|:---|:---|
-| Length | 32-bit (4 octets) | 128-bit |
-| Notation | Dotted decimal `192.168.1.1` | Hex `2001:db8::1` |
-| Address space | 2³² ≈ 4.29 × 10⁹ | 2¹²⁸ ≈ 3.4 × 10³⁸ |
-| Header | 20 to 60 B (with options) | 40 B fixed + extension headers |
-| Configuration | Manual / DHCP | SLAAC / DHCPv6 |
-| Broadcast | Present | Absent (multicast/anycast instead) |
-
-IPv4 address exhaustion drove the adoption of CIDR, NAT, and eventually IPv6. Security tooling needs to understand both stacks, including dual-stack hosts and IPv6 exposure that administrators sometimes overlook.
+| Term | Plain meaning |
+|:---|:---|
+| IP address | The logical address of a device on a network, like `192.168.1.10` |
+| Octet | One of the four numbers in an IPv4 address (each is 8 bits, 0–255) |
+| Subnet | A smaller slice carved out of a larger network |
+| Subnet mask | The marker that says which part of an address is "network" and which is "host" |
+| CIDR `/n` | A short way to write the mask: `/24` means the first 24 bits are the network part |
+| Network address | The first address in a subnet; it names the subnet itself |
+| Broadcast address | The last address in a subnet; a message to everyone on it |
+| Gateway | The router a device sends traffic to when the destination is on another network |
+| NAT | Letting many private devices share one public IP address |
+| Private address | An address (like `192.168.x.x`) usable only inside a local network, not on the public Internet |
 
 ---
 
-## 2. Binary representation & mask algebra
+## 1. IPv4 vs IPv6
 
-### 2.1 Octet
+An **IP address** is the logical name a device uses on a network (OSI Layer 3). It's what lets a packet be routed from one network to another.
 
-One octet is 8 bits, with a value of 0..255:
+| | IPv4 | IPv6 |
+|:---|:---|:---|
+| Length | 32 bits | 128 bits |
+| Looks like | `192.168.1.1` | `2001:db8::1` |
+| How many addresses | about 4.3 billion | about 3.4 × 10³⁸ (effectively endless) |
+| Setup | manual or DHCP | auto (SLAAC) or DHCPv6 |
+| Broadcast | yes | no (uses multicast instead) |
+
+IPv4 simply ran out of addresses, which is why NAT (Section 7) and eventually IPv6 appeared. Security tools need to understand both, because a device often has **both** at once (dual-stack), and an unwatched IPv6 address is an easy thing to forget about.
+
+---
+
+## 2. Reading an Address in Binary
+
+Each of the four numbers in an IPv4 address (each **octet**) is really 8 bits. Each bit stands for a value:
 
 ```text
 bit:     b7   b6   b5   b4   b3   b2   b1   b0
 value:  128   64   32   16    8    4    2    1
 ```
 
-To get the decimal value, add up the values of every bit that is 1. For `11000000` that is 128 + 64 = 192.
-
-Example: `192` = `11000000`, `168` = `10101000`.
-
-### 2.2 Network mask
-
-A prefix length p (CIDR `/p`) means the leftmost p bits are the **network** portion and the rest, h=32-p, are the **host** portion (for IPv4):
+To turn bits into the decimal number, add up the values where the bit is 1:
 
 ```text
-mask = p ones followed by (32 - p) zeros
-
-/24  →  11111111.11111111.11111111.00000000  =  255.255.255.0
+11000000  →  128 + 64            = 192
+10101000  →  128 +    32 + 8     = 168
 ```
 
-Core operations:
-
-```text
-network address = address AND mask         (all host bits set to 0)
-broadcast       = address OR (NOT mask)    (all host bits set to 1)
-host part       = address AND (NOT mask)
-
-Example 192.168.1.77/26:  network = 192.168.1.64,  broadcast = 192.168.1.127
-```
-
-Two addresses A,B sit on the same subnet if and only if:
-
-```text
-(A AND mask) = (B AND mask)
-```
-
-In other words, both addresses produce the same network address.
+So `11000000.10101000.00000001.00000001` is just `192.168.1.1`. Subnetting is all about where you draw a line through those 32 bits.
 
 ---
 
-## 3. Core CIDR formulas
+## 3. Subnet Masks and CIDR
 
-Take a prefix `/p` for IPv4 (0 ≤ p ≤ 32), with h = 32 - p.
+An address has two parts: a **network** part (which network am I on?) and a **host** part (which device am I?). The **subnet mask** marks the boundary. In CIDR notation, `/n` means "the first n bits are network, the rest are host."
 
-| Quantity | Formula |
-|:---|:---|
-| Block size (total addresses) | N = 2ʰ = 2³²⁻ᵖ |
-| Usable hosts (classic subnet) | N_usable = 2ʰ - 2 (except `/31` point-to-point links under RFC 3021, and `/32` as a host route) |
-| Number of subnets when n bits are borrowed from the parent block | 2ⁿ |
-| Decimal subnet mask | convert mask(p) to 4 octets |
-| Increment / stride between subnets | 2ʰ in the relevant octet |
+```text
+/24  →  11111111.11111111.11111111.00000000  =  255.255.255.0
+        └────── 24 network bits ──────┘└ 8 host bits ┘
+```
 
-**Quick mask table:**
+From the mask you can work out three key addresses of a subnet:
 
-| Prefix | Mask | h | Total | Usable |
+```text
+network address = the lowest address (all host bits 0)  → names the subnet
+broadcast       = the highest address (all host bits 1) → "everyone here"
+usable hosts    = everything in between
+
+Example, 192.168.1.0/24:
+  network   = 192.168.1.0
+  broadcast = 192.168.1.255
+  usable    = 192.168.1.1  …  192.168.1.254   (254 devices)
+```
+
+Two addresses are on the **same subnet** only if they share the same network part. That's exactly what decides whether your computer talks to another device directly, or has to send through the gateway.
+
+### Quick mask reference
+
+| CIDR | Mask | Host bits | Total addresses | Usable devices |
 |:---:|:---|:---:|:---:|:---:|
-| /8 | 255.0.0.0 | 24 | 16,777,216 | 16,777,214 |
-| /16 | 255.255.0.0 | 16 | 65,536 | 65,534 |
 | /24 | 255.255.255.0 | 8 | 256 | 254 |
 | /25 | 255.255.255.128 | 7 | 128 | 126 |
 | /26 | 255.255.255.192 | 6 | 64 | 62 |
 | /27 | 255.255.255.224 | 5 | 32 | 30 |
 | /28 | 255.255.255.240 | 4 | 16 | 14 |
 | /30 | 255.255.255.252 | 2 | 4 | 2 |
-| /32 | 255.255.255.255 | 0 | 1 | 1 (host) |
 
-### VLSM (Variable Length Subnet Mask)
-
-VLSM allocates blocks of uneven size: large subnets for access networks, `/30` or `/31` for router links. The blocks must not overlap and must be aligned on the 2ʰ boundary.
-
-Procedure:
-
-1. Sort host requirements from largest to smallest.
-2. For a requirement of H hosts, pick the smallest h such that 2ʰ-2 ≥ H (or 2ʰ ≥ H for special cases such as point-to-point links).
-3. Take the next prefix that is still free and aligned.
+The pattern: each extra bit of host space **doubles** the number of addresses. "Usable" is always two fewer, because the network and broadcast addresses can't be assigned to a device. (The `/30` with 2 usable hosts is the classic choice for a link between two routers.)
 
 ---
 
-## 4. Worked example: `192.168.1.0/26`
+## 4. A Worked Example: Splitting a Network
 
-```text
-prefix p = 26   →   host bits h = 32 - 26 = 6
-total addresses = 2⁶ = 64
-usable hosts    = 64 - 2 = 62   (minus the network and broadcast addresses)
-```
+Say you have `192.168.1.0/24` (256 addresses) and want to split it into **four equal subnets**.
 
-Mask: `255.255.255.192` (`11111111.11111111.11111111.11000000`).
-
-Splitting `192.168.1.0/24` into `/26` blocks borrows n=2 bits, giving 2²=4 subnets:
+Four pieces means borrowing 2 more bits from the host part (because 2² = 4), which turns `/24` into `/26`. Each `/26` has 64 addresses:
 
 | # | Network | Usable range | Broadcast |
 |:---:|:---|:---|:---|
-| 0 | 192.168.1.0/26 | .1 – .62 | .63 |
-| 1 | 192.168.1.64/26 | .65 – .126 | .127 |
-| 2 | 192.168.1.128/26 | .129 – .190 | .191 |
-| 3 | 192.168.1.192/26 | .193 – .254 | .255 |
+| 1 | 192.168.1.0/26 | .1 – .62 | .63 |
+| 2 | 192.168.1.64/26 | .65 – .126 | .127 |
+| 3 | 192.168.1.128/26 | .129 – .190 | .191 |
+| 4 | 192.168.1.192/26 | .193 – .254 | .255 |
 
-Alignment check: the network address must be evenly divisible by 64 in the last octet.
+Two rules make this easy to do in your head:
 
-The rule that always holds: `broadcast = network + size - 1`, and the next subnet starts at `network + size`.
+- Each subnet is 64 wide, so the networks step by 64: `.0, .64, .128, .192`.
+- The broadcast is always `next network − 1`.
+
+When different subnets need different sizes (a big office LAN, a tiny 2-address router link), you give each one the smallest subnet that fits, biggest first, without overlapping. That's called **VLSM** (Variable Length Subnet Mask).
 
 ---
 
-## 5. RFC 1918 & special ranges
+## 5. Private and Special Address Ranges
+
+Some ranges are reserved for use inside local networks. They're not unique worldwide, so they can't appear directly on the public Internet; they reach it through NAT (Section 7).
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│ RFC 1918 PRIVATE BLOCKS                                    │
-│  10.0.0.0/8        (10.0.0.0 – 10.255.255.255)             │
-│  172.16.0.0/12     (172.16.0.0 – 172.31.255.255)           │
-│  192.168.0.0/16    (192.168.0.0 – 192.168.255.255)         │
+│ PRIVATE (RFC 1918) — free to use inside your own network   │
+│  10.0.0.0/8        10.0.0.0     – 10.255.255.255           │
+│  172.16.0.0/12     172.16.0.0   – 172.31.255.255           │
+│  192.168.0.0/16    192.168.0.0  – 192.168.255.255          │
 ├────────────────────────────────────────────────────────────┤
 │ SPECIAL                                                    │
-│  127.0.0.0/8       loopback                                │
-│  169.254.0.0/16    link-local (APIPA)                      │
-│  224.0.0.0/4       IPv4 multicast                          │
-│  0.0.0.0/8         "this network" / unspecified            │
-│  100.64.0.0/10     CGNAT (RFC 6598)                        │
+│  127.0.0.0/8       loopback ("this machine")               │
+│  169.254.0.0/16    link-local (shows up when DHCP fails)   │
+│  224.0.0.0/4       multicast                               │
 └────────────────────────────────────────────────────────────┘
 ```
 
-Private addresses are not globally unique and may overlap between organizations. Reaching the public Internet requires NAT or a dual-stack public address.
+Seeing a `169.254.x.x` address on a machine is a useful clue: it usually means DHCP didn't answer, so the device picked an address by itself.
 
 ---
 
-## 6. Routing: longest prefix match
+## 6. How Routers Choose a Path
 
-A router chooses the route with the longest prefix that matches the destination.
-
-Example: for D= `192.168.1.10`, if the routing table has `192.168.0.0/16` via A and `192.168.1.0/24` via B, the router picks the `/24` route because it is more specific.
-
-Default route: `0.0.0.0/0` for IPv4, `::/0` for IPv6.
-
----
-
-## 7. NAT & PAT
-
-NAT (Network Address Translation) maps addresses at a network boundary, typically between a private and a public address space.
-
-| Type | Mapping | Use |
-|:---|:---|:---|
-| Static NAT | Fixed 1 to 1 | Servers that need a stable public IP |
-| Dynamic NAT | From a public pool | Rarely used on its own in SOHO setups |
-| PAT / overload | Many to 1 via a port | Typical home/office setup |
-
-The PAT model, intuitively:
+A router may know several routes that could fit a destination. The rule is simple: **the most specific one wins** (longest prefix match).
 
 ```text
-(private IP, private port, dst IP, dst port, proto)  ⇄  (public IP, new port SPORT', dst IP, dst port, proto)
+Destination: 192.168.1.10
+
+Route A: 192.168.0.0/16  via router X   (broad: a whole /16)
+Route B: 192.168.1.0/24  via router Y   (specific: just this /24)
+
+→ the router picks B, because /24 is more specific than /16
 ```
 
-The state table on the NAT device remembers SPORT' so replies get routed back to the correct private host.
-
-Security implication: NAT is not a firewall. The network still needs stateful filtering, a reverse proxy, and hardening. NAT also complicates end-to-end communication (VoIP, IPsec); IPv6 restores direct host-to-host addressability, so security design has to adjust accordingly.
-
-Understand NAT for troubleshooting and architecture, not as an access-control mechanism by itself.
+If nothing else matches, traffic falls to the **default route** `0.0.0.0/0` (`::/0` for IPv6), which is how your machine reaches the wider Internet through its gateway.
 
 ---
 
-## 8. ICMP & diagnostics
+## 7. NAT: Sharing One Public Address
 
-### Ping
+Your home has one public IP but many devices. **NAT** (Network Address Translation) lets them all share it. The router rewrites the private source address of outgoing traffic to its own public address, and remembers which internal device each conversation belongs to (by tracking the port numbers) so replies get back to the right one.
 
-- IPv4: Echo Request Type 8, Echo Reply Type 0.
-- Ping measures reachability and a sampled RTT, not throughput.
+```text
+laptop 192.168.1.10:51000  →  router  →  public 203.0.113.5:62000  →  Internet
+                                 (remembers the mapping)
+reply  ←──────────────────────  router  ←───────────────────────────  reply
+```
 
-**TTL / Hop Limit heuristics** (rough, and admin-adjustable):
+| Type | What it does |
+|:---|:---|
+| Static NAT | A fixed 1-to-1 mapping, for a server that needs a steady public IP |
+| PAT / "overload" | Many devices behind one public IP (the normal home/office setup) |
 
-| Initial TTL observed | OS hint |
+Important security point: **NAT is not a firewall.** It hides internal addresses as a side effect, but it doesn't decide what's allowed. You still need real filtering. IPv6 often skips NAT entirely (there are enough addresses), so don't assume "we have NAT" means "we're protected."
+
+---
+
+## 8. ICMP, Ping, and Traceroute
+
+**ICMP** is the network layer's messenger protocol: it carries reachability checks and error reports.
+
+**Ping** sends an ICMP "are you there?" and waits for a reply. It tells you if a host is reachable and roughly how long the round trip takes, nothing more.
+
+The reply's **TTL** gives a rough hint about the other system (these are just defaults and can be changed):
+
+| TTL seen | Likely system |
 |:---:|:---|
-| ~64 | Most Linux/Unix |
-| ~128 | Most Windows |
-| ~255 | Most network devices |
+| ~64 | Linux / Unix / macOS |
+| ~128 | Windows |
+| ~255 | A network device (router, switch) |
 
-### Traceroute
+**Traceroute** is a clever use of TTL. It sends packets with TTL = 1, then 2, then 3, and so on. Each router that drops a packet when the TTL hits 0 reports back, so you learn the path hop by hop.
 
-Traceroute sends packets with TTL=1,2,3,... in sequence. Each hop that decrements the TTL to 0 replies with an ICMP Time Exceeded (Type 11). Building the sequence of replies reconstructs the path hop by hop, though the path may be asymmetric or partially filtered.
+```bash
+ping -c 4 1.1.1.1      # reachable? round-trip time?
+traceroute -n 1.1.1.1  # what path does it take?
+```
 
 ---
 
-## 9. Security notes
+## 9. Security Notes
 
 | Issue | Risk | Defense |
 |:---|:---|:---|
-| IP spoofing | Disguises the packet source, often used for reflection attacks | uRPF, ingress/egress ACLs, BCP38 |
-| Overly flat L3 | Easy lateral movement once one host is compromised | VLAN/subnet segmentation plus east-west firewalling |
-| Exposed management | SSH/RDP sitting on a regular user segment | Separate management VRF/VLAN |
-| Shadow IPv6 | Dual-stack hosts that go unmonitored | IPv6 inventory, RA Guard |
-| Overly open ICMP policy | Reconnaissance and abuse | Rate-limit; do not blanket-block all ICMP (PMTUD needs Type 3 Code 4) |
+| IP spoofing | Faking the source to hide or to bounce attacks off others | Source filtering at the edge (BCP38 / uRPF) |
+| One big flat network | If one host is hacked, the attacker reaches everything easily | Split into subnets/VLANs with filtering between them |
+| Exposed management | SSH/RDP sitting on the normal user network | A separate management subnet |
+| Forgotten IPv6 | A dual-stack host that nobody is monitoring on v6 | Inventory IPv6 too; RA Guard |
+| Blocking all ICMP | Breaks useful diagnostics and path-MTU discovery | Rate-limit instead of a blanket block |
 
-Lab hygiene: map interfaces and routes on a machine you own (`ip addr`, `ip route`) before experimenting with routing or firewall changes. A misconfigured prefix is a common root cause of outages.
+Lab hygiene: look at your own interfaces and routes (`ip addr`, `ip route`) before changing anything. A wrong subnet mask or route is one of the most common causes of an outage.
 
 ---
 
 ## 10. Cheatsheet
 
-### CIDR mental math
+### Mental math
 
-- `/24` → 256 addresses, stride 1 in the last octet
-- `/25` → 128 addresses, stride 128
-- `/26` → 64 addresses, stride 64
-- `/27` → 32 addresses, stride 32
-- `/28` → 16 addresses, stride 16
-- `/30` → 4 addresses, stride 4 (typical for point-to-point links)
+- `/24` → 256 addresses, networks step by 1 in the last octet
+- `/25` → 128 addresses, step by 128
+- `/26` → 64 addresses, step by 64
+- `/27` → 32 addresses, step by 32
+- `/28` → 16 addresses, step by 16
+- `/30` → 4 addresses (2 usable), the classic router-to-router link
 
 ```bash
-# ── Inspection (your host) ────────────────────────────────────
+# ── Inspect your own machine ─────────────────────────────────
 ip -c addr show
 ip route show
-ip -4 route get 1.1.1.1
+ip -4 route get 1.1.1.1    # which route/gateway would be used?
 ip neighbor show
 
 # ── Diagnostics ──────────────────────────────────────────────
 ping -c 4 1.1.1.1
 traceroute -n 1.1.1.1
-mtr -n 1.1.1.1
+mtr -n 1.1.1.1             # live, continuous traceroute
 
-# ── Subnet calculator helpers ────────────────────────────────
-ipcalc 192.168.1.0/26          # if installed
-python3 -c "import ipaddress as i; n=i.ip_network('192.168.1.0/26');
+# ── Subnet calculators ───────────────────────────────────────
+ipcalc 192.168.1.0/26       # if installed
+python3 -c "import ipaddress as i; n=i.ip_network('192.168.1.0/26'); \
 print(n.network_address, n.broadcast_address, n.num_addresses)"
 ```
 
 ---
 
 > **References & book sources**
-> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/computernetworking.pdf`
+> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/`
 > - Christian Benvenuti, *Understanding Linux Network Internals*, `~/Documents/Books/CyberSec/Networking/`
 > - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/`
 > - RFC 1918, RFC 4632 (CIDR), RFC 3021 (/31), RFC 6598 (CGNAT)

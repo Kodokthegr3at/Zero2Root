@@ -15,224 +15,206 @@
 
 ## Table of contents
 
-1. 802.11 architecture & framing overview
-2. Security evolution (brief)
-3. WPA2: PMK, PTK, GTK & 4-way handshake
-4. WPA3-Personal: SAE (high level)
-5. Management frames & deauthentication (DoS concept)
-6. Defenses & monitoring
-7. Security notes: defense summary
+1. How Wi-Fi is organized
+2. How Wi-Fi security grew up
+3. WPA2: keys and the 4-way handshake
+4. WPA3: a better password exchange
+5. Deauthentication and its risk
+6. Defenses and monitoring
+7. Security notes
 8. Cheatsheet
 
 ---
 
-## 1. 802.11 architecture & framing overview
+## Key Terms
 
-IEEE 802.11 defines the WLAN: stations (STA), access points (AP), and the BSS (Basic Service Set). Several BSSs sharing the same SSID can form an ESS. The medium is half-duplex; channel access uses CSMA/CA (not the classic Ethernet CSMA/CD).
+You'll see these words throughout the lesson.
 
-Three frame classes:
-
-| Class | Role | Examples |
-|:---|:---|:---|
-| Data | Carries the LLC/IP payload | QoS data |
-| Control | Assists medium access | RTS/CTS, ACK |
-| Management | Membership & discovery | Beacon, Probe, Auth, Assoc, Deauth, Disassoc |
-
-```
-  ┌────────────── ESS / SSID "CORP" ──────────────┐
-  │   AP1 (BSS1)              AP2 (BSS2)          │
-  │    ↑↑↑                     ↑↑↑                │
-  │   STA                      STA                │
-  └───────────────────────────────────────────────┘
-         │
-         └── wired DS (Distribution System) ──► LAN/Internet
-```
-
-The Beacon announces the SSID (or a hidden one), capabilities, and the security IE (RSN). Association binds a STA to an AP before unicast data is encrypted (on modern networks).
-
-The 802.11 header uses several address fields (ToDS/FromDS) to distinguish SA/DA/BSSID; the full detail is in the O'Reilly book *802.11 Wireless Networks*.
-
-Wireless is a shared broadcast medium within radio range. Confidentiality and integrity depend on link-layer security (RSN), not on "being indoors." Always assume nearby receivers can hear unprotected management traffic and poorly configured networks.
-
----
-
-## 2. Security evolution (brief)
-
-| Era | Mechanism | Practical status |
-|:---|:---|:---|
-| Open | No link encryption | Only suited to a captive portal plus application-level TLS |
-| WEP | RC4 + weak IV | Deprecated / broken, do not use |
-| WPA-PSK (TKIP) | Transitional | Legacy; avoid where possible |
-| WPA2-Personal | PSK + CCMP (AES) | Still common; a weak PSK is a real risk |
-| WPA2-Enterprise | 802.1X / EAP + RADIUS | The office standard |
-| WPA3-Personal | SAE | Better resistance to offline PSK guessing |
-| WPA3-Enterprise | EAP + an optional 192-bit suite | High assurance |
-
-The RSN (Robust Security Network) IE in the Beacon states the ciphers and AKMs on offer. CCMP (AES-CCM) is the expected data cipher on WPA2; GCMP shows up on newer PHYs / WPA3 contexts.
-
----
-
-## 3. WPA2: PMK, PTK, GTK & 4-way handshake
-
-The handshake's goal: derive a fresh session key from a long-term secret, and confirm mutual possession without ever sending the PSK in cleartext over the air.
-
-PMK (Pairwise Master Key):
-
-- Personal (PSK): the PMK is derived from the passphrase plus the SSID (PBKDF2-HMAC-SHA1, 4096 iterations on classic WPA2-PSK):
-
-```text
-PMK = PBKDF2(passphrase, SSID, 4096 iterations, 256 bits)
-```
-
-- Enterprise: the PMK comes from EAP / the MSK after a successful 802.1X exchange (per session/user, an improvement over a shared PSK).
-
-PTK (Pairwise Transient Key) is derived from the PMK plus nonces and MAC addresses:
-
-```text
-PTK = PRF(PMK, "Pairwise key expansion",
-          min(AA, SPA) ‖ max(AA, SPA) ‖ min(ANonce, SNonce) ‖ max(ANonce, SNonce))
-```
-
-where AA = the AP's MAC (BSSID), SPA = the STA's MAC. The PTK splits into:
-
-| Part | Function |
+| Term | Plain meaning |
 |:---|:---|
-| KCK | Key Confirmation Key (MIC on EAPOL-Key) |
-| KEK | Key Encryption Key (wraps key material) |
-| TK | Temporal Key for CCMP on unicast data |
-
-GTK (Group Temporal Key): the multicast/broadcast key from the AP to all associated STAs, distributed wrapped during the handshake / a group key handshake.
-
-### 4-way handshake (EAPOL-Key): conceptual flow
-
-```
-  AP                                         STA
-   │  Msg1: ANonce                            │
-   │─────────────────────────────────────────►│
-   │          (STA computes PTK; has SNonce)  │
-   │  Msg2: SNonce + MIC                      │
-   │◄─────────────────────────────────────────│
-   │  (AP computes PTK; verifies MIC)         │
-   │  Msg3: GTK + MIC + install               │
-   │─────────────────────────────────────────►│
-   │  Msg4: MIC / Ack                         │
-   │◄─────────────────────────────────────────│
-   │         Data encrypted with CCMP (TK/GTK) │
-```
-
-MIC verification with the KCK proves both sides derived the same PTK, which means they hold the same PMK.
-
-WPA2-Personal's security ultimately comes down to PSK entropy. A low-entropy passphrase opens the door to offline guessing against captured handshake material; this note deliberately does not document cracking procedures. Mitigation: a long random PSK, or preferably WPA3-SAE or Enterprise (802.1X).
+| STA (station) | Any Wi-Fi client: a laptop, phone, and so on |
+| AP (access point) | The device clients connect to (the Wi-Fi "base") |
+| SSID | The network's name, the thing you pick from the Wi-Fi list |
+| BSSID | The AP's MAC address, which uniquely identifies it |
+| PSK | Pre-shared key: the Wi-Fi password everyone on a home network shares |
+| Handshake | The exchange where client and AP prove they know the key and set up encryption |
+| CCMP / AES | The encryption used for Wi-Fi data on WPA2/WPA3 |
+| Management frame | Control messages (connect, disconnect, beacon) separate from your actual data |
+| PMF | Protected Management Frames: protection for those control messages |
+| Evil twin | A fake AP that copies a real network's name to lure clients |
 
 ---
 
-## 4. WPA3-Personal: SAE (high level)
+## 1. How Wi-Fi Is Organized
 
-SAE (Simultaneous Authentication of Equals) is built on the Dragonfly protocol (a password-authenticated key exchange). Both sides prove knowledge of the password through an online interaction over an elliptic curve / finite field group, then derive a PMK.
+IEEE 802.11 ("Wi-Fi") connects **stations** (STA, your devices) to **access points** (AP). The network's name is its **SSID**; each AP is uniquely identified by its MAC address, the **BSSID**. Several APs can share one SSID so you roam between them seamlessly.
 
-Desired properties (intuition):
+```
+  ┌────────────── Wi-Fi network: SSID "CORP" ──────────────┐
+  │   AP1                        AP2                        │
+  │    ↑↑↑                        ↑↑↑                       │
+  │  phone, laptop              laptop                      │
+  └─────────────────────────────────────────────────────────┘
+          │
+          └── wired connection ──► LAN / Internet
+```
 
-| Property | Operational meaning |
+Wi-Fi traffic falls into three kinds of frames:
+
+| Frame type | Job | Examples |
+|:---|:---|:---|
+| Data | Carries your actual traffic | web pages, video |
+| Control | Helps share the airwaves | acknowledgements |
+| Management | Joining and discovery | beacon, connect, disconnect |
+
+The one thing to internalize: **Wi-Fi is radio, so anyone nearby can hear it.** You can't rely on walls. Confidentiality and integrity come only from the link-layer security the network uses, which is the subject of the rest of this lesson.
+
+---
+
+## 2. How Wi-Fi Security Grew Up
+
+Wi-Fi security improved in clear generations. Where you have a choice, pick the newest your devices support.
+
+| Era | What it uses | Should you use it? |
+|:---|:---|:---|
+| Open | No encryption | Only with a captive portal + app-level HTTPS |
+| WEP | Old, broken cipher | Never; broken decades ago |
+| WPA (TKIP) | Transitional | Avoid; legacy |
+| WPA2-Personal | A shared password + AES | Still common; only as strong as the password |
+| WPA2-Enterprise | Per-user login via 802.1X | The office standard |
+| WPA3-Personal | A modern password exchange (SAE) | Preferred; resists offline guessing |
+| WPA3-Enterprise | Per-user login, stronger crypto | High assurance |
+
+The practical rule: use WPA3 where you can, WPA2 with a strong password at minimum, and never WEP or TKIP.
+
+---
+
+## 3. WPA2: Keys and the 4-Way Handshake
+
+The goal of the WPA2 handshake is to turn the shared password into a **fresh, unique session key** for each connection, and to confirm both sides know the password, all **without ever sending the password over the air**.
+
+The keys build up in layers:
+
+- **PMK** (the master key): on a home network it comes from the Wi-Fi password mixed with the network name. On enterprise Wi-Fi it comes from the per-user login instead.
+- **PTK** (the session key): derived from the PMK plus some fresh random numbers (**nonces**) from both sides and their MAC addresses. Because the nonces are new every time, the session key is different for every connection.
+- **GTK** (the group key): shared by the AP with all clients, for broadcast traffic.
+
+### The 4-way handshake
+
+```
+  AP                                         STA (client)
+   │  1. here's my random number (ANonce)     │
+   │─────────────────────────────────────────►│  (client can now compute the PTK)
+   │  2. here's mine (SNonce) + proof          │
+   │◄─────────────────────────────────────────│  (AP computes the PTK, checks the proof)
+   │  3. group key + proof + "install it"      │
+   │─────────────────────────────────────────►│
+   │  4. acknowledged                          │
+   │◄─────────────────────────────────────────│
+   │     data now encrypted with the keys      │
+```
+
+Each side proves it derived the **same** session key, which is only possible if both really know the password. Nobody ever transmits the password.
+
+The catch for home Wi-Fi: all of this security rests on the **password's strength**. A short or common password can be guessed offline by someone who captured the handshake. (This lesson does not cover how that cracking is done.) The fix is a long random password, or better, WPA3 or Enterprise.
+
+---
+
+## 4. WPA3: A Better Password Exchange
+
+WPA3-Personal replaces the handshake with **SAE** (Simultaneous Authentication of Equals, built on a method called Dragonfly). The important difference: both sides prove they know the password through a live back-and-forth, in a way that **doesn't hand an eavesdropper anything they can test offline**.
+
+| Property | What it means for you |
 |:---|:---|
-| PAKE | The password is not used as a "hashable" PSK the same way WPA2 uses it |
-| Offline resistance | Capturing the handshake alone does not give a cheap offline verification path like classic PSK does |
-| Forward-looking | Paired with more modern cryptography in the RSN |
+| No cheap offline guessing | Capturing the exchange no longer lets an attacker grind through password guesses on their own machine |
+| Online guessing only | An attacker must guess against the live AP, which can rate-limit them |
 
-SAE still requires a non-trivial password (as protection against online, rate-limited guessing). Transition mode (WPA2+WPA3) can weaken the security posture if legacy STAs are still forced onto it; understand that trade-off against your device inventory.
-
-SAE changes the threat model for passphrase-based networks; it is not a license to use `password123`. Enterprise with EAP-TLS remains the gold standard for organizations.
+SAE still needs a non-trivial password (so online guessing stays hopeless), and running a mixed WPA2+WPA3 "transition mode" can weaken things if old devices force the network down to WPA2. For organizations, Enterprise with EAP-TLS (per-user certificates) remains the gold standard. SAE is a real improvement, not an excuse to use `password123`.
 
 ---
 
-## 5. Management frames & deauthentication (DoS concept)
+## 5. Deauthentication and Its Risk
 
-Many classic management frames (deauth, disassoc) were historically sent without the same protection as data frames. As a result, a sender within radio range could force a STA to disconnect from its AP, which conceptually is a DoS or availability disruption.
+Historically, the management frames that tell a device to disconnect ("deauth") were sent **without any protection**. That means someone within radio range could forge a disconnect and knock a device off its network. By itself that's a denial of service: the device drops and has to reconnect.
 
-After a deauth frame, the session between the device and the access point is torn down and has to be set up again.
+The bigger danger is what can come next. A disconnected device may automatically reconnect to a lookalike network, an **evil twin**: a fake AP broadcasting the same SSID to lure clients and harvest credentials.
 
-A secondary effect: users may reconnect to a similar-looking rogue SSID (an evil twin) if device policy is weak. Mitigation comes through user education, WPA3, Enterprise certificate validation, and PMF.
+The defense is **Protected Management Frames (PMF / 802.11w)**, which authenticates those control messages so forged disconnects are rejected. PMF is **mandatory in WPA3**. Also helpful: user awareness, and validating the server certificate on Enterprise Wi-Fi.
 
-Protected Management Frames (PMF / 802.11w): protects some important management frames, and is mandatory under WPA3. Enable PMF capable/required mode according to your client inventory.
+> This lesson explains the concept and defenses, not how to inject frames or run a jamming attack.
 
-Note: no frame injection command list, cracking tool, or DoS playbook is included in this document.
-
-Treat an unexplained wave of mass disconnects as an availability incident: correlate AP logs, nearby RF changes, and whether PMF is being enforced.
+Treat a sudden wave of mass disconnects as an availability incident: check the AP logs, look for nearby RF changes, and confirm PMF is being enforced.
 
 ---
 
-## 6. Defenses & monitoring
+## 6. Defenses and Monitoring
 
 | Control | Purpose |
 |:---|:---|
-| WPA3 / PMF required | Reduces classic deauth attacks and strengthens WPA2-Personal |
-| 802.1X + EAP-TLS | Per-device/user identity, PMK per session |
-| Disable WEP/TKIP | Removes weak ciphers |
-| Strong, unique PSK per SSID (if using PSK) | High entropy; periodic rotation |
-| Client isolation / AP isolation | Reduces lateral movement between Wi-Fi clients |
-| Separate guest and corp SSID | Firewall segmentation |
-| Rogue AP detection | Detects foreign BSSIDs/SSIDs on the same channel |
-| Continuous RF survey | Baselines noise / channel utilization |
-| Disable WPS PIN | Removes a weak PSK recovery vector |
+| WPA3 / PMF required | Blocks classic deauth attacks and strengthens password-based Wi-Fi |
+| 802.1X + EAP-TLS | Per-device/user identity, a fresh key per session |
+| Disable WEP / TKIP | Removes the broken ciphers |
+| Strong, unique password (if using PSK) | High entropy; rotate it periodically |
+| Client isolation | Stops Wi-Fi clients from reaching each other |
+| Separate guest and staff SSIDs | Firewall the guest network off from the internal one |
+| Rogue AP detection | Spots foreign or lookalike networks on your channels |
+| Disable WPS PIN | Removes a weak way to recover the password |
 
-Detection ideas: a twin SSID beacon with a different BSSID, a spike in deauths on an air capture in your own lab, clients that roam between BSSIDs frequently without a roaming policy, and a spike in EAP failures.
+Detection ideas: a second beacon advertising your SSID from an unexpected BSSID (a possible evil twin), a sudden spike of disconnects in a capture on your own network, or a jump in authentication failures.
 
 ---
 
-## 7. Security notes: defense summary
+## 7. Security Notes
 
 | Issue | Risk | Defense |
 |:---|:---|:---|
-| Weak PSK | Compromises link confidentiality | Long random PSK, or WPA3/Enterprise |
-| Legacy WEP/TKIP | Trivially broken cryptography | Force CCMP/GCMP only |
-| Open management frames | Deauth DoS | PMF / WPA3 |
-| Flat Wi-Fi and LAN | Lateral movement after association | Isolation + NAC |
-| Evil twin | Credential phishing | User education; validate EAP server certs |
-| Weak IoT Wi-Fi | A soft spot in the network | Separate SSID/VLAN |
+| Weak password | The whole link's confidentiality falls | Long random password, or WPA3 / Enterprise |
+| Legacy WEP / TKIP | Trivially broken | Force AES (CCMP/GCMP) only |
+| Unprotected management frames | Deauth denial of service | PMF / WPA3 |
+| Flat Wi-Fi + LAN | Lateral movement after joining | Client isolation + network access control |
+| Evil twin | Credential phishing | User awareness; validate EAP server certificates |
+| Weak IoT Wi-Fi | A soft entry point into the network | A separate SSID / VLAN for IoT |
 
-Lab hygiene: audit only the AP and spectrum you have permission for. Capture for troubleshooting on your own network, not to attack a neighbor's.
+Lab hygiene: only audit the AP and the airspace you have permission for. Capture for troubleshooting on your own network, never a neighbor's.
 
 ---
 
-## 8. Cheatsheet: legitimate admin / lab
+## 8. Cheatsheet
 
 ```bash
-# ── Link state (Linux, interface Anda) ───────────────────────
-iw dev
-iw dev wlan0 link
+# ── Your own link state (Linux) ──────────────────────────────
+iw dev                         # your wireless interfaces
+iw dev wlan0 link              # current BSSID, frequency, signal
 iw dev wlan0 info
-iwlist wlan0 scanning 2>/dev/null | head   # legacy; prefer iw scan
 
-# ── Scan SSIDs (observability on your radio) ─────────────────
-sudo iw dev wlan0 scan | egrep 'BSS|SSID|RSN|capability'
+# ── Survey nearby networks (observability on your radio) ─────
+sudo iw dev wlan0 scan | egrep 'BSS|SSID|RSN|signal'
 
 # ── NetworkManager ───────────────────────────────────────────
-nmcli general status
 nmcli device wifi list
 nmcli connection show
-nmcli device wifi show-password   # only for profiles you own
 
 # ── Regulatory / channel info ────────────────────────────────
 iw reg get
-iw phy phy0 info | less
 
-# ── Hostapd / AP you operate: check config ideas ─────────────
-# wpa=2, rsn_pairwise=CCMP, ieee80211w=2 (PMF required) on YOUR AP
-# Prefer SAE (WPA3) when client inventory allows
+# ── On an AP you operate, prefer these settings ──────────────
+# WPA3 (SAE) where clients allow it, otherwise WPA2 + a strong password
+# PMF required (ieee80211w=2), AES/CCMP only, WPS PIN disabled
 ```
 
 | Command | Use |
 |:---|:---|
-| `iw … link` | Shows BSSID, frequency, and signal for your STA |
-| `iw … scan` | Surveys the surrounding environment (follow local law) |
+| `iw … link` | Shows your BSSID, frequency, and signal |
+| `iw … scan` | Surveys nearby networks (follow local law) |
 | `nmcli device wifi` | Manages Wi-Fi profiles on the desktop |
 
 ---
 
 > **References & book sources**
-> - Matthew Gast, *802.11 Wireless Networks: The Definitive Guide*, `~/Documents/Books/CyberSec/Networking/802_11_Wireless_Networks__The_Definitive_Guide__O__039_Reilly_Networking_.pdf`
-> - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/Network-security-essentials-4th-edition-william-stallings.pdf`
-> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/computernetworking.pdf`
-> - IEEE 802.11i / WPA2 RSN, IEEE 802.11w (PMF), a WPA3 (Wi-Fi Alliance) specification overview
+> - Matthew Gast, *802.11 Wireless Networks: The Definitive Guide*, `~/Documents/Books/CyberSec/Networking/`
+> - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/`
+> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/`
+> - IEEE 802.11i / WPA2 RSN, IEEE 802.11w (PMF), the WPA3 (Wi-Fi Alliance) specification
 > - `man iw`, `man nmcli`
 
 > **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)

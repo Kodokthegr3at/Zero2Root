@@ -1,239 +1,221 @@
 # Keamanan & Serangan Wireless 802.11
 
-> **LearnCybersecurity** | Seri Networking Fundamentals
+> **LearnCybersecurity** | Seri Dasar Networking
 > Terakhir diperbarui: 2026 | Penulis: kodoktheGr3at
 > Referensi utama: *802.11 Wireless Networks: The Definitive Guide*; Stallings, *Network Security Essentials*; Kurose & Ross, *Computer Networking*
 
 ---
 
 <!-- LC-CURRICULUM-START -->
-> **Curriculum ID:** `LC-043` | **Fase 2:** Networking
-> **Estimasi belajar:** 5 jam | **Level:** Advanced
+> **ID Kurikulum:** `LC-043` | **Fase 2:** Networking
+> **Estimasi belajar:** 5 jam | **Level:** Lanjutan
 > **Prasyarat:** LC-038
-> **Peta buku:** Gast, 802.11 Wireless Networks (full); Stallings, Network Security Essentials Ch.8
+> **Peta buku:** Gast, 802.11 Wireless Networks (lengkap); Stallings, Network Security Essentials Ch.8
 <!-- LC-CURRICULUM-END -->
 
-## Daftar isi
+## Daftar Isi
 
-1. Overview arsitektur & framing 802.11
-2. Evolusi keamanan (ringkas)
-3. WPA2: PMK, PTK, GTK & 4-way handshake
-4. WPA3-Personal: SAE (level tinggi)
-5. Management frame & deauthentication (konsep DoS)
-6. Pertahanan & monitoring
-7. Catatan keamanan: ringkasan pertahanan
+1. Bagaimana Wi-Fi diatur
+2. Bagaimana keamanan Wi-Fi berkembang
+3. WPA2: kunci dan handshake 4 langkah
+4. WPA3: pertukaran password yang lebih baik
+5. Deautentikasi dan risikonya
+6. Pertahanan dan pemantauan
+7. Catatan keamanan
 8. Cheatsheet
 
 ---
 
-## 1. Overview arsitektur & framing 802.11
+## Istilah penting
 
-IEEE 802.11 mendefinisikan WLAN: stasiun (STA), access point (AP), dan BSS (Basic Service Set). Beberapa BSS dengan SSID yang sama dapat membentuk ESS. Medianya half-duplex; akses kanal memakai CSMA/CA (bukan CSMA/CD seperti Ethernet klasik).
+Istilah-istilah ini akan sering muncul di materi.
 
-Tiga kelas frame:
-
-| Kelas | Peran | Contoh |
-|:---|:---|:---|
-| Data | Membawa muatan LLC/IP | QoS data |
-| Control | Membantu akses medium | RTS/CTS, ACK |
-| Management | Keanggotaan & discovery | Beacon, Probe, Auth, Assoc, Deauth, Disassoc |
-
-```
-  ┌────────────── ESS / SSID "CORP" ──────────────┐
-  │   AP1 (BSS1)              AP2 (BSS2)          │
-  │    ↑↑↑                     ↑↑↑                │
-  │   STA                      STA                │
-  └───────────────────────────────────────────────┘
-         │
-         └── wired DS (Distribution System) ──► LAN/Internet
-```
-
-Beacon mengumumkan SSID (atau hidden), kapabilitas, dan security IE (RSN). Association mengikat STA ke AP sebelum data unicast terenkripsi (pada jaringan modern).
-
-Header 802.11 memakai beberapa field alamat (ToDS/FromDS) untuk membedakan SA/DA/BSSID; detail lengkapnya ada di buku O'Reilly *802.11 Wireless Networks*.
-
-Wireless adalah medium broadcast yang dipakai bersama dalam jangkauan radio. Kerahasiaan dan integritas bergantung pada keamanan link-layer (RSN), bukan pada fakta "berada di dalam gedung". Selalu anggap penerima di sekitar bisa mendengar management frame yang tidak terproteksi dan jaringan yang konfigurasinya lemah.
-
----
-
-## 2. Evolusi keamanan (ringkas)
-
-| Era | Mekanisme | Status praktis |
-|:---|:---|:---|
-| Open | Tanpa enkripsi link | Hanya cocok untuk captive portal + TLS di level aplikasi |
-| WEP | RC4 + IV lemah | Deprecated / broken, jangan dipakai |
-| WPA-PSK (TKIP) | Transisi | Legacy; hindari jika bisa |
-| WPA2-Personal | PSK + CCMP (AES) | Masih umum dipakai; PSK lemah jadi risiko |
-| WPA2-Enterprise | 802.1X / EAP + RADIUS | Standar di lingkungan kantor |
-| WPA3-Personal | SAE | Resistensi terhadap tebakan PSK offline lebih baik |
-| WPA3-Enterprise | EAP + opsi suite 192-bit | High assurance |
-
-RSN (Robust Security Network) IE di Beacon menyatakan cipher dan AKM yang ditawarkan. CCMP (AES-CCM) adalah cipher data yang diharapkan pada WPA2; GCMP muncul pada PHY yang lebih baru / konteks WPA3.
-
----
-
-## 3. WPA2: PMK, PTK, GTK & 4-way handshake
-
-Tujuan handshake: menurunkan kunci sesi yang segar dari rahasia jangka panjang, dan mengonfirmasi kepemilikan bersama tanpa mengirim PSK dalam bentuk cleartext lewat udara.
-
-PMK (Pairwise Master Key):
-
-- Personal (PSK): PMK diturunkan dari passphrase plus SSID (PBKDF2-HMAC-SHA1, 4096 iterasi pada WPA2-PSK klasik):
-
-```text
-PMK = PBKDF2(passphrase, SSID, 4096 iterations, 256 bits)
-```
-
-- Enterprise: PMK dihasilkan dari EAP / MSK setelah 802.1X berhasil (per sesi/user, lebih baik dibanding PSK yang dipakai bersama).
-
-PTK (Pairwise Transient Key) diturunkan dari PMK ditambah nonce dan alamat MAC:
-
-```text
-PTK = PRF(PMK, "Pairwise key expansion",
-          min(AA, SPA) ‖ max(AA, SPA) ‖ min(ANonce, SNonce) ‖ max(ANonce, SNonce))
-```
-
-di mana AA = MAC AP (BSSID), SPA = MAC STA. PTK dipecah menjadi:
-
-| Bagian | Fungsi |
+| Istilah | Artinya |
 |:---|:---|
-| KCK | Key Confirmation Key (MIC pada EAPOL-Key) |
-| KEK | Key Encryption Key (membungkus key material) |
-| TK | Temporal Key untuk CCMP pada data unicast |
-
-GTK (Group Temporal Key): kunci multicast/broadcast dari AP ke semua STA yang terasosiasi, didistribusikan dalam bentuk terbungkus selama handshake / group key handshake.
-
-### 4-way handshake (EAPOL-Key): alur konsep
-
-```
-  AP                                         STA
-   │  Msg1: ANonce                            │
-   │─────────────────────────────────────────►│
-   │          (STA hitung PTK; punya SNonce)  │
-   │  Msg2: SNonce + MIC                      │
-   │◄─────────────────────────────────────────│
-   │  (AP hitung PTK; verifikasi MIC)         │
-   │  Msg3: GTK + MIC + install               │
-   │─────────────────────────────────────────►│
-   │  Msg4: MIC / Ack                         │
-   │◄─────────────────────────────────────────│
-   │         Data terenkripsi CCMP (TK/GTK)   │
-```
-
-Verifikasi MIC dengan KCK membuktikan bahwa kedua pihak menurunkan PTK yang sama, yang berarti keduanya memiliki PMK yang sama.
-
-Keamanan WPA2-Personal pada akhirnya bergantung pada entropi PSK. Passphrase dengan entropi rendah membuka celah untuk tebakan offline terhadap handshake yang berhasil ditangkap; catatan ini sengaja tidak mendokumentasikan prosedur cracking-nya. Mitigasinya: pakai PSK acak yang panjang, atau lebih baik prioritaskan WPA3-SAE atau Enterprise (802.1X).
+| STA (station) | Klien Wi-Fi apa pun: laptop, ponsel, dsb. |
+| AP (access point) | Perangkat tempat klien menyambung (si "pangkalan" Wi-Fi) |
+| SSID | Nama jaringan, yang kamu pilih dari daftar Wi-Fi |
+| BSSID | Alamat MAC si AP, yang mengidentifikasinya secara unik |
+| PSK | Pre-shared key: password Wi-Fi yang dibagi semua orang di jaringan rumah |
+| Handshake | Pertukaran saat klien dan AP membuktikan tahu kuncinya dan menyiapkan enkripsi |
+| CCMP / AES | Enkripsi yang dipakai untuk data Wi-Fi di WPA2/WPA3 |
+| Management frame | Pesan kontrol (menyambung, memutus, beacon) yang terpisah dari data sebenarnya |
+| PMF | Protected Management Frames: proteksi untuk pesan kontrol itu |
+| Evil twin | AP palsu yang meniru nama jaringan asli untuk memancing klien |
 
 ---
 
-## 4. WPA3-Personal: SAE (level tinggi)
+## 1. Bagaimana Wi-Fi Diatur
 
-SAE (Simultaneous Authentication of Equals) berbasis protokol Dragonfly (password-authenticated key exchange). Kedua pihak membuktikan pengetahuan atas password lewat interaksi online di grup eliptik / finite field, lalu menghasilkan PMK.
+IEEE 802.11 ("Wi-Fi") menghubungkan **station** (STA, perangkatmu) ke **access point** (AP). Nama jaringannya adalah **SSID**-nya; tiap AP diidentifikasi secara unik oleh alamat MAC-nya, si **BSSID**. Beberapa AP bisa berbagi satu SSID supaya kamu berpindah di antara mereka tanpa putus.
 
-Sifat yang diinginkan (intuisi):
+```
+  ┌────────────── Jaringan Wi-Fi: SSID "CORP" ──────────────┐
+  │   AP1                        AP2                         │
+  │    ↑↑↑                        ↑↑↑                        │
+  │  ponsel, laptop             laptop                       │
+  └──────────────────────────────────────────────────────────┘
+          │
+          └── koneksi kabel ──► LAN / Internet
+```
 
-| Properti | Makna operasional |
+Traffic Wi-Fi terbagi menjadi tiga jenis frame:
+
+| Jenis frame | Tugas | Contoh |
+|:---|:---|:---|
+| Data | Membawa traffic sebenarnya | halaman web, video |
+| Control | Membantu berbagi gelombang udara | acknowledgement |
+| Management | Bergabung dan penemuan | beacon, menyambung, memutus |
+
+Satu hal yang harus dihayati: **Wi-Fi itu radio, jadi siapa pun di dekatnya bisa mendengarnya.** Kamu tidak bisa mengandalkan tembok. Kerahasiaan dan integritas hanya datang dari keamanan layer link yang dipakai jaringan, dan itulah topik sisa materi ini.
+
+---
+
+## 2. Bagaimana Keamanan Wi-Fi Berkembang
+
+Keamanan Wi-Fi membaik dalam generasi yang jelas. Kalau kamu punya pilihan, ambil yang terbaru yang didukung perangkatmu.
+
+| Era | Yang dipakai | Boleh dipakai? |
+|:---|:---|:---|
+| Open | Tanpa enkripsi | Hanya dengan captive portal + HTTPS di level aplikasi |
+| WEP | Cipher lama yang sudah rusak | Jangan pernah; rusak puluhan tahun lalu |
+| WPA (TKIP) | Transisi | Hindari; legacy |
+| WPA2-Personal | Password bersama + AES | Masih umum; hanya sekuat password-nya |
+| WPA2-Enterprise | Login per-user lewat 802.1X | Standar kantor |
+| WPA3-Personal | Pertukaran password modern (SAE) | Lebih disukai; tahan tebakan offline |
+| WPA3-Enterprise | Login per-user, kripto lebih kuat | Jaminan tinggi |
+
+Aturan praktisnya: pakai WPA3 kalau bisa, minimal WPA2 dengan password kuat, dan jangan pernah WEP atau TKIP.
+
+---
+
+## 3. WPA2: Kunci dan Handshake 4 Langkah
+
+Tujuan handshake WPA2 adalah mengubah password bersama menjadi **kunci sesi yang baru dan unik** untuk tiap koneksi, dan memastikan kedua pihak tahu password-nya, semua itu **tanpa pernah mengirim password lewat udara**.
+
+Kuncinya tersusun berlapis:
+
+- **PMK** (kunci utama): di jaringan rumah berasal dari password Wi-Fi dicampur dengan nama jaringan. Di Wi-Fi enterprise berasal dari login per-user.
+- **PTK** (kunci sesi): diturunkan dari PMK plus beberapa angka acak baru (**nonce**) dari kedua pihak dan alamat MAC mereka. Karena nonce-nya baru tiap kali, kunci sesinya berbeda untuk tiap koneksi.
+- **GTK** (kunci grup): dibagikan AP ke semua klien, untuk traffic broadcast.
+
+### Handshake 4 langkah
+
+```
+  AP                                         STA (klien)
+   │  1. ini angka acakku (ANonce)            │
+   │─────────────────────────────────────────►│  (klien kini bisa menghitung PTK)
+   │  2. ini punyaku (SNonce) + bukti          │
+   │◄─────────────────────────────────────────│  (AP menghitung PTK, mengecek buktinya)
+   │  3. kunci grup + bukti + "pasang"         │
+   │─────────────────────────────────────────►│
+   │  4. diakui                                │
+   │◄─────────────────────────────────────────│
+   │     data kini terenkripsi dengan kunci    │
+```
+
+Tiap pihak membuktikan ia menurunkan kunci sesi yang **sama**, yang hanya mungkin kalau keduanya benar-benar tahu password-nya. Tidak ada yang pernah mengirim password-nya.
+
+Jebakan untuk Wi-Fi rumah: seluruh keamanan ini bertumpu pada **kekuatan password**. Password yang pendek atau umum bisa ditebak offline oleh orang yang menangkap handshake-nya. (Materi ini tidak membahas cara cracking itu dilakukan.) Solusinya adalah password acak yang panjang, atau lebih baik, WPA3 atau Enterprise.
+
+---
+
+## 4. WPA3: Pertukaran Password yang Lebih Baik
+
+WPA3-Personal mengganti handshake dengan **SAE** (Simultaneous Authentication of Equals, dibangun di atas metode bernama Dragonfly). Perbedaan pentingnya: kedua pihak membuktikan tahu password lewat bolak-balik langsung, dengan cara yang **tidak memberi penyadap apa pun yang bisa diuji secara offline**.
+
+| Sifat | Artinya buatmu |
 |:---|:---|
-| PAKE | Password tidak dipakai sebagai PSK "hashable" dengan cara yang sama seperti WPA2 |
-| Resistensi offline | Menangkap handshake saja tidak memberi jalur verifikasi offline murah seperti pada PSK klasik |
-| Forward-looking | Dipasangkan dengan kriptografi yang lebih modern di RSN |
+| Tidak ada tebakan offline murah | Menangkap pertukarannya tidak lagi membuat penyerang bisa menggilir tebakan password di mesinnya sendiri |
+| Hanya tebakan online | Penyerang harus menebak langsung ke AP, yang bisa membatasi lajunya |
 
-SAE tetap membutuhkan password yang tidak sepele (sebagai proteksi terhadap tebakan online / rate-limited). Transition mode (WPA2+WPA3) dapat melemahkan postur keamanan jika STA legacy tetap dipaksa dipakai; pahami trade-off ini terhadap inventaris perangkat yang ada.
-
-SAE mengubah model ancaman untuk jaringan berbasis passphrase; ini bukan izin untuk memakai password seperti `password123`. Enterprise dengan EAP-TLS tetap menjadi standar emas untuk organisasi.
+SAE tetap butuh password yang tidak sepele (supaya tebakan online tetap sia-sia), dan menjalankan "mode transisi" campuran WPA2+WPA3 bisa melemahkan kalau perangkat lama memaksa jaringan turun ke WPA2. Untuk organisasi, Enterprise dengan EAP-TLS (sertifikat per-user) tetap standar emas. SAE adalah peningkatan nyata, bukan alasan untuk memakai `password123`.
 
 ---
 
-## 5. Management frame & deauthentication (konsep DoS)
+## 5. Deautentikasi dan Risikonya
 
-Banyak management frame klasik (deauth, disassoc) secara historis dikirim tanpa proteksi setara data frame. Akibatnya, pengirim yang berada dalam jangkauan radio bisa memaksa STA terputus dari AP, yang secara konsep merupakan DoS atau gangguan ketersediaan.
+Secara historis, management frame yang menyuruh perangkat memutus ("deauth") dikirim **tanpa proteksi apa pun**. Artinya orang dalam jangkauan radio bisa memalsukan sebuah pemutusan dan melempar perangkat keluar dari jaringannya. Itu sendiri sudah denial of service: perangkatnya terputus dan harus menyambung lagi.
 
-Setelah frame deauth diterima, sesi antara perangkat dan access point diputus dan harus dibangun ulang.
+Bahaya yang lebih besar adalah apa yang bisa menyusul. Perangkat yang terputus bisa otomatis menyambung ke jaringan mirip, sebuah **evil twin**: AP palsu yang menyiarkan SSID yang sama untuk memancing klien dan memanen kredensial.
 
-Dampak sekunder: pengguna mungkin tersambung ulang ke SSID jahat yang mirip (evil twin) jika kebijakan di perangkat lemah. Mitigasi lewat edukasi pengguna, WPA3, validasi sertifikat Enterprise, dan PMF.
+Pertahanannya adalah **Protected Management Frames (PMF / 802.11w)**, yang mengautentikasi pesan-pesan kontrol itu sehingga pemutusan palsu ditolak. PMF **wajib di WPA3**. Juga membantu: kesadaran pengguna, dan memvalidasi sertifikat server di Wi-Fi Enterprise.
 
-Protected Management Frames (PMF / 802.11w): melindungi sebagian management frame penting, dan wajib dipakai pada WPA3. Aktifkan mode PMF capable/required sesuai inventaris klien yang ada.
+> Materi ini menjelaskan konsep dan pertahanannya, bukan cara menyuntikkan frame atau menjalankan serangan jamming.
 
-Catatan: tidak ada daftar perintah injeksi frame, tool cracking, atau playbook DoS di dokumen ini.
-
-Perlakukan gelombang disconnect massal yang tidak jelas penyebabnya sebagai insiden ketersediaan: korelasikan log AP, perubahan RF di sekitar, dan apakah PMF sedang ditegakkan.
+Anggap gelombang pemutusan massal yang mendadak sebagai insiden ketersediaan: cek log AP, cari perubahan RF di sekitar, dan pastikan PMF ditegakkan.
 
 ---
 
-## 6. Pertahanan & monitoring
+## 6. Pertahanan dan Pemantauan
 
 | Kontrol | Tujuan |
 |:---|:---|
-| WPA3 / PMF required | Mengurangi deauth klasik & memperkuat WPA2-Personal |
-| 802.1X + EAP-TLS | Identitas per perangkat/user, PMK per sesi |
-| Nonaktifkan WEP/TKIP | Menghilangkan cipher lemah |
-| PSK unik dan kuat per SSID (jika pakai PSK) | Entropi tinggi; rotasi berkala |
-| Client isolation / AP isolation | Mengurangi pergerakan lateral antar klien Wi-Fi |
-| SSID guest terpisah dari corp | Segmentasi firewall |
-| Deteksi rogue AP | Mendeteksi BSSID/SSID asing di kanal yang sama |
-| Survei RF berkelanjutan | Baseline noise / utilisasi kanal |
-| Nonaktifkan WPS PIN | Menghilangkan vektor recovery PSK yang lemah |
+| WPA3 / PMF wajib | Memblokir serangan deauth klasik dan memperkuat Wi-Fi berbasis password |
+| 802.1X + EAP-TLS | Identitas per-perangkat/user, kunci baru tiap sesi |
+| Matikan WEP / TKIP | Menghapus cipher yang rusak |
+| Password kuat dan unik (kalau pakai PSK) | Entropi tinggi; rotasi berkala |
+| Client isolation | Mencegah klien Wi-Fi saling menjangkau |
+| Pisahkan SSID tamu dan staf | Firewall jaringan tamu dari yang internal |
+| Deteksi AP nakal | Menemukan jaringan asing atau mirip di channel-mu |
+| Matikan WPS PIN | Menghapus cara lemah untuk memulihkan password |
 
-Ide deteksi: beacon SSID kembar dengan BSSID berbeda, lonjakan deauth pada air capture di lab Anda sendiri, klien yang sering berpindah BSSID tanpa kebijakan roaming, dan lonjakan kegagalan EAP.
+Ide deteksi: beacon kedua yang menyiarkan SSID-mu dari BSSID tak terduga (kemungkinan evil twin), lonjakan pemutusan mendadak di capture jaringanmu sendiri, atau lonjakan kegagalan autentikasi.
 
 ---
 
-## 7. Catatan keamanan: ringkasan pertahanan
+## 7. Catatan Keamanan
 
-| Isu | Risiko | Pertahanan |
+| Masalah | Risiko | Pertahanan |
 |:---|:---|:---|
-| PSK lemah | Kerahasiaan link ter-compromise | PSK acak yang panjang, atau WPA3/Enterprise |
-| WEP/TKIP legacy | Crypto yang mudah dipatahkan | Paksa hanya CCMP/GCMP |
-| Management frame terbuka | Deauth DoS | PMF / WPA3 |
-| Wi-Fi dan LAN tidak terpisah | Pergerakan lateral setelah associate | Isolation + NAC |
-| Evil twin | Phishing kredensial | Edukasi pengguna; validasi sertifikat server EAP |
-| Wi-Fi IoT yang lemah | Titik lemah dalam jaringan | SSID/VLAN terpisah |
+| Password lemah | Kerahasiaan seluruh link jatuh | Password acak panjang, atau WPA3 / Enterprise |
+| WEP / TKIP lawas | Rusak dengan mudah | Paksa hanya AES (CCMP/GCMP) |
+| Management frame tak terlindungi | Denial of service deauth | PMF / WPA3 |
+| Wi-Fi + LAN datar | Pergerakan lateral setelah bergabung | Client isolation + network access control |
+| Evil twin | Phishing kredensial | Kesadaran pengguna; validasi sertifikat server EAP |
+| Wi-Fi IoT lemah | Titik masuk lunak ke jaringan | SSID / VLAN terpisah untuk IoT |
 
-Kebersihan lab: audit hanya AP dan spektrum yang Anda punya izin atasnya. Lakukan capture untuk troubleshooting di jaringan sendiri, bukan untuk menyerang tetangga.
+Kebersihan lab: hanya audit AP dan ruang udara yang kamu punya izinnya. Capture untuk troubleshooting di jaringanmu sendiri, bukan milik tetangga.
 
 ---
 
-## 8. Cheatsheet: admin / lab yang sah
+## 8. Cheatsheet
 
 ```bash
-# ── Link state (Linux, interface Anda) ───────────────────────
-iw dev
-iw dev wlan0 link
+# ── State link milikmu (Linux) ───────────────────────────────
+iw dev                         # interface wireless-mu
+iw dev wlan0 link              # BSSID, frekuensi, sinyal saat ini
 iw dev wlan0 info
-iwlist wlan0 scanning 2>/dev/null | head   # legacy; prefer iw scan
 
-# ── Scan SSIDs (observability on your radio) ─────────────────
-sudo iw dev wlan0 scan | egrep 'BSS|SSID|RSN|capability'
+# ── Survei jaringan sekitar (observabilitas di radiomu) ─────
+sudo iw dev wlan0 scan | egrep 'BSS|SSID|RSN|signal'
 
 # ── NetworkManager ───────────────────────────────────────────
-nmcli general status
 nmcli device wifi list
 nmcli connection show
-nmcli device wifi show-password   # only for profiles you own
 
-# ── Regulatory / channel info ────────────────────────────────
+# ── Info regulasi / channel ──────────────────────────────────
 iw reg get
-iw phy phy0 info | less
 
-# ── Hostapd / AP you operate: check config ideas ─────────────
-# wpa=2, rsn_pairwise=CCMP, ieee80211w=2 (PMF required) on YOUR AP
-# Prefer SAE (WPA3) when client inventory allows
+# ── Di AP yang kamu operasikan, utamakan setting ini ────────
+# WPA3 (SAE) kalau klien mendukung, selain itu WPA2 + password kuat
+# PMF wajib (ieee80211w=2), hanya AES/CCMP, WPS PIN dimatikan
 ```
 
 | Perintah | Kegunaan |
 |:---|:---|
-| `iw … link` | Menampilkan BSSID, freq, dan signal STA Anda |
-| `iw … scan` | Survei lingkungan sekitar (patuhi hukum lokal) |
+| `iw … link` | Menampilkan BSSID, frekuensi, dan sinyalmu |
+| `iw … scan` | Mensurvei jaringan sekitar (ikuti hukum setempat) |
 | `nmcli device wifi` | Mengelola profil Wi-Fi di desktop |
 
 ---
 
 > **Referensi & sumber buku**
-> - Matthew Gast, *802.11 Wireless Networks: The Definitive Guide*, `~/Documents/Books/CyberSec/Networking/802_11_Wireless_Networks__The_Definitive_Guide__O__039_Reilly_Networking_.pdf`
-> - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/Network-security-essentials-4th-edition-william-stallings.pdf`
-> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/computernetworking.pdf`
-> - IEEE 802.11i / WPA2 RSN, IEEE 802.11w (PMF), tinjauan spesifikasi WPA3 (Wi-Fi Alliance)
+> - Matthew Gast, *802.11 Wireless Networks: The Definitive Guide*, `~/Documents/Books/CyberSec/Networking/`
+> - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/`
+> - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/`
+> - IEEE 802.11i / WPA2 RSN, IEEE 802.11w (PMF), spesifikasi WPA3 (Wi-Fi Alliance)
 > - `man iw`, `man nmcli`
 
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
-> Edukasi dan administrasi WLAN milik sendiri, tanpa prosedur cracking atau injeksi serangan.
+> **Repositori:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> Materi edukasi dan administrasi untuk WLAN milik sendiri, tanpa prosedur cracking atau injeksi serangan.
