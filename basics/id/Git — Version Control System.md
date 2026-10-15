@@ -13,20 +13,37 @@
 
 ## Daftar Isi
 
-| # | Topik | Deskripsi |
-|---|-------|-----------|
-| 1 | Overview | Apa itu Git dan version control |
-| 2 | Instalasi | Instal dan konfigurasi Git |
-| 3 | Konsep Dasar | Repository, commit, branch |
-| 4 | `git init` dan `clone` | Membuat dan mengunduh repo |
-| 5 | Staging dan Commit | Area staging dan commit |
-| 6 | Branching | Cabang dan penggabungan |
-| 7 | Remote | Bekerja dengan remote repository |
-| 8 | History dan Undo | Melihat riwayat dan membatalkan perubahan |
-| 9 | `.gitignore` | Mengabaikan file tertentu |
-| 10 | Git Workflow | Alur kerja kolaborasi |
-| 11 | Catatan Keamanan | Hygiene kredensial dan secret scanning |
-| 12 | Contoh Praktis | Contoh lengkap dari awal sampai akhir |
+1. Apa itu Git dan version control
+2. Instal dan konfigurasi Git
+3. Konsep dasar
+4. `git init` dan `git clone`
+5. Staging dan commit
+6. Branching dan merging
+7. Bekerja dengan remote
+8. History dan undo
+9. `.gitignore`
+10. Alur kerja kolaborasi
+11. Catatan keamanan
+12. Contoh lengkap dari awal sampai akhir
+
+---
+
+## Istilah penting
+
+Istilah-istilah ini akan sering muncul di materi.
+
+| Istilah | Artinya |
+|:---|:---|
+| Repository (repo) | Folder proyek yang dilacak Git, beserta seluruh riwayatnya |
+| Commit | Snapshot perubahanmu yang tersimpan pada satu titik waktu |
+| Branch (cabang) | Jalur kerja terpisah yang bisa kamu kembangkan tanpa menyentuh `main` |
+| Staging area | Ruang tunggu tempat kamu menyusun perubahan sebelum di-commit |
+| HEAD | Penunjuk ke commit/branch yang sedang kamu tempati |
+| Remote | Kopi repo di server lain, seperti GitHub |
+| Clone | Mengunduh kopi lengkap sebuah repo remote |
+| Push / pull | Mengirim commit-mu ke remote / mengambil dan menggabungkan milik remote |
+| Merge | Menggabungkan pekerjaan dari satu branch ke branch lain |
+| `.gitignore` | Daftar file yang tidak boleh dilacak Git (rahasia, output build) |
 
 ---
 

@@ -13,20 +13,37 @@
 
 ## Table of Contents
 
-| # | Topic | Description |
-|---|-------|-------------|
-| 1 | Overview | What Git and version control are |
-| 2 | Installation | Install and configure Git |
-| 3 | Core Concepts | Repository, commit, branch |
-| 4 | `git init` and `clone` | Creating and downloading repos |
-| 5 | Staging and Commit | The staging area and commits |
-| 6 | Branching | Branches and merging |
-| 7 | Remote | Working with remote repositories |
-| 8 | History and Undo | Viewing history and reverting changes |
-| 9 | `.gitignore` | Ignoring certain files |
-| 10 | Git Workflow | A collaboration workflow |
-| 11 | Security Note | Credential hygiene and secret scanning |
-| 12 | Practical Workflow | A full worked example |
+1. What Git and version control are
+2. Installing and configuring Git
+3. Core concepts
+4. `git init` and `git clone`
+5. Staging and committing
+6. Branching and merging
+7. Working with remotes
+8. History and undo
+9. `.gitignore`
+10. A collaboration workflow
+11. Security notes
+12. A full worked example
+
+---
+
+## Key Terms
+
+You'll see these words throughout the lesson.
+
+| Term | Plain meaning |
+|:---|:---|
+| Repository (repo) | A project folder that Git tracks, including its full history |
+| Commit | A saved snapshot of your changes at one point in time |
+| Branch | A separate line of work you can develop without touching `main` |
+| Staging area | A waiting room where you line up changes before committing |
+| HEAD | A pointer to the commit/branch you're currently on |
+| Remote | A copy of the repo on another server, such as GitHub |
+| Clone | Downloading a full copy of a remote repo |
+| Push / pull | Sending your commits to a remote / fetching and merging theirs |
+| Merge | Combining the work from one branch into another |
+| `.gitignore` | A list of files Git should never track (secrets, build output) |
 
 ---
 
