@@ -1,6 +1,6 @@
-# Ekspresi: Sintaks, Tipe, dan Evaluasi
+# Expression: Sintaks, Jenis, dan Evaluasi
 
-> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
+> **LearnCybersecurity** | Seri Basics | kodoktheGr3at | 2026
 
 ---
 
@@ -13,396 +13,326 @@
 
 ## Daftar Isi
 
-| # | Topik | Deskripsi |
-|---|-------|-----------|
-| 1 | Ekspresi Aritmetika | Operasi matematika dan aritmetika |
-| 2 | Ekspresi Logika | Logika boolean (AND, OR, NOT) |
-| 3 | Ekspresi Relasional | Perbandingan nilai (==, !=, <, >) |
-| 4 | Ekspresi Penugasan | Penugasan dan compound operator |
-| 5 | Ekspresi Kondisional (Ternary) | Ekspresi kondisional tiga operand |
-| 6 | Ekspresi Lambda | Fungsi anonim ringkas |
-| 7 | Regular Expression (RegEx) | Pencocokan pola string |
-| 8 | Ekspresi Bitwise | Operasi level bit dan manipulasi biner |
-| 9 | Ekspresi Cast | Konversi tipe data (widening/narrowing) |
-| 10 | Ekspresi Pembuatan Objek | Alokasi memori dan pembuatan objek |
-| 11 | Catatan Keamanan | Risiko dan pertahanan ekspresi |
-| 12 | Ringkasan dan Cheatsheet | Tabel ringkasan dan cheatsheet cepat |
+1. Apa itu expression
+2. Expression aritmetika
+3. Expression logika (boolean)
+4. Expression relasional (perbandingan)
+5. Expression assignment
+6. Expression conditional (ternary)
+7. Expression lambda
+8. Regular expression (RegEx)
+9. Expression bitwise
+10. Expression cast
+11. Expression pembuatan objek
+12. Catatan keamanan
+13. Cheatsheet
 
 ---
 
-## 1. Ekspresi Aritmetika
+## Istilah penting
 
-**Ekspresi aritmetika** adalah ekspresi yang menghasilkan nilai numerik melalui operasi matematika dasar seperti penjumlahan (`+`), pengurangan (`-`), perkalian (`*`), pembagian (`/`), dan sisa bagi atau modulo (`%`).
+Istilah-istilah ini akan sering muncul di materi.
 
-Dalam pemrograman sistem (C/C++) dan bahasa modern (Java, Python), urutan evaluasi mengikuti aturan presedensi operator (BODMAS/PEMDAS). Operasi perkalian, pembagian, dan modulo dievaluasi lebih dulu sebelum penjumlahan dan pengurangan, kecuali diatur eksplisit menggunakan tanda kurung `()`.
+| Istilah | Artinya |
+|:---|:---|
+| Expression (ekspresi) | Potongan kode apa pun yang menghasilkan sebuah nilai, seperti `2 + 2` atau `x > 5` |
+| Operator | Simbol yang melakukan sesuatu: `+`, `&&`, `==`, `<<` |
+| Operand | Nilai yang dikerjakan operator (di `2 + 3`, operand-nya 2 dan 3) |
+| Precedence (prioritas) | Urutan operator dijalankan (`*` sebelum `+`, seperti matematika sekolah) |
+| Boolean | Nilai yang hanya bisa `true` atau `false` |
+| Short-circuit | Berhenti mengecek logika lebih awal begitu jawabannya sudah pasti |
+| Overflow | Saat angka terlalu besar untuk tipenya lalu berputar balik |
+| Cast | Mengubah nilai dari satu tipe ke tipe lain |
+| RegEx | Bahasa pola untuk mencocokkan teks |
 
-Secara formal (K. N. King), ekspresi aritmetika bilangan bulat dapat ditulis:
+---
 
-```text
-E  ::=  number | ( E ) | E + E | E - E | E * E | E / E | E % E
-```
+## 1. Apa Itu Expression
 
-Artinya: sebuah ekspresi bisa berupa angka, ekspresi di dalam tanda kurung, atau dua ekspresi yang digabung dengan `+`, `-`, `*`, `/`, atau `%`.
+**Expression** adalah potongan kode apa pun yang menghasilkan satu nilai. `2 + 2` adalah expression (menghasilkan `4`). Begitu juga `umur > 18` (menghasilkan `true` atau `false`), dan `"admin".toUpperCase()`.
 
-Operator dengan level yang sama dievaluasi dari kiri ke kanan, dan `*`, `/`, `%` selalu didahulukan sebelum `+` dan `-`.
+Expression dibangun dari **operand** (nilainya) dan **operator** (simbol yang menggabungkannya). Materi ini menelusuri keluarga operator utama, urutan jalannya, dan bug keamanan yang muncul kalau expression dievaluasi secara ceroboh, terutama pada input yang tidak tepercaya.
 
-Integer overflow terjadi kalau hasil perhitungan terlalu besar (atau terlalu kecil) untuk tipenya. `int` 32-bit signed hanya bisa menampung -2.147.483.648 sampai 2.147.483.647; lewat satu langkah dari batas atas, nilainya berputar balik. Di C, ini sering jadi penyebab buffer dialokasikan terlalu kecil.
+---
+
+## 2. Expression Aritmetika
+
+**Expression aritmetika** menghasilkan angka memakai operator matematika yang sudah dikenal: tambah (`+`), kurang (`-`), kali (`*`), bagi (`/`), dan sisa bagi (`%`).
+
+Urutannya mengikuti matematika sekolah (BODMAS/PEMDAS): `*`, `/`, `%` jalan sebelum `+` dan `-`, dan tanda kurung `()` mengalahkan semuanya. Operator dengan level yang sama jalan dari kiri ke kanan.
+
+> **Hati-hati integer overflow.** Tiap tipe integer punya batas maksimum. `int` 32-bit signed berhenti di 2.147.483.647; tambah satu lagi, ia berputar balik ke angka negatif besar. Di C, ini penyebab klasik program mengalokasikan buffer yang terlalu kecil, yang berujung bug memori.
 
 ```java
-// ── Contoh Java ─────────────────────────────────────────────
-int a = 10;
-int b = 3;
-
-int penjumlahan  = a + b;           // 13   — Penjumlahan
-int pengurangan  = a - b;           // 7    — Pengurangan
-int perkalian    = a * b;           // 30   — Perkalian
-int pembagian    = a / b;           // 3    — Pembagian bilangan bulat
-int sisa_bagi    = a % b;           // 1    — Sisa bagi (Modulo)
-double pangkat   = Math.pow(a, 2); // 100.0 — Pangkat
+// ── Java ─────────────────────────────────────────────────────
+int a = 10, b = 3;
+int sum        = a + b;          // 13
+int difference = a - b;          // 7
+int product    = a * b;          // 30
+int quotient   = a / b;          // 3    (pembagian integer membuang pecahan)
+int remainder  = a % b;          // 1    (sisa setelah dibagi)
 ```
 
 ```c
-/* ── Contoh C (K. N. King - C Programming Standard) ────────── */
+/* ── C: memecah detik menjadi j:m:d dengan / dan % ─────────── */
 #include <stdio.h>
-
 int main(void) {
     int total_seconds = 3665;
-    int hours   = total_seconds / 3600;       /* 1 jam */
-    int minutes = (total_seconds % 3600) / 60; /* 1 menit */
-    int seconds = total_seconds % 60;         /* 5 detik */
-    
+    int hours   = total_seconds / 3600;        /* 1 */
+    int minutes = (total_seconds % 3600) / 60; /* 1 */
+    int seconds = total_seconds % 60;          /* 5 */
     printf("Time: %02d:%02d:%02d\n", hours, minutes, seconds);
-    return 0;
-}
-```
-
-| Operator | Fungsi | Contoh | Hasil |
-|----------|--------|--------|-------|
-| `+` | Penjumlahan | `10 + 3` | `13` |
-| `-` | Pengurangan | `10 - 3` | `7` |
-| `*` | Perkalian | `10 * 3` | `30` |
-| `/` | Pembagian | `10 / 3` | `3` (integer) |
-| `%` | Modulo (sisa bagi) | `10 % 3` | `1` |
-
----
-
-## 2. Ekspresi Logika (Boolean)
-
-**Ekspresi logika** adalah ekspresi yang mengevaluasi kondisi ke nilai boolean (`true` atau `false`) menggunakan operator logika `&&` (Logical AND), `||` (Logical OR), dan `!` (Logical NOT).
-
-Bahasa pemrograman modern menggunakan short-circuit evaluation:
-- Pada operasi `A && B`, jika `A` bernilai `false`, maka `B` tidak akan dievaluasi karena hasilnya pasti `false`.
-- Pada operasi `A || B`, jika `A` bernilai `true`, maka `B` tidak akan dievaluasi karena hasilnya pasti `true`.
-
-```java
-// ── Contoh short-circuit evaluation ────────────────────────
-String username = getUsername();
-// Jika username null, username.length() TIDAK PERNAH dipanggil (menghindari NullPointerException)
-if (username != null && username.length() > 3) {
-    System.out.println("Valid user format");
-}
-
-// ── Operasi logika ───────────────────────────────────────
-boolean isAuthenticated = true;
-boolean hasAdminRole    = false;
-
-boolean canAccessDashboard = isAuthenticated && hasAdminRole; // false
-boolean canViewPublicPage  = isAuthenticated || hasAdminRole; // true
-boolean isGuest            = !isAuthenticated;                // false
-```
-
-| Operator | Nama | Perilaku |
-|----------|------|----------|
-| `&&` | DAN (Logical AND) | Mengembalikan `true` hanya jika kedua operand `true` |
-| `\|\|` | ATAU (Logical OR) | Mengembalikan `true` jika minimal satu operand `true` |
-| `!` | TIDAK (Logical NOT) | Membalik nilai boolean (`true` → `false`, `false` → `true`) |
-
----
-
-## 3. Ekspresi Relasional
-
-**Ekspresi relasional** membandingkan dua operand menggunakan operator relasional seperti sama dengan (`==`), tidak sama dengan (`!=`), lebih besar (`>`), lebih kecil (`<`), lebih besar atau sama (`>=`), dan lebih kecil atau sama (`<=`). Hasil evaluasinya selalu bertipe boolean.
-
-Dalam cybersecurity, perbandingan relasional yang salah penanganan (seperti loose comparison di PHP atau type coercion di JavaScript) sering menjadi akar celah autentikasi (Type Juggling).
-
-```c
-/* ── Ekspresi relasional di C / sistem Linux ────────────── */
-#include <stdio.h>
-
-int main(void) {
-    int user_uid = 1000;
-    int root_uid = 0;
-    
-    int is_root = (user_uid == root_uid);       /* hasil 0 (false) */
-    int is_non_root = (user_uid >= 1000);      /* hasil 1 (true)  */
-    
-    printf("Is Root: %d | Is Standard User: %d\n", is_root, is_non_root);
     return 0;
 }
 ```
 
 | Operator | Arti | Contoh | Hasil |
 |----------|------|--------|-------|
-| `==` | Sama dengan | `10 == 10` | `true` |
-| `!=` | Tidak sama dengan | `10 != 20` | `true` |
-| `>` | Lebih besar dari | `15 > 10` | `true` |
-| `<` | Lebih kecil dari | `5 < 10` | `true` |
-| `>=` | Lebih besar atau sama | `10 >= 10` | `true` |
-| `<=` | Lebih kecil atau sama | `9 <= 10` | `true` |
+| `+` | Tambah | `10 + 3` | `13` |
+| `-` | Kurang | `10 - 3` | `7` |
+| `*` | Kali | `10 * 3` | `30` |
+| `/` | Bagi | `10 / 3` | `3` (integer) |
+| `%` | Sisa bagi | `10 % 3` | `1` |
 
 ---
 
-## 4. Ekspresi Penugasan
+## 3. Expression Logika (Boolean)
 
-**Ekspresi penugasan** menetapkan nilai sisi kanan (R-value) ke variabel atau lokasi memori sisi kiri (L-value). Selain penugasan dasar (`=`), bahasa modern menyediakan compound assignment operator seperti `+=`, `-=`, `*=`, `/=`, `%=`, `<<=`, `>>=`, `&=`, `^=`, `|=`.
+**Expression logika** menggabungkan nilai true/false menjadi satu jawaban true/false, memakai AND (`&&`), OR (`||`), dan NOT (`!`).
 
-Operator penugasan bersifat right-associative, artinya `x = y = z = 10` akan mengevaluasi `z = 10` lebih dulu, lalu `y = z`, dan akhirnya `x = y`.
+Kebanyakan bahasa bersifat **short-circuit**: mereka berhenti begitu jawabannya pasti. Di `A && B`, kalau `A` sudah `false`, `B` tidak pernah dicek. Ini bukan sekadar optimasi; ini alat keamanan. Pemakaian klasiknya adalah mengecek sesuatu tidak kosong *sebelum* memakainya:
 
 ```java
-// ── Compound assignment & pre/post increment ──────────────
+// Kalau username null, username.length() tidak pernah dijangkau (tidak crash)
+if (username != null && username.length() > 3) {
+    System.out.println("Valid user format");
+}
+
+boolean isAuthenticated = true;
+boolean hasAdminRole    = false;
+boolean canAccessAdmin  = isAuthenticated && hasAdminRole;  // false (butuh keduanya)
+boolean canViewPublic   = isAuthenticated || hasAdminRole;  // true  (butuh salah satu)
+boolean isGuest         = !isAuthenticated;                 // false (kebalikannya)
+```
+
+| Operator | Nama | True kalau… |
+|----------|------|-------------|
+| `&&` | AND | kedua sisi true |
+| `\|\|` | OR | minimal satu sisi true |
+| `!` | NOT | membalik true jadi false dan sebaliknya |
+
+---
+
+## 4. Expression Relasional (Perbandingan)
+
+**Expression relasional** membandingkan dua nilai dan mengembalikan boolean. Ini adalah `==` (sama), `!=` (tidak sama), `>`, `<`, `>=`, `<=`.
+
+> **Sisi keamanan — type juggling.** Beberapa bahasa membolehkan membandingkan nilai dengan tipe berbeda secara longgar. `==` di PHP dan `==` di JavaScript diam-diam mengonversi tipe sebelum membandingkan, dan itu pernah menyebabkan authentication bypass sungguhan (misalnya, dua string berbeda sama-sama dianggap "sama dengan nol"). Solusinya adalah perbandingan **strict**: `===` di PHP/JS, atau perbandingan bertipe yang tidak mengonversi. Jangan pernah membandingkan hash password dengan `==` longgar.
+
+```c
+int user_uid = 1000;
+int root_uid = 0;
+int is_root     = (user_uid == root_uid);   /* 0 (false) */
+int is_standard = (user_uid >= 1000);       /* 1 (true)  */
+```
+
+| Operator | Arti | Contoh → hasil |
+|----------|------|----------------|
+| `==` | Sama | `10 == 10` → true |
+| `!=` | Tidak sama | `10 != 20` → true |
+| `>` `<` | Lebih besar / kecil | `15 > 10` → true |
+| `>=` `<=` | Lebih besar / kecil atau sama | `10 >= 10` → true |
+
+---
+
+## 5. Expression Assignment
+
+**Assignment** menyimpan sebuah nilai ke variabel dengan `=`. Bentuk gabungannya menggabungkan operasi dengan assignment: `x += 5` artinya `x = x + 5`.
+
+Assignment bersifat **right-associative**: `x = y = z = 10` jalan dari kanan ke kiri, jadi `z` dapat 10 dulu, lalu `y`, lalu `x`.
+
+```java
 int counter = 0;
+counter += 5;   // 5   (counter = counter + 5)
+counter *= 2;   // 10
+counter -= 3;   // 7
 
-counter += 5;    // counter = counter + 5  → 5
-counter *= 2;    // counter = counter * 2  → 10
-counter -= 3;    // counter = counter - 3  → 7
-counter %= 4;    // counter = counter % 4  → 3
-
-// Evaluasi prefix vs postfix
+// ++ dan -- mengubah variabel sebanyak satu. Posisinya penting:
 int a = 5;
-int b = ++a;     // Prefix: a menjadi 6, lalu b diisi 6
-int c = a++;     // Postfix: c diisi 6, lalu a menjadi 7
+int b = ++a;    // "pre": a jadi 6 dulu, lalu b = 6
+int c = a++;    // "post": c = 6 dulu, lalu a jadi 7
 ```
 
 ---
 
-## 5. Ekspresi Kondisional (Ternary)
+## 6. Expression Conditional (Ternary)
 
-**Ekspresi kondisional** (sering disebut ternary operator karena membutuhkan tiga operand) adalah bentuk ringkas dari struktur kendali `if-else` yang mengevaluasi dan mengembalikan salah satu dari dua ekspresi berdasarkan kondisi boolean.
-
-Sintaks: `condition ? expression_if_true : expression_if_false;`
+**Operator ternary** adalah `if-else` ringkas yang menghasilkan sebuah nilai. Dibaca sebagai "kondisi ? nilai-kalau-true : nilai-kalau-false".
 
 ```python
-# ── Ternary inline di Python ─────────────────────────────────
 user_role = "admin"
-access_level = 100 if user_role == "admin" else 10
-print(f"Access Level: {access_level}")
+access_level = 100 if user_role == "admin" else 10   # bentuk Python
 ```
 
 ```c
-/* ── Ekspresi ternary di C ───────────────────────────────────── */
-#include <stdio.h>
-
-int main(void) {
-    int port = 443;
-    const char *protocol = (port == 443) ? "HTTPS (Encrypted)" : "HTTP (Cleartext)";
-    printf("Port %d runs %s\n", port, protocol);
-    return 0;
-}
+int port = 443;
+const char *protocol = (port == 443) ? "HTTPS (terenkripsi)" : "HTTP (cleartext)";
 ```
+
+Pakai untuk pilihan singkat salah satu dari dua. Untuk yang punya banyak cabang, `if-else` biasa tetap lebih mudah dibaca.
 
 ---
 
-## 6. Ekspresi Lambda
+## 7. Expression Lambda
 
-**Ekspresi lambda** adalah blok kode anonim (fungsi tanpa nama) yang dapat diteruskan sebagai argumen ke metode atau disimpan dalam variabel. Diperkenalkan pada Java 8, Python (`lambda`), C++11 (`[](){}`), dan C# modern.
-
-Dalam analisis keamanan dan pemrosesan log, lambda sangat efisien untuk memfilter paket jaringan, parsing log web server, dan transformasi data cepat.
+**Lambda** adalah fungsi kecil tanpa nama yang bisa kamu oper seperti sebuah nilai. Java 8+, Python (`lambda`), C++ (`[]{}`), dan JavaScript (`() => {}`) semuanya punya. Lambda bersinar untuk memfilter dan mengubah list, yang terus-menerus muncul di analisis log.
 
 ```python
-# ── Lambda Python untuk analisis log ────────────────────────────
+# Simpan hanya request yang gagal (status HTTP 400 ke atas)
 logs = [
-    {"ip": "192.168.1.10", "status": 200, "path": "/index.html"},
-    {"ip": "10.0.0.5",     "status": 404, "path": "/admin.php"},
-    {"ip": "172.16.0.4",   "status": 401, "path": "/login"},
-    {"ip": "10.0.0.5",     "status": 500, "path": "/api/v1/debug"}
+    {"ip": "192.168.1.10", "status": 200},
+    {"ip": "10.0.0.5",     "status": 404},
+    {"ip": "172.16.0.4",   "status": 401},
 ]
-
-# Filter request gagal (status >= 400) memakai lambda
-failed_requests = list(filter(lambda entry: entry["status"] >= 400, logs))
-print(f"Suspicious / Failed Events: {failed_requests}")
+failed = list(filter(lambda e: e["status"] >= 400, logs))
 ```
 
 ```java
-// ── Java Lambda & Stream API ─────────────────────────────────
-import java.util.*;
-import java.util.stream.*;
-
-List<String> endpoints = Arrays.asList("/api/v1/users", "/admin", "/login", "/config.json");
-
-List<String> sensitiveEndpoints = endpoints.stream()
+// Simpan hanya endpoint yang terlihat sensitif, lalu jadikan huruf besar
+List<String> sensitive = endpoints.stream()
     .filter(ep -> ep.contains("admin") || ep.contains("config"))
     .map(String::toUpperCase)
     .collect(Collectors.toList());
-
-System.out.println(sensitiveEndpoints); // [/ADMIN, /CONFIG.JSON]
 ```
 
 ---
 
-## 7. Regular Expression (RegEx)
+## 8. Regular Expression (RegEx)
 
-**Regular Expression (RegEx)** adalah ekspresi formal yang mendefinisikan pola pencarian teks. Digunakan untuk validasi data, ekstraksi string, pencarian log forensik (SIEM/grep), dan pembentukan aturan deteksi (Suricata/Snort/YARA).
-
-Referensi mendalam: *Mastering Regular Expressions (3rd Edition)* oleh Jeffrey E.F. Friedl (`~/Documents/Books/Linux/`).
+**Regular expression** adalah pola untuk mencocokkan teks. Dipakai untuk validasi input, mencari di log, dan menulis signature deteksi (Snort, Suricata, YARA).
 
 ```bash
-# ── Contoh regex cybersecurity umum dengan grep ────────────
+# Cari alamat IPv4 di sebuah log
+grep -E -o '([0-9]{1,3}\.){3}[0-9]{1,3}' /var/log/auth.log
 
-# Mencocokkan alamat IPv4 valid
-$ grep -E -o '([0-9]{1,3}\.){3}[0-9]{1,3}' /var/log/auth.log
+# Cari yang berbentuk hash MD5 (32 karakter hex)
+grep -E -i '\b[a-f0-9]{32}\b' hashes.txt
 
-# Mencocokkan hash MD5 (32 karakter hex)
-$ grep -E -i '\b[a-f0-9]{32}\b' sample_hashes.txt
-
-# Mencocokkan AWS Access Key ID sensitif
-$ grep -E 'AKIA[0-9A-Z]{16}' source_code.py
+# Cari yang berbentuk AWS access key
+grep -E 'AKIA[0-9A-Z]{16}' source_code.py
 ```
 
-| Metacharacter | Deskripsi |
-|---------------|-----------|
-| `^` / `$` | Awal / akhir string |
-| `.` | Karakter apa saja (kecuali newline) |
-| `\d` / `\D` | Digit angka (0-9) / non-digit |
-| `\w` / `\W` | Alfanumerik + `_` / non-word |
-| `\s` / `\S` | Whitespace (spasi, tab) / non-space |
-| `*` / `+` / `?` | 0+, 1+, atau 0-1 kemunculan |
-| `{n,m}` | Antara n hingga m kali |
-| `[...]` | Character class (salah satu karakter) |
-| `(A\|B)` | Alternasi (pilihan A atau B) |
+| Bagian | Artinya |
+|--------|---------|
+| `^` / `$` | Awal / akhir teks |
+| `.` | Satu karakter apa saja |
+| `\d` / `\w` / `\s` | Satu digit / karakter kata / spasi |
+| `*` / `+` / `?` | Nol-atau-lebih / satu-atau-lebih / opsional |
+| `{n,m}` | Antara n dan m kali |
+| `[...]` | Satu karakter mana saja dari set |
+| `(A\|B)` | A atau B |
+
+> **Risiko ReDoS:** pola yang ditulis buruk dengan pengulangan bersarang (seperti `(a+)+$`) bisa memakan waktu eksponensial pada input tertentu, membekukan program. Penyerang bisa memicunya dengan sengaja. Jaga pola tetap sederhana, pasang timeout pencocokan, atau pakai engine waktu-linear.
 
 ---
 
-## 8. Ekspresi Bitwise
+## 9. Expression Bitwise
 
-**Ekspresi bitwise** memanipulasi bit biner secara langsung pada tipe data integer. Digunakan secara luas dalam kriptografi (XOR cipher, hashing), sistem jaringan (subnet masking), permission sistem file Unix, dan analisis malware/shellcode.
+**Expression bitwise** bekerja pada 1 dan 0 individual dari sebuah angka. Muncul di kriptografi, matematika subnet, permission Unix, dan reverse engineering.
 
-Operasi bitwise meliputi AND (`&`), OR (`|`), XOR (`^`), NOT (`~`), left shift (`<<`), dan right shift (`>>`).
+Operatornya: AND (`&`), OR (`|`), XOR (`^`), NOT (`~`), left shift (`<<`), right shift (`>>`).
 
 ```c
-/* ── Enkripsi XOR bitwise & permission masking di C ───────── */
-#include <stdio.h>
+/* XOR bisa dibalik: menerapkan kunci yang sama dua kali mengembalikan aslinya */
+char original  = 'A';              /* 01000001 */
+char key       = 0x5A;             /* 01011010 */
+char encrypted = original ^ key;   /* 00011011 */
+char decrypted = encrypted ^ key;  /* 01000001 → 'A' lagi */
 
-int main(void) {
-    /* 1. Obfuskasi XOR sederhana (Key: 0x5A) */
-    char original = 'A';              /* Binary: 01000001 */
-    char key = 0x5A;                  /* Binary: 01011010 */
-    
-    char encrypted = original ^ key;  /* Binary: 00011011 */
-    char decrypted = encrypted ^ key; /* Binary: 01000001 ('A') */
-    
-    printf("Original: %c | Encrypted: 0x%X | Decrypted: %c\n", original, (unsigned char)encrypted, decrypted);
-    
-    /* 2. Permission file Linux (Read=4, Write=2, Execute=1) */
-    int rwx = (1 << 2) | (1 << 1) | (1 << 0); /* 4 | 2 | 1 = 7 */
-    int is_executable = (rwx & 1);             /* Cek bit execute */
-    printf("Permission Octal: %d | Executable: %s\n", rwx, is_executable ? "YES" : "NO");
-    
-    return 0;
-}
+/* Permission Unix sebagai bit: read=4, write=2, execute=1 */
+int rwx = (1 << 2) | (1 << 1) | (1 << 0);  /* 4 | 2 | 1 = 7 (rwx) */
+int can_execute = (rwx & 1);               /* tes bit execute */
 ```
 
-| Operator | Nama | Operasi bit (`a=5 [0101]`, `b=3 [0011]`) | Hasil |
-|----------|------|-------------------------------------------|-------|
-| `&` | Bitwise AND | `0101 & 0011` → `0001` | `1` |
-| `\|` | Bitwise OR | `0101 \| 0011` → `0111` | `7` |
-| `^` | Bitwise XOR | `0101 ^ 0011` → `0110` | `6` |
-| `~` | Bitwise NOT | `~0101` → `...11111010` | `-6` (2's comp) |
-| `<<` | Left Shift | `0101 << 1` → `1010` (kali 2) | `10` |
-| `>>` | Right Shift | `0101 >> 1` → `0010` (bagi 2) | `2` |
+| Operator | Nama | Contoh (`a=5` `0101`, `b=3` `0011`) | Hasil |
+|----------|------|-------------------------------------|-------|
+| `&` | AND | `0101 & 0011` → `0001` | `1` |
+| `\|` | OR | `0101 \| 0011` → `0111` | `7` |
+| `^` | XOR | `0101 ^ 0011` → `0110` | `6` |
+| `~` | NOT | membalik tiap bit | `-6` |
+| `<<` | Left shift | `0101 << 1` → `1010` (×2) | `10` |
+| `>>` | Right shift | `0101 >> 1` → `0010` (÷2) | `2` |
 
 ---
 
-## 9. Ekspresi Cast
+## 10. Expression Cast
 
-**Ekspresi cast** mengonversi ekspresi dari satu tipe data ke tipe data lain. Dibagi menjadi dua kategori utama:
+**Cast** mengubah nilai dari satu tipe ke tipe lain. Dua jenis:
 
-1. **Widening cast (implicit)**: konversi dari tipe data lebih kecil ke lebih besar (misal `int` ke `double`). Aman dan dilakukan otomatis oleh kompilator tanpa risiko kehilangan presisi.
-2. **Narrowing cast (explicit)**: konversi dari tipe data lebih besar ke lebih kecil (misal `double` ke `int`, atau `int` ke `short`). Membutuhkan casting manual `(tipe)nilai` dan berisiko memotong data (data truncation) atau overflow.
+- **Widening (aman):** tipe kecil → tipe lebih besar, seperti `int` → `double`. Tidak ada yang hilang; bahasa melakukannya untukmu.
+- **Narrowing (berisiko):** tipe besar → tipe lebih kecil, seperti `double` → `int`, atau `int` 32-bit → `char` 8-bit. Kamu harus memintanya secara eksplisit, dan datanya bisa **terpotong (truncated)**.
 
 ```c
-/* ── Contoh kerentanan integer truncation di C ─────────── */
-#include <stdio.h>
-
-int main(void) {
-    int large_number = 300;
-    /* 300 dalam biner (16-bit): 0000 0001 0010 1100 */
-    /* Cast ke unsigned char 8-bit mengambil 8 bit terendah: 0010 1100 = 44 */
-    unsigned char truncated = (unsigned char)large_number;
-    
-    printf("Original: %d | Truncated: %d\n", large_number, truncated);
-    return 0;
-}
+int large = 300;
+/* 300 tidak muat di 8 bit. Hanya 8 bit terendah yang bertahan: 300 → 44 */
+unsigned char truncated = (unsigned char)large;   /* 44, bukan 300 */
 ```
+
+Pemotongan diam-diam itu sumber bug keamanan nyata: pengecekan panjang lolos pada nilai besar, tapi nilai kecil yang terpotong itulah yang sebenarnya dipakai.
 
 ---
 
-## 10. Ekspresi Pembuatan Objek
+## 11. Expression Pembuatan Objek
 
-**Ekspresi pembuatan objek** mengalokasikan memori di area heap dan menginisialisasi objek baru menggunakan kata kunci `new` serta memanggil konstruktor terkait. Di bahasa tanpa garbage collection otomatis seperti C++, alokasi dinamis dilakukan dengan `new`/`malloc` dan wajib dibebaskan dengan `delete`/`free` untuk mencegah memory leak.
+**Expression pembuatan objek** membangun objek baru di memori, biasanya dengan `new`, yang menjalankan konstruktor objek itu.
 
 ```java
-// ── Instansiasi objek Java ────────────────────────────────
-public class TargetHost {
-    private String hostname;
-    private int port;
-
-    public TargetHost(String hostname, int port) {
-        this.hostname = hostname;
-        this.port = port;
-    }
-
-    public void scan() {
-        System.out.println("Scanning " + hostname + ":" + port);
-    }
-
-    public static void main(String[] args) {
-        // Ekspresi pembuatan objek
-        TargetHost target = new TargetHost("192.168.1.1", 443);
-        target.scan();
-    }
-}
+TargetHost target = new TargetHost("192.168.1.1", 443);
+target.scan();
 ```
 
----
-
-## 11. Catatan Keamanan: Risiko dan Pertahanan Ekspresi
-
-Pemahaman evaluasi ekspresi penting untuk audit dan hardening. Input tidak tepercaya yang dievaluasi sebagai kode sering memicu kerentanan. Fokus di bawah adalah deteksi dan mitigasi.
-
-1. **Expression Language (EL) / OGNL Injection**: jangan evaluasi ekspresi dari input pengguna. Gunakan allowlist template, matikan evaluasi dinamis (SpEL/OGNL) pada data request, dan sandbox interpreter jika wajib ada.
-2. **ReDoS**: hindari nested quantifier yang catastrophic, tetapkan timeout atau pakai engine linear-time, dan uji pola dengan fuzzer string panjang (*Mastering Regular Expressions* / WAHH).
-3. **Type Juggling**: pakai perbandingan ketat (`===` atau typed compare), validasi tipe di boundary API, dan jangan bandingkan hash string dengan `==`.
-4. **Integer overflow (C)**: gunakan tipe lebar cukup, cek sebelum alokasi (`size_t` overflow check), aktifkan sanitizer (`-fsanitize=undefined,integer`), dan ikuti disiplin K. N. King untuk batas tipe.
-5. **Bash / eval surfaces**: jangan `eval` atau `$((...))` atas input mentah, quote variabel, dan utamakan parser terstruktur.
-
-Checklist pertahanan: jangan `eval` input tidak tepercaya, pakai strict equality, batasi kompleksitas regex, pakai checked arithmetic, terapkan aturan WAF/SAST untuk SpEL/OGNL, dan buat unit test untuk nilai batas: 0, serta nilai terbesar dan terkecil dari tipenya.
+Di bahasa yang dikelola (Java, Python, C#) memorinya dibersihkan untukmu. Di C/C++, memori yang kamu alokasikan (`new` / `malloc`) harus dibebaskan (`delete` / `free`) tepat sekali, atau kamu dapat kebocoran (tidak pernah dibebaskan) atau bug use-after-free (memakainya setelah dibebaskan).
 
 ---
 
-## 12. Ringkasan dan Cheatsheet
+## 12. Catatan Keamanan
 
-| Kategori | Operator / Sintaks | Deskripsi |
-|----------|---------------------|-----------|
-| Aritmetika | `+`, `-`, `*`, `/`, `%` | Operasi matematika dasar |
-| Logika | `&&`, `\|\|`, `!` | Operasi logika boolean dengan short-circuit |
-| Relasional | `==`, `!=`, `<`, `>`, `<=`, `>=` | Perbandingan nilai |
-| Penugasan | `=`, `+=`, `-=`, `*=`, `/=` | Penugasan nilai ke memori |
-| Ternary | `cond ? val1 : val2` | Kondisional inline ringkas |
-| Lambda | `(param) -> { body }` | Fungsi anonim tanpa nama |
-| RegEx | `^`, `$`, `\d`, `\w`, `.*` | Pencocokan pola string |
-| Bitwise | `&`, `\|`, `^`, `~`, `<<`, `>>` | Operasi langsung pada bit |
-| Cast | `(type) value` | Konversi tipe data |
-| Object | `new ClassName()` | Alokasi heap dan instansiasi |
+Expression berubah jadi kerentanan saat input tak tepercaya dievaluasi sebagai kode atau dipakai tanpa pengecekan. Temanya: perlakukan input sebagai data, bukan instruksi.
+
+| Risiko | Apa yang salah | Pertahanan |
+|:---|:---|:---|
+| Injeksi expression language (SpEL/OGNL) | Teks user dievaluasi sebagai expression sisi server | Jangan pernah mengevaluasi input sebagai expression; allowlist template |
+| ReDoS | String rancangan membuat regex jalan sangat lama | Pola sederhana, timeout pencocokan, engine waktu-linear |
+| Type juggling | `==` longgar menganggap nilai tak sama jadi sama | Equality strict (`===` / perbandingan bertipe), terutama untuk rahasia |
+| Integer overflow (C) | Sebuah ukuran berputar balik dan buffer dialokasikan kurang | Cek sebelum mengalokasikan; `-fsanitize=undefined,integer` |
+| Shell `eval` / `$((...))` pada input | Input jadi perintah | Jangan `eval` input mentah; quote; pakai parser sungguhan |
 
 ---
 
-> **Referensi dan sumber buku:**
+## 13. Cheatsheet
+
+| Kategori | Operator | Menghasilkan |
+|----------|----------|--------------|
+| Aritmetika | `+ - * / %` | sebuah angka |
+| Logika | `&& \|\| !` | true/false (short-circuit) |
+| Relasional | `== != < > <= >=` | true/false |
+| Assignment | `= += -= *= /=` | menyimpan nilai |
+| Ternary | `cond ? a : b` | salah satu dari dua nilai |
+| Lambda | `(x) -> ...` | sebuah fungsi |
+| RegEx | `^ $ \d \w .*` | kecocokan teks |
+| Bitwise | `& \| ^ ~ << >>` | hasil level bit |
+| Cast | `(type) value` | nilai yang dikonversi |
+| Objek | `new Class()` | objek baru |
+
+---
+
+> **Referensi dan Sumber Buku:**
 > - K. N. King, *C Programming: A Modern Approach (2nd Edition)* (`~/Documents/Books/Programming/C /`)
 > - Al Sweigart, *Automate the Boring Stuff with Python (2nd Edition)* (`~/Documents/Books/Programming/Python/`)
 > - Jeffrey E.F. Friedl, *Mastering Regular Expressions (3rd Edition)* (`~/Documents/Books/CyberSec/Linux/`)
 > - Dafydd Stuttard & Marcus Pinto, *The Web Application Hacker's Handbook (2nd Edition)* (`~/Documents/Books/CyberSec/Web App/`)
 > - Scott Meyers, *Effective Modern C++* (`~/Documents/Books/Programming/ C++/`)
 
-> **LearnCybersecurity** | Basics Series | kodoktheGr3at | 2026
-> **Repository:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
-> **Feedback and contributions welcome.** Open an issue or PR if you spot any errors.
+> **LearnCybersecurity** | Seri Basics | kodoktheGr3at | 2026
+> **Repositori:** [LearnCybersecurity](https://github.com/Kodokthegr3at/LearnCybersecurity)
+> **Masukan dan kontribusi diterima.** Buka issue atau PR kalau menemukan kesalahan.
