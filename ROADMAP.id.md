@@ -11,6 +11,7 @@
 
 ## Cara menggunakan roadmap ini
 
+0. Belum tahu mau ke mana? Pilih dulu peran di [CAREERS.id.md](CAREERS.id.md). Halaman itu memberi tahu pelajaran mana yang perlu diambil dan urutannya.
 1. Ikuti urutan `LC-001` sampai `LC-075`, kecuali kamu sudah menguasai suatu fase.
 2. Setiap file pelajaran punya blok Curriculum ID di bagian atas (cari `LC-CURRICULUM`).
 3. Baca baris peta buku, lalu buka bab yang dirujuk dari [BOOKS.id.md](BOOKS.id.md).
@@ -34,6 +35,8 @@ flowchart TD
 
 ## Fase 0: Fondasi & Dasar-Dasar Komputasi (`LC-001-007`)
 
+Kategori: **Fondasi**
+
 Buku utama: Friedl, Gray Hat Hacking, K. N. King, Shotts, Sweigart, Ward.
 
 | ID | Topik | Level | Jam | Prasyarat |
@@ -46,7 +49,7 @@ Buku utama: Friedl, Gray Hat Hacking, K. N. King, Shotts, Sweigart, Ward.
 | `LC-006` | [Windows File System](basics/OperatingSystem/id/Windows%20File%20System.md) | Beginner | 5-6h | LC-001 |
 | `LC-007` | [macOS File System](basics/OperatingSystem/id/macOS%20File%20System.md) | Beginner | 4-5h | LC-001 |
 
-<details><summary>Detail peta buku untuk fase ini</summary>
+**Detail peta buku untuk fase ini**
 
 | ID | Bab buku |
 |:---|:---------------|
@@ -58,11 +61,11 @@ Buku utama: Friedl, Gray Hat Hacking, K. N. King, Shotts, Sweigart, Ward.
 | `LC-006` | Gray Hat Hacking, NTFS, Registry, ADS |
 | `LC-007` | Ward, How Linux Works (Unix comparison); Apple platform guides |
 
-</details>
-
 ---
 
-## Fase 1: Dasar-Dasar & Administrasi Linux (HTB Academy) (`LC-008-037`)
+## Fase 1: Dasar-Dasar & Administrasi Linux (`LC-008-037`)
+
+Kategori: **Fondasi**
 
 Buku utama: Benvenuti, Friedl, Kurose & Ross, NIST SP 800-190 (container security), Oracle Solaris 11 Admin Docs, Shotts, Stallings, Stevens, Stuttard, Ward.
 
@@ -99,7 +102,7 @@ Buku utama: Benvenuti, Friedl, Kurose & Ross, NIST SP 800-190 (container securit
 | `LC-036` | [Solaris — Linux Distributions vs Solaris](linux/id/29.%20Solaris%20%E2%80%94%20Linux%20Distributions%20vs%20Solaris.md) | Intermediate | 2-3h | LC-008, LC-024 |
 | `LC-037` | [Shortcuts — Bash Tips & Tricks](linux/id/30.%20Shortcuts%20%E2%80%94%20Bash%20Tips%20%26%20Tricks.md) | Intermediate | 6-8h | LC-010-LC-020 |
 
-<details><summary>Detail peta buku untuk fase ini</summary>
+**Detail peta buku untuk fase ini**
 
 | ID | Bab buku |
 |:---|:---------------|
@@ -134,11 +137,11 @@ Buku utama: Benvenuti, Friedl, Kurose & Ross, NIST SP 800-190 (container securit
 | `LC-036` | Ward, How Linux Works (Unix lineage); Oracle Solaris 11 Admin Docs |
 | `LC-037` | Shotts, The Linux Command Line (full reference); Friedl, Mastering Regular Expressions |
 
-</details>
-
 ---
 
 ## Fase 2: Jaringan Komputer & Protokol (`LC-038-043`)
+
+Kategori: **Fondasi**
 
 Buku utama: Gast, Kurose & Ross, Stallings, Stevens.
 
@@ -151,7 +154,7 @@ Buku utama: Gast, Kurose & Ross, Stallings, Stevens.
 | `LC-042` | [ARP & Local Network Attacks](networking/id/ARP%20%26%20Local%20Network%20Attacks.md) | Advanced | 4h | LC-039, LC-040 |
 | `LC-043` | [Wireless 802.11 Security & Attacks](networking/id/Wireless%20802.11%20Security%20%26%20Attacks.md) | Advanced | 5h | LC-038 |
 
-<details><summary>Detail peta buku untuk fase ini</summary>
+**Detail peta buku untuk fase ini**
 
 | ID | Bab buku |
 |:---|:---------------|
@@ -162,11 +165,11 @@ Buku utama: Gast, Kurose & Ross, Stallings, Stevens.
 | `LC-042` | Kurose & Ross, Computer Networking Ch.4-5; Stallings, Network Security Essentials Ch.8 |
 | `LC-043` | Gast, 802.11 Wireless Networks (full); Stallings, Network Security Essentials Ch.8 |
 
-</details>
-
 ---
 
 ## Fase 3: Protokol Web & Keamanan Aplikasi (`LC-044-053`)
+
+Kategori: **Offensive (red team)**
 
 Buku utama: Kurose & Ross, Stuttard, Wong, Zalewski.
 
@@ -183,7 +186,7 @@ Buku utama: Kurose & Ross, Stuttard, Wong, Zalewski.
 | `LC-052` | [File Upload Vulnerabilities & Web Shells](web/Vulnerabilities/id/6.%20File%20Upload%20Vulnerabilities%20%26%20Web%20Shells.md) | Advanced | 3-4h | LC-047 |
 | `LC-053` | [Authentication, Session & JWT Attacks](web/Vulnerabilities/id/7.%20Authentication%2C%20Session%20%26%20JWT%20Attacks.md) | Advanced | 4-5h | LC-046, LC-054 |
 
-<details><summary>Detail peta buku untuk fase ini</summary>
+**Detail peta buku untuk fase ini**
 
 | ID | Bab buku |
 |:---|:---------------|
@@ -198,11 +201,11 @@ Buku utama: Kurose & Ross, Stuttard, Wong, Zalewski.
 | `LC-052` | Stuttard, WAHH Ch.10; Zalewski, The Tangled Web Ch.13 |
 | `LC-053` | Stuttard, WAHH Ch.6-7; Zalewski, The Tangled Web Ch.9-10; Wong, Real-World Cryptography Ch.8-10 |
 
-</details>
-
 ---
 
 ## Fase 4: Kriptografi & Keamanan Transport (`LC-054-057`)
+
+Kategori: **Fondasi**
 
 Buku utama: Stallings, Wong.
 
@@ -213,7 +216,7 @@ Buku utama: Stallings, Wong.
 | `LC-056` | [Hash Functions & Message Authentication](cryptography/id/3.%20Hash%20Functions%20%26%20Message%20Authentication.md) | Intermediate | 3-4h | LC-054 |
 | `LC-057` | [Public Key Infrastructure (PKI) & TLS 1.3](cryptography/id/4.%20Public%20Key%20Infrastructure%20%28PKI%29%20%26%20TLS%201.3.md) | Advanced | 5h | LC-055, LC-056 |
 
-<details><summary>Detail peta buku untuk fase ini</summary>
+**Detail peta buku untuk fase ini**
 
 | ID | Bab buku |
 |:---|:---------------|
@@ -222,11 +225,11 @@ Buku utama: Stallings, Wong.
 | `LC-056` | Wong, Real-World Cryptography Ch.2, 10-11; Stallings, Network Security Essentials Ch.3 |
 | `LC-057` | Wong, Real-World Cryptography Ch.12-15; Stallings, Network Security Essentials Ch.5-6 |
 
-</details>
-
 ---
 
 ## Fase 5: Ethical Hacking & Penetration Testing (`LC-058-061`)
+
+Kategori: **Offensive (red team)**
 
 Buku utama: Gray Hat Hacking, Gray Hat Hacking Part I, Kennedy et al., Kim, Weidman.
 
@@ -237,7 +240,7 @@ Buku utama: Gray Hat Hacking, Gray Hat Hacking Part I, Kennedy et al., Kim, Weid
 | `LC-060` | [Metasploit Framework & Exploitation](ethical-hacking/id/3.%20Metasploit%20Framework%20%26%20Exploitation.md) | Advanced | 5-6h | LC-059 |
 | `LC-061` | [Privilege Escalation & Post-Exploitation](ethical-hacking/id/4.%20Privilege%20Escalation%20%26%20Post-Exploitation.md) | Advanced | 5-6h | LC-021, LC-060 |
 
-<details><summary>Detail peta buku untuk fase ini</summary>
+**Detail peta buku untuk fase ini**
 
 | ID | Bab buku |
 |:---|:---------------|
@@ -246,11 +249,11 @@ Buku utama: Gray Hat Hacking, Gray Hat Hacking Part I, Kennedy et al., Kim, Weid
 | `LC-060` | Kennedy et al., Metasploit: The Penetration Tester's Guide; Kim, The Hacker Playbook 3 Ch.3-5 |
 | `LC-061` | Kim, The Hacker Playbook 3 Ch.6-8; Gray Hat Hacking, PrivEsc chapters; Weidman, Penetration Testing Ch.8-10 |
 
-</details>
-
 ---
 
 ## Fase 6: Binary Exploitation & Analisis Malware (`LC-062-065`)
+
+Kategori: **Eksploitasi & reverse engineering**
 
 Buku utama: Andriesse, Anley et al., Dang et al., Erickson, Gray Hat Hacking, King, Sikorski & Honig.
 
@@ -261,7 +264,7 @@ Buku utama: Andriesse, Anley et al., Dang et al., Erickson, Gray Hat Hacking, Ki
 | `LC-064` | [Dynamic Malware Analysis & Sandboxing](malware-analysis/id/2.%20Dynamic%20Malware%20Analysis%20%26%20Sandboxing.md) | Advanced | 5h | LC-063 |
 | `LC-065` | [x86 & x64 Assembly for Reverse Engineering](malware-analysis/id/3.%20x86%20%26%20x64%20Assembly%20for%20Reverse%20Engineering.md) | Advanced | 8-10h | LC-001 |
 
-<details><summary>Detail peta buku untuk fase ini</summary>
+**Detail peta buku untuk fase ini**
 
 | ID | Bab buku |
 |:---|:---------------|
@@ -270,11 +273,11 @@ Buku utama: Andriesse, Anley et al., Dang et al., Erickson, Gray Hat Hacking, Ki
 | `LC-064` | Sikorski & Honig, Practical Malware Analysis Part III-IV; Andriesse, Practical Binary Analysis Ch.5-7 |
 | `LC-065` | Dang et al., Practical Reverse Engineering; Sikorski & Honig, PMA Appendix; King, C Programming (memory model) |
 
-</details>
-
 ---
 
 ## Fase 7: Domain Keamanan Spesialisasi (`LC-066-070`)
+
+Kategori: **Domain spesialisasi**
 
 Buku utama: Akhgar et al., Chantzis et al., Elenkov, Gray, Gupta, Hadnagy, Mitnick, Seitz & Arnold, Smith, Steele et al., Stevens, van Woudenberg & O'Flynn.
 
@@ -286,7 +289,7 @@ Buku utama: Akhgar et al., Chantzis et al., Elenkov, Gray, Gupta, Hadnagy, Mitni
 | `LC-069` | [OSINT — Open Source Intelligence Framework & Techniques](osint/id/OSINT%20%E2%80%94%20Open%20Source%20Intelligence%20Framework%20%26%20Techniques.md) | Intermediate | 5h | LC-058 |
 | `LC-070` | [Hardware & IoT Security — Interfaces, Firmware & Automotive](hardware-iot/id/Hardware%20%26%20IoT%20Security%20%E2%80%94%20Interfaces%2C%20Firmware%20%26%20Automotive.md) | Advanced | 6-8h | LC-038 |
 
-<details><summary>Detail peta buku untuk fase ini</summary>
+**Detail peta buku untuk fase ini**
 
 | ID | Bab buku |
 |:---|:---------------|
@@ -296,11 +299,11 @@ Buku utama: Akhgar et al., Chantzis et al., Elenkov, Gray, Gupta, Hadnagy, Mitni
 | `LC-069` | Akhgar et al., Open Source Intelligence Methods and Tools |
 | `LC-070` | van Woudenberg & O'Flynn, The Hardware Hacking Handbook; Chantzis et al., Practical IoT Hacking; Smith, The Car Hacker's Handbook; Gupta, The IoT Hacker's Handbook |
 
-</details>
-
 ---
 
 ## Fase 8: Bonus & Produktivitas (`LC-071`)
+
+Kategori: **Bonus**
 
 Buku utama: Shotts.
 
@@ -308,17 +311,17 @@ Buku utama: Shotts.
 |:---|:------|:------|:------|:---------------|
 | `LC-071` | [Neovim — Tips & Tricks](linux/Tips%20%26%20Tricks/id/Neovim%20%E2%80%94%20Tips%20%26%20Tricks.md) | Intermediate | 8-10h | LC-016 |
 
-<details><summary>Detail peta buku untuk fase ini</summary>
+**Detail peta buku untuk fase ini**
 
 | ID | Bab buku |
 |:---|:---------------|
 | `LC-071` | Shotts, The Linux Command Line Ch.11-12, 24 |
 
-</details>
-
 ---
 
 ## Fase 9: Blue Team & Keamanan Defensif (`LC-072-075`)
+
+Kategori: **Defensive (blue team)**
 
 Buku utama: Bejtlich, Carrier, Kurose & Ross, Ligh et al., NIST SP 800-61r2 / 800-86, Sanders, Sikorski & Honig, Stallings.
 
@@ -329,7 +332,7 @@ Buku utama: Bejtlich, Carrier, Kurose & Ross, Ligh et al., NIST SP 800-61r2 / 80
 | `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/id/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) | Advanced | 6-8h | LC-063, LC-072, LC-073 |
 | `LC-075` | [Incident Response & Digital Forensics](blue-team/id/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) | Advanced | 7-9h | LC-006, LC-064, LC-072, LC-074 |
 
-<details><summary>Detail peta buku untuk fase ini</summary>
+**Detail peta buku untuk fase ini**
 
 | ID | Bab buku |
 |:---|:---------------|
@@ -337,7 +340,5 @@ Buku utama: Bejtlich, Carrier, Kurose & Ross, Ligh et al., NIST SP 800-61r2 / 80
 | `LC-073` | Bejtlich, The Practice of Network Security Monitoring; Sanders, Practical Packet Analysis; Kurose & Ross, Computer Networking Ch.1-3 |
 | `LC-074` | MITRE ATT&CK Enterprise Matrix; Sigma Specification; YARA Documentation; Sikorski & Honig, Practical Malware Analysis Ch.1-3 |
 | `LC-075` | NIST SP 800-61r2; NIST SP 800-86 (Forensic Techniques); Carrier, File System Forensic Analysis; Ligh et al., The Art of Memory Forensics |
-
-</details>
 
 ---

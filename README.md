@@ -6,7 +6,7 @@
 
 ![Lessons](https://img.shields.io/badge/lessons-75-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-beginner%20%E2%86%92%20advanced-orange) ![Phases](https://img.shields.io/badge/phases-10-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
-> **From zero to root** — a trilingual cybersecurity knowledge base and offensive security roadmap, covering Linux internals, networking, web application security, cryptography, reverse engineering, and related fields. This page is the English edition and links only to the English lesson files; open the Bahasa Indonesia or 日本語 edition above for the other two.
+> **From zero to root** — a trilingual cybersecurity knowledge base and career roadmap for both attack and defense, covering Linux internals, networking, web application security, cryptography, reverse engineering, and related fields. This page is the English edition and links only to the English lesson files; open the Bahasa Indonesia or 日本語 edition above for the other two.
 
 ---
 
@@ -15,16 +15,32 @@
 | Document | Purpose |
 |:---------|:--------|
 | [ROADMAP.md](ROADMAP.md) | Master learning path: 75 lessons (`LC-001` to `LC-075`), 10 phases, prerequisites |
+| [CAREERS.md](CAREERS.md) | Career paths: 13 cyber security roles, the lessons for each, study hours, and what is not covered yet |
 | [BOOKS.md](BOOKS.md) | Local PDF catalog at `~/Documents/Books/`, mapped to each lesson |
 | [curriculum.json](curriculum.json) | Machine-readable curriculum manifest (IDs, paths, book chapters) |
 
-Recommended entry: open [ROADMAP.md](ROADMAP.md), start at **LC-001**, read the linked book chapters from [BOOKS.md](BOOKS.md), then open the lesson file (each has a `Curriculum ID` block at the top).
+Recommended entry: pick a role in [CAREERS.md](CAREERS.md) first. Not sure yet? Open [ROADMAP.md](ROADMAP.md) and start at **LC-001**, read the linked book chapters from [BOOKS.md](BOOKS.md), then open the lesson file (each has a `Curriculum ID` block at the top).
+
+---
+
+## Categories
+
+Every lesson belongs to one phase, and every phase belongs to one category. Pick a career in [CAREERS.md](CAREERS.md) to see which categories matter for you.
+
+| Category | Phases | What it covers |
+|:---|:---|:---|
+| Foundation | 0, 1, 2, 4 | Computers, Linux, networking, cryptography. Needed by every path. |
+| Offensive (red team) | 3, 5 | Web attacks, pentest methodology, scanning, exploitation, privilege escalation. Lab and authorized testing only. |
+| Exploitation & reverse engineering | 6 | Memory bugs, shellcode, assembly, static and dynamic malware analysis. |
+| Defensive (blue team) | 9 | SOC and logs, network monitoring, threat hunting, incident response and forensics. |
+| Specialized domains | 7 | Android, security tooling in Python and Go, social engineering, OSINT, hardware and IoT. |
+| Bonus | 8 | Editor and productivity skills. |
 
 ---
 
 ## About this repository
 
-This repository is a self-study knowledge base covering offensive security, Linux internals, network protocol analysis, web application penetration testing, cryptography, reverse engineering, malware analysis, binary exploitation, security programming, social engineering, OSINT, mobile security, and hardware/IoT security.
+This repository is a self-study knowledge base covering offensive security, Linux internals, network protocol analysis, web application penetration testing, cryptography, reverse engineering, malware analysis, binary exploitation, security programming, social engineering, OSINT, mobile security, hardware/IoT security, and blue team defense (SOC, network monitoring, threat hunting, incident response and forensics).
 
 Every lesson exists as three independent files, one each in Bahasa Indonesia, English, and Japanese, kept in `id/`, `en/`, and `ja/` subfolders next to each topic. Each includes comparison tables, command walkthroughs, security notes, cheatsheets, and references to technical books held locally under `~/Documents/Books/`.
 
@@ -35,7 +51,7 @@ Every lesson exists as three independent files, one each in Bahasa Indonesia, En
 ```
 Zero2Root/
   basics/               # Computing fundamentals, Git, OS filesystems, PowerShell/CMD
-  linux/                # Shell, workflow, system administration, networking, hardening (HTB Academy Module 18 structure)
+  linux/                # Shell, workflow, system administration, networking, hardening
   networking/           # OSI model, TCP/IP, DNS, ARP, subnetting, wireless security
   web/                  # HTTP/HTTPS, SQLi, XSS, CSRF, SSRF, LFI/RFI, uploads, JWT/session attacks
   cryptography/         # Symmetric/asymmetric crypto, hashing, PKI, TLS 1.3
@@ -72,7 +88,7 @@ Computing fundamentals, Git, OS filesystems, PowerShell/CMD.
 
 ## 2. Linux Fundamentals & Security (`linux/`)
 
-Shell, workflow, system administration, networking, hardening (HTB Academy Module 18 structure).
+Shell, workflow, system administration, networking, hardening.
 
 | LC-ID | Topic |
 |:------|:------|
@@ -252,6 +268,21 @@ SOC and log analysis, network monitoring, threat hunting, incident response and 
 | `LC-073` | [Network Security Monitoring (Wireshark, Zeek, Suricata)](blue-team/en/2.%20Network%20Security%20Monitoring%20%28Wireshark%2C%20Zeek%2C%20Suricata%29.md) |
 | `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/en/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) |
 | `LC-075` | [Incident Response & Digital Forensics](blue-team/en/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) |
+
+---
+
+## Coverage status
+
+Zero2Root does not cover everything yet. These topics are missing today, so study them from other sources if your career needs them. Each career in [CAREERS.md](CAREERS.md) lists its own gaps.
+
+| Topic | Status | Most affected careers |
+|:---|:---|:---|
+| Active Directory (attacks, defense, Windows event logs) | planned | Pentester, Red Team, SOC Analyst |
+| Cloud security (AWS, Azure, GCP, Kubernetes) | planned | Cloud Security Engineer |
+| DevSecOps and secure SDLC (CI scanning, supply chain) | planned | AppSec & DevSecOps Engineer |
+| AI and LLM security | planned | AppSec, Red Team |
+| GRC (risk, ISO 27001, NIST CSF, data protection law) | planned | GRC Analyst |
+| API security, heap exploitation, fuzzing, iOS | not planned yet | Web pentester, Vulnerability Researcher, Mobile |
 
 ---
 

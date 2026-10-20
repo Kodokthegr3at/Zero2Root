@@ -5,52 +5,62 @@
     {
       "id": 0,
       "name": "Foundations & Computing Basics",
-      "lessons": "LC-001-007"
+      "lessons": "LC-001-007",
+      "category": "foundation"
     },
     {
       "id": 1,
-      "name": "Linux Fundamentals & Administration (HTB Academy)",
-      "lessons": "LC-008-037"
+      "name": "Linux Fundamentals & Administration",
+      "lessons": "LC-008-037",
+      "category": "foundation"
     },
     {
       "id": 2,
       "name": "Computer Networking & Protocols",
-      "lessons": "LC-038-043"
+      "lessons": "LC-038-043",
+      "category": "foundation"
     },
     {
       "id": 3,
       "name": "Web Protocols & Application Security",
-      "lessons": "LC-044-053"
+      "lessons": "LC-044-053",
+      "category": "offensive"
     },
     {
       "id": 4,
       "name": "Cryptography & Transport Security",
-      "lessons": "LC-054-057"
+      "lessons": "LC-054-057",
+      "category": "foundation"
     },
     {
       "id": 5,
       "name": "Ethical Hacking & Penetration Testing",
-      "lessons": "LC-058-061"
+      "lessons": "LC-058-061",
+      "category": "offensive"
     },
     {
       "id": 6,
       "name": "Binary Exploitation & Malware Analysis",
-      "lessons": "LC-062-065"
+      "lessons": "LC-062-065",
+      "category": "reverse-engineering"
     },
     {
       "id": 7,
       "name": "Specialized Security Domains",
-      "lessons": "LC-066-070"
+      "lessons": "LC-066-070",
+      "category": "specialized"
     },
     {
       "id": 8,
       "name": "Bonus & Productivity",
-      "lessons": "LC-071"
+      "lessons": "LC-071",
+      "category": "bonus"
     },
     {
       "id": 9,
       "name": "Blue Team & Defensive Security",
-      "lessons": "LC-072-075"
+      "lessons": "LC-072-075",
+      "category": "defensive"
     }
   ],
   "lessons": [
@@ -1111,6 +1121,370 @@
       ],
       "dir": "blue-team",
       "file": "4. Incident Response & Digital Forensics.md"
+    }
+  ],
+  "core_foundation": [
+    "LC-001",
+    "LC-002",
+    "LC-005",
+    "LC-006",
+    "LC-008",
+    "LC-009",
+    "LC-010",
+    "LC-011",
+    "LC-012",
+    "LC-013",
+    "LC-014",
+    "LC-015",
+    "LC-016",
+    "LC-017",
+    "LC-018",
+    "LC-019",
+    "LC-020",
+    "LC-021",
+    "LC-022",
+    "LC-024",
+    "LC-026",
+    "LC-031",
+    "LC-032",
+    "LC-035",
+    "LC-038",
+    "LC-039",
+    "LC-040",
+    "LC-041",
+    "LC-044",
+    "LC-045"
+  ],
+  "careers": [
+    {
+      "id": "soc-analyst",
+      "name": "SOC Analyst",
+      "entry_level": true,
+      "coverage": "good",
+      "lessons": [
+        "LC-003",
+        "LC-004",
+        "LC-033",
+        "LC-034",
+        "LC-042",
+        "LC-046",
+        "LC-047",
+        "LC-048",
+        "LC-051",
+        "LC-053",
+        "LC-056",
+        "LC-068",
+        "LC-072",
+        "LC-073",
+        "LC-074",
+        "LC-075"
+      ],
+      "not_covered_yet": [
+        "Active Directory and Windows event logs in depth",
+        "Hands-on SIEM labs with a specific product",
+        "Phishing email analysis as its own lesson",
+        "Cloud logs (AWS CloudTrail, Microsoft 365)"
+      ]
+    },
+    {
+      "id": "dfir",
+      "name": "Incident Responder & Forensic Analyst (DFIR)",
+      "entry_level": false,
+      "coverage": "good",
+      "lessons": [
+        "LC-003",
+        "LC-007",
+        "LC-028",
+        "LC-029",
+        "LC-033",
+        "LC-063",
+        "LC-064",
+        "LC-072",
+        "LC-073",
+        "LC-074",
+        "LC-075"
+      ],
+      "not_covered_yet": [
+        "Windows registry and artifact forensics in depth",
+        "Mobile device forensics",
+        "Cloud incident response"
+      ]
+    },
+    {
+      "id": "detection-engineer",
+      "name": "Threat Hunter & Detection Engineer",
+      "entry_level": false,
+      "coverage": "good",
+      "lessons": [
+        "LC-003",
+        "LC-060",
+        "LC-061",
+        "LC-063",
+        "LC-064",
+        "LC-067",
+        "LC-072",
+        "LC-073",
+        "LC-074"
+      ],
+      "not_covered_yet": [
+        "Detection-as-code and CI pipelines for rules",
+        "Data engineering for log pipelines"
+      ]
+    },
+    {
+      "id": "pentester",
+      "name": "Penetration Tester",
+      "entry_level": false,
+      "coverage": "partial",
+      "lessons": [
+        "LC-003",
+        "LC-004",
+        "LC-025",
+        "LC-027",
+        "LC-030",
+        "LC-033",
+        "LC-034",
+        "LC-042",
+        "LC-043",
+        "LC-046",
+        "LC-047",
+        "LC-048",
+        "LC-049",
+        "LC-050",
+        "LC-051",
+        "LC-052",
+        "LC-053",
+        "LC-056",
+        "LC-057",
+        "LC-058",
+        "LC-059",
+        "LC-060",
+        "LC-061",
+        "LC-067",
+        "LC-069"
+      ],
+      "not_covered_yet": [
+        "Active Directory attacks and defenses (most internal tests involve AD)",
+        "Writing a pentest report",
+        "Cloud penetration testing"
+      ]
+    },
+    {
+      "id": "web-appsec",
+      "name": "Web Application Pentester & Bug Hunter",
+      "entry_level": false,
+      "coverage": "good",
+      "lessons": [
+        "LC-027",
+        "LC-046",
+        "LC-047",
+        "LC-048",
+        "LC-049",
+        "LC-050",
+        "LC-051",
+        "LC-052",
+        "LC-053",
+        "LC-055",
+        "LC-056",
+        "LC-057",
+        "LC-058",
+        "LC-067",
+        "LC-069"
+      ],
+      "not_covered_yet": [
+        "API security (REST and GraphQL) as its own lesson",
+        "OAuth and SSO flaws in depth",
+        "Insecure deserialization"
+      ]
+    },
+    {
+      "id": "red-team",
+      "name": "Red Team Operator",
+      "entry_level": false,
+      "coverage": "partial",
+      "lessons": [
+        "LC-003",
+        "LC-004",
+        "LC-030",
+        "LC-033",
+        "LC-046",
+        "LC-047",
+        "LC-048",
+        "LC-049",
+        "LC-050",
+        "LC-051",
+        "LC-052",
+        "LC-053",
+        "LC-058",
+        "LC-059",
+        "LC-060",
+        "LC-061",
+        "LC-062",
+        "LC-065",
+        "LC-067",
+        "LC-068",
+        "LC-069",
+        "LC-072",
+        "LC-074"
+      ],
+      "not_covered_yet": [
+        "Active Directory attack paths",
+        "Command-and-control (C2) infrastructure and OPSEC",
+        "How endpoint detection works and why attackers try to avoid it"
+      ]
+    },
+    {
+      "id": "malware-analyst",
+      "name": "Malware Analyst & Reverse Engineer",
+      "entry_level": false,
+      "coverage": "good",
+      "lessons": [
+        "LC-003",
+        "LC-062",
+        "LC-063",
+        "LC-064",
+        "LC-065",
+        "LC-067",
+        "LC-074"
+      ],
+      "not_covered_yet": [
+        "Windows internals in depth",
+        "Unpacking and anti-analysis tricks",
+        ".NET and Android malware"
+      ]
+    },
+    {
+      "id": "vuln-researcher",
+      "name": "Vulnerability Researcher & Exploit Developer",
+      "entry_level": false,
+      "coverage": "minimal",
+      "lessons": [
+        "LC-062",
+        "LC-063",
+        "LC-065",
+        "LC-067"
+      ],
+      "not_covered_yet": [
+        "Heap exploitation",
+        "Fuzzing",
+        "Kernel and browser exploitation",
+        "Modern mitigations in depth (CFG, CET, sandboxing)"
+      ]
+    },
+    {
+      "id": "appsec-devsecops",
+      "name": "Application Security & DevSecOps Engineer",
+      "entry_level": false,
+      "coverage": "partial",
+      "lessons": [
+        "LC-027",
+        "LC-030",
+        "LC-046",
+        "LC-047",
+        "LC-048",
+        "LC-049",
+        "LC-050",
+        "LC-051",
+        "LC-052",
+        "LC-053",
+        "LC-054",
+        "LC-055",
+        "LC-056",
+        "LC-057",
+        "LC-067"
+      ],
+      "not_covered_yet": [
+        "Secure SDLC and threat modeling",
+        "SAST, DAST, and dependency scanning in CI",
+        "Software supply chain security",
+        "Secrets management"
+      ]
+    },
+    {
+      "id": "cloud-security",
+      "name": "Cloud Security Engineer",
+      "entry_level": false,
+      "coverage": "minimal",
+      "lessons": [
+        "LC-027",
+        "LC-030",
+        "LC-033",
+        "LC-034",
+        "LC-050",
+        "LC-053",
+        "LC-057",
+        "LC-072"
+      ],
+      "not_covered_yet": [
+        "Cloud IAM (AWS, Azure, GCP)",
+        "Kubernetes security",
+        "Infrastructure as code and its misconfigurations",
+        "Cloud logging and detection"
+      ]
+    },
+    {
+      "id": "threat-intel",
+      "name": "Threat Intelligence & OSINT Analyst",
+      "entry_level": false,
+      "coverage": "partial",
+      "lessons": [
+        "LC-063",
+        "LC-068",
+        "LC-069",
+        "LC-072",
+        "LC-074"
+      ],
+      "not_covered_yet": [
+        "Intelligence frameworks (Diamond Model, kill chain) in depth",
+        "Sharing formats (STIX/TAXII, MISP)",
+        "Writing intelligence reports"
+      ]
+    },
+    {
+      "id": "mobile-iot",
+      "name": "Mobile & IoT Security Specialist",
+      "entry_level": false,
+      "coverage": "partial",
+      "lessons": [
+        "LC-043",
+        "LC-047",
+        "LC-048",
+        "LC-049",
+        "LC-050",
+        "LC-051",
+        "LC-052",
+        "LC-053",
+        "LC-054",
+        "LC-057",
+        "LC-062",
+        "LC-065",
+        "LC-066",
+        "LC-070"
+      ],
+      "not_covered_yet": [
+        "iOS security",
+        "Bluetooth Low Energy",
+        "Mobile app traffic interception in depth"
+      ]
+    },
+    {
+      "id": "grc",
+      "name": "GRC & Security Compliance Analyst",
+      "entry_level": true,
+      "coverage": "minimal",
+      "lessons": [
+        "LC-033",
+        "LC-057",
+        "LC-068",
+        "LC-072",
+        "LC-075"
+      ],
+      "not_covered_yet": [
+        "Risk assessment methods",
+        "ISO 27001, NIST CSF, and other frameworks",
+        "Indonesian and Japanese data protection law (UU PDP, APPI)",
+        "Audit and evidence collection"
+      ]
     }
   ]
 }

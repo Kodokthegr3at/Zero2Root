@@ -6,7 +6,7 @@
 
 ![Lessons](https://img.shields.io/badge/lessons-75-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-beginner%20%E2%86%92%20advanced-orange) ![Phases](https://img.shields.io/badge/phases-10-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
-> **ゼロからroot(管理者権限)まで** — Linux内部構造、ネットワーキング、Webアプリケーションセキュリティ、暗号技術、リバースエンジニアリングなどを扱う、3言語対応のサイバーセキュリティ知識ベース兼攻撃的セキュリティのロードマップ。このページは日本語版であり、日本語のレッスンファイルにのみリンクしている。他の2言語は上のEnglishまたはBahasa Indonesiaを開くこと。
+> **ゼロからroot(管理者権限)まで** — Linux内部構造、ネットワーキング、Webアプリケーションセキュリティ、暗号技術、リバースエンジニアリングなどを扱う、3言語対応のサイバーセキュリティ知識ベース兼キャリアロードマップで、攻撃と防御の両方を含む。このページは日本語版であり、日本語のレッスンファイルにのみリンクしている。他の2言語は上のEnglishまたはBahasa Indonesiaを開くこと。
 
 ---
 
@@ -15,16 +15,32 @@
 | ドキュメント | 目的 |
 |:---------|:--------|
 | [ROADMAP.ja.md](ROADMAP.ja.md) | 主要な学習パス: 75レッスン（`LC-001`から`LC-075`）、10フェーズ、前提条件 |
+| [CAREERS.ja.md](CAREERS.ja.md) | キャリアパス: サイバーセキュリティの13職種、それぞれのレッスン、学習時間、まだ扱っていない内容 |
 | [BOOKS.ja.md](BOOKS.ja.md) | `~/Documents/Books/`にあるローカルPDFカタログ、各レッスンに対応 |
 | [curriculum.json](curriculum.json) | 機械可読なカリキュラムマニフェスト（ID、パス、書籍の章） |
 
-おすすめの始め方: [ROADMAP.ja.md](ROADMAP.ja.md)を開き、**LC-001**から始め、[BOOKS.ja.md](BOOKS.ja.md)でリンクされた書籍の章を読んでから、レッスンファイルを開く（各ファイルの冒頭に`Curriculum ID`ブロックがある）。
+おすすめの始め方: まず[CAREERS.ja.md](CAREERS.ja.md)で職種を選ぶ。決まっていなければ[ROADMAP.ja.md](ROADMAP.ja.md)を開き、**LC-001**から始め、[BOOKS.ja.md](BOOKS.ja.md)でリンクされた書籍の章を読んでから、レッスンファイルを開く（各ファイルの冒頭に`Curriculum ID`ブロックがある）。
+
+---
+
+## カテゴリ
+
+各レッスンは一つのフェーズに、各フェーズは一つのカテゴリに属する。[CAREERS.ja.md](CAREERS.ja.md)で職種を選ぶと、自分に必要なカテゴリが分かる。
+
+| カテゴリ | フェーズ | 内容 |
+|:---|:---|:---|
+| 基礎 | 0, 1, 2, 4 | コンピュータ、Linux、ネットワーク、暗号。どの進路でも必要。 |
+| 攻撃側 (レッドチーム) | 3, 5 | Web攻撃、ペンテスト手法、スキャン、エクスプロイト、権限昇格。ラボと許可された検証でのみ使う。 |
+| エクスプロイトとリバースエンジニアリング | 6 | メモリのバグ、シェルコード、アセンブリ、マルウェアの静的・動的解析。 |
+| 防御側 (ブルーチーム) | 9 | SOCとログ、ネットワーク監視、スレットハンティング、インシデント対応とフォレンジック。 |
+| 専門分野 | 7 | Android、PythonとGoによるセキュリティツール開発、ソーシャルエンジニアリング、OSINT、ハードウェアとIoT。 |
+| ボーナス | 8 | エディタと生産性のスキル。 |
 
 ---
 
 ## このリポジトリについて
 
-このリポジトリは、攻撃的セキュリティ、Linux内部構造、ネットワークプロトコル分析、Webアプリケーションのペネトレーションテスト、暗号技術、リバースエンジニアリング、マルウェア分析、バイナリエクスプロイテーション、セキュリティプログラミング、ソーシャルエンジニアリング、OSINT、モバイルセキュリティ、ハードウェア/IoTセキュリティを扱う自習用の知識ベースだ。
+このリポジトリは、攻撃的セキュリティ、Linux内部構造、ネットワークプロトコル分析、Webアプリケーションのペネトレーションテスト、暗号技術、リバースエンジニアリング、マルウェア分析、バイナリエクスプロイテーション、セキュリティプログラミング、ソーシャルエンジニアリング、OSINT、モバイルセキュリティ、ハードウェア/IoTセキュリティ、ブルーチームの防御（SOC、ネットワーク監視、スレットハンティング、インシデント対応とフォレンジック）を扱う自習用の知識ベースだ。
 
 各レッスンは、インドネシア語、英語、日本語それぞれで独立した3つのファイルとして存在し、各トピックの`id/`、`en/`、`ja/`サブフォルダに保存されている。それぞれに比較表、コマンドの実例、セキュリティノート、チートシート、そして`~/Documents/Books/`にローカル保存された技術書への参照が含まれる。
 
@@ -35,7 +51,7 @@
 ```
 Zero2Root/
   basics/               # コンピューティングの基礎、Git、OSファイルシステム、PowerShell/CMD
-  linux/                # シェル、ワークフロー、システム管理、ネットワーキング、ハードニング（HTB Academy Module 18の構成に準拠）
+  linux/                # シェル、ワークフロー、システム管理、ネットワーキング、ハードニング
   networking/           # OSIモデル、TCP/IP、DNS、ARP、サブネッティング、無線セキュリティ
   web/                  # HTTP/HTTPS、SQLi、XSS、CSRF、SSRF、LFI/RFI、アップロード、JWT/セッション攻撃
   cryptography/         # 対称鍵/公開鍵暗号、ハッシュ、PKI、TLS 1.3
@@ -72,7 +88,7 @@ Zero2Root/
 
 ## 2. Linuxの基礎とセキュリティ (`linux/`)
 
-シェル、ワークフロー、システム管理、ネットワーキング、ハードニング（HTB Academy Module 18の構成に準拠）.
+シェル、ワークフロー、システム管理、ネットワーキング、ハードニング.
 
 | LC-ID | トピック |
 |:------|:------|
@@ -252,6 +268,21 @@ SOCとログ分析、ネットワーク監視、スレットハンティング�
 | `LC-073` | [Network Security Monitoring (Wireshark, Zeek, Suricata)](blue-team/ja/2.%20Network%20Security%20Monitoring%20%28Wireshark%2C%20Zeek%2C%20Suricata%29.md) |
 | `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/ja/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) |
 | `LC-075` | [Incident Response & Digital Forensics](blue-team/ja/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) |
+
+---
+
+## カバー状況
+
+Zero2Rootはまだすべてを扱っていない。以下のトピックは現在ないので、自分の進路に必要ならほかの教材で学んでほしい。[CAREERS.ja.md](CAREERS.ja.md)の各職種にも、不足している内容を記載している。
+
+| トピック | 状況 | 影響の大きい職種 |
+|:---|:---|:---|
+| Active Directory (攻撃、防御、Windowsイベントログ) | 予定あり | ペンテスター、レッドチーム、SOCアナリスト |
+| クラウドセキュリティ (AWS、Azure、GCP、Kubernetes) | 予定あり | クラウドセキュリティエンジニア |
+| DevSecOpsとセキュアSDLC (CIでのスキャン、サプライチェーン) | 予定あり | AppSec・DevSecOpsエンジニア |
+| AIとLLMのセキュリティ | 予定あり | AppSec、レッドチーム |
+| GRC (リスク、ISO 27001、NIST CSF、個人情報保護法) | 予定あり | GRCアナリスト |
+| APIセキュリティ、ヒープのエクスプロイト、ファジング、iOS | 未定 | Webペンテスター、脆弱性リサーチャー、モバイル |
 
 ---
 

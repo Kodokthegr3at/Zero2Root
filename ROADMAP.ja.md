@@ -11,6 +11,7 @@
 
 ## このロードマップの使い方
 
+0. 進む方向がまだ決まっていなければ、まず[CAREERS.ja.md](CAREERS.ja.md)で職種を選ぶ。どのレッスンをどの順で受ければよいかが分かる。
 1. すでにあるフェーズを習得済みでない限り、`LC-001`から`LC-075`の順に進める。
 2. 各レッスンファイルの冒頭にCurriculum IDブロックがある（`LC-CURRICULUM`で検索）。
 3. 書籍対応の行を読み、[BOOKS.ja.md](BOOKS.ja.md)から参照されている章を開く。
@@ -34,6 +35,8 @@ flowchart TD
 
 ## フェーズ 0: 基礎とコンピューティングの基本 (`LC-001-007`)
 
+カテゴリ: **基礎**
+
 主要な書籍: Friedl, Gray Hat Hacking, K. N. King, Shotts, Sweigart, Ward.
 
 | ID | トピック | レベル | 時間 | 前提 |
@@ -46,7 +49,7 @@ flowchart TD
 | `LC-006` | [Windows File System](basics/OperatingSystem/ja/Windows%20File%20System.md) | Beginner | 5-6h | LC-001 |
 | `LC-007` | [macOS File System](basics/OperatingSystem/ja/macOS%20File%20System.md) | Beginner | 4-5h | LC-001 |
 
-<details><summary>このフェーズの書籍対応の詳細</summary>
+**このフェーズの書籍対応の詳細**
 
 | ID | 書籍の章 |
 |:---|:---------------|
@@ -58,11 +61,11 @@ flowchart TD
 | `LC-006` | Gray Hat Hacking, NTFS, Registry, ADS |
 | `LC-007` | Ward, How Linux Works (Unix comparison); Apple platform guides |
 
-</details>
-
 ---
 
-## フェーズ 1: Linuxの基礎と管理（HTB Academy） (`LC-008-037`)
+## フェーズ 1: Linuxの基礎と管理 (`LC-008-037`)
+
+カテゴリ: **基礎**
 
 主要な書籍: Benvenuti, Friedl, Kurose & Ross, NIST SP 800-190 (container security), Oracle Solaris 11 Admin Docs, Shotts, Stallings, Stevens, Stuttard, Ward.
 
@@ -99,7 +102,7 @@ flowchart TD
 | `LC-036` | [Solaris — Linux Distributions vs Solaris](linux/ja/29.%20Solaris%20%E2%80%94%20Linux%20Distributions%20vs%20Solaris.md) | Intermediate | 2-3h | LC-008, LC-024 |
 | `LC-037` | [Shortcuts — Bash Tips & Tricks](linux/ja/30.%20Shortcuts%20%E2%80%94%20Bash%20Tips%20%26%20Tricks.md) | Intermediate | 6-8h | LC-010-LC-020 |
 
-<details><summary>このフェーズの書籍対応の詳細</summary>
+**このフェーズの書籍対応の詳細**
 
 | ID | 書籍の章 |
 |:---|:---------------|
@@ -134,11 +137,11 @@ flowchart TD
 | `LC-036` | Ward, How Linux Works (Unix lineage); Oracle Solaris 11 Admin Docs |
 | `LC-037` | Shotts, The Linux Command Line (full reference); Friedl, Mastering Regular Expressions |
 
-</details>
-
 ---
 
 ## フェーズ 2: コンピュータネットワークとプロトコル (`LC-038-043`)
+
+カテゴリ: **基礎**
 
 主要な書籍: Gast, Kurose & Ross, Stallings, Stevens.
 
@@ -151,7 +154,7 @@ flowchart TD
 | `LC-042` | [ARP & Local Network Attacks](networking/ja/ARP%20%26%20Local%20Network%20Attacks.md) | Advanced | 4h | LC-039, LC-040 |
 | `LC-043` | [Wireless 802.11 Security & Attacks](networking/ja/Wireless%20802.11%20Security%20%26%20Attacks.md) | Advanced | 5h | LC-038 |
 
-<details><summary>このフェーズの書籍対応の詳細</summary>
+**このフェーズの書籍対応の詳細**
 
 | ID | 書籍の章 |
 |:---|:---------------|
@@ -162,11 +165,11 @@ flowchart TD
 | `LC-042` | Kurose & Ross, Computer Networking Ch.4-5; Stallings, Network Security Essentials Ch.8 |
 | `LC-043` | Gast, 802.11 Wireless Networks (full); Stallings, Network Security Essentials Ch.8 |
 
-</details>
-
 ---
 
 ## フェーズ 3: Webプロトコルとアプリケーションセキュリティ (`LC-044-053`)
+
+カテゴリ: **攻撃側 (レッドチーム)**
 
 主要な書籍: Kurose & Ross, Stuttard, Wong, Zalewski.
 
@@ -183,7 +186,7 @@ flowchart TD
 | `LC-052` | [File Upload Vulnerabilities & Web Shells](web/Vulnerabilities/ja/6.%20File%20Upload%20Vulnerabilities%20%26%20Web%20Shells.md) | Advanced | 3-4h | LC-047 |
 | `LC-053` | [Authentication, Session & JWT Attacks](web/Vulnerabilities/ja/7.%20Authentication%2C%20Session%20%26%20JWT%20Attacks.md) | Advanced | 4-5h | LC-046, LC-054 |
 
-<details><summary>このフェーズの書籍対応の詳細</summary>
+**このフェーズの書籍対応の詳細**
 
 | ID | 書籍の章 |
 |:---|:---------------|
@@ -198,11 +201,11 @@ flowchart TD
 | `LC-052` | Stuttard, WAHH Ch.10; Zalewski, The Tangled Web Ch.13 |
 | `LC-053` | Stuttard, WAHH Ch.6-7; Zalewski, The Tangled Web Ch.9-10; Wong, Real-World Cryptography Ch.8-10 |
 
-</details>
-
 ---
 
 ## フェーズ 4: 暗号技術とトランスポートセキュリティ (`LC-054-057`)
+
+カテゴリ: **基礎**
 
 主要な書籍: Stallings, Wong.
 
@@ -213,7 +216,7 @@ flowchart TD
 | `LC-056` | [Hash Functions & Message Authentication](cryptography/ja/3.%20Hash%20Functions%20%26%20Message%20Authentication.md) | Intermediate | 3-4h | LC-054 |
 | `LC-057` | [Public Key Infrastructure (PKI) & TLS 1.3](cryptography/ja/4.%20Public%20Key%20Infrastructure%20%28PKI%29%20%26%20TLS%201.3.md) | Advanced | 5h | LC-055, LC-056 |
 
-<details><summary>このフェーズの書籍対応の詳細</summary>
+**このフェーズの書籍対応の詳細**
 
 | ID | 書籍の章 |
 |:---|:---------------|
@@ -222,11 +225,11 @@ flowchart TD
 | `LC-056` | Wong, Real-World Cryptography Ch.2, 10-11; Stallings, Network Security Essentials Ch.3 |
 | `LC-057` | Wong, Real-World Cryptography Ch.12-15; Stallings, Network Security Essentials Ch.5-6 |
 
-</details>
-
 ---
 
 ## フェーズ 5: 倫理的ハッキングとペネトレーションテスト (`LC-058-061`)
+
+カテゴリ: **攻撃側 (レッドチーム)**
 
 主要な書籍: Gray Hat Hacking, Gray Hat Hacking Part I, Kennedy et al., Kim, Weidman.
 
@@ -237,7 +240,7 @@ flowchart TD
 | `LC-060` | [Metasploit Framework & Exploitation](ethical-hacking/ja/3.%20Metasploit%20Framework%20%26%20Exploitation.md) | Advanced | 5-6h | LC-059 |
 | `LC-061` | [Privilege Escalation & Post-Exploitation](ethical-hacking/ja/4.%20Privilege%20Escalation%20%26%20Post-Exploitation.md) | Advanced | 5-6h | LC-021, LC-060 |
 
-<details><summary>このフェーズの書籍対応の詳細</summary>
+**このフェーズの書籍対応の詳細**
 
 | ID | 書籍の章 |
 |:---|:---------------|
@@ -246,11 +249,11 @@ flowchart TD
 | `LC-060` | Kennedy et al., Metasploit: The Penetration Tester's Guide; Kim, The Hacker Playbook 3 Ch.3-5 |
 | `LC-061` | Kim, The Hacker Playbook 3 Ch.6-8; Gray Hat Hacking, PrivEsc chapters; Weidman, Penetration Testing Ch.8-10 |
 
-</details>
-
 ---
 
 ## フェーズ 6: バイナリエクスプロイテーションとマルウェア分析 (`LC-062-065`)
+
+カテゴリ: **エクスプロイトとリバースエンジニアリング**
 
 主要な書籍: Andriesse, Anley et al., Dang et al., Erickson, Gray Hat Hacking, King, Sikorski & Honig.
 
@@ -261,7 +264,7 @@ flowchart TD
 | `LC-064` | [Dynamic Malware Analysis & Sandboxing](malware-analysis/ja/2.%20Dynamic%20Malware%20Analysis%20%26%20Sandboxing.md) | Advanced | 5h | LC-063 |
 | `LC-065` | [x86 & x64 Assembly for Reverse Engineering](malware-analysis/ja/3.%20x86%20%26%20x64%20Assembly%20for%20Reverse%20Engineering.md) | Advanced | 8-10h | LC-001 |
 
-<details><summary>このフェーズの書籍対応の詳細</summary>
+**このフェーズの書籍対応の詳細**
 
 | ID | 書籍の章 |
 |:---|:---------------|
@@ -270,11 +273,11 @@ flowchart TD
 | `LC-064` | Sikorski & Honig, Practical Malware Analysis Part III-IV; Andriesse, Practical Binary Analysis Ch.5-7 |
 | `LC-065` | Dang et al., Practical Reverse Engineering; Sikorski & Honig, PMA Appendix; King, C Programming (memory model) |
 
-</details>
-
 ---
 
 ## フェーズ 7: 専門セキュリティ領域 (`LC-066-070`)
+
+カテゴリ: **専門分野**
 
 主要な書籍: Akhgar et al., Chantzis et al., Elenkov, Gray, Gupta, Hadnagy, Mitnick, Seitz & Arnold, Smith, Steele et al., Stevens, van Woudenberg & O'Flynn.
 
@@ -286,7 +289,7 @@ flowchart TD
 | `LC-069` | [OSINT — Open Source Intelligence Framework & Techniques](osint/ja/OSINT%20%E2%80%94%20Open%20Source%20Intelligence%20Framework%20%26%20Techniques.md) | Intermediate | 5h | LC-058 |
 | `LC-070` | [Hardware & IoT Security — Interfaces, Firmware & Automotive](hardware-iot/ja/Hardware%20%26%20IoT%20Security%20%E2%80%94%20Interfaces%2C%20Firmware%20%26%20Automotive.md) | Advanced | 6-8h | LC-038 |
 
-<details><summary>このフェーズの書籍対応の詳細</summary>
+**このフェーズの書籍対応の詳細**
 
 | ID | 書籍の章 |
 |:---|:---------------|
@@ -296,11 +299,11 @@ flowchart TD
 | `LC-069` | Akhgar et al., Open Source Intelligence Methods and Tools |
 | `LC-070` | van Woudenberg & O'Flynn, The Hardware Hacking Handbook; Chantzis et al., Practical IoT Hacking; Smith, The Car Hacker's Handbook; Gupta, The IoT Hacker's Handbook |
 
-</details>
-
 ---
 
 ## フェーズ 8: ボーナスと生産性 (`LC-071`)
+
+カテゴリ: **ボーナス**
 
 主要な書籍: Shotts.
 
@@ -308,17 +311,17 @@ flowchart TD
 |:---|:------|:------|:------|:---------------|
 | `LC-071` | [Neovim — Tips & Tricks](linux/Tips%20%26%20Tricks/ja/Neovim%20%E2%80%94%20Tips%20%26%20Tricks.md) | Intermediate | 8-10h | LC-016 |
 
-<details><summary>このフェーズの書籍対応の詳細</summary>
+**このフェーズの書籍対応の詳細**
 
 | ID | 書籍の章 |
 |:---|:---------------|
 | `LC-071` | Shotts, The Linux Command Line Ch.11-12, 24 |
 
-</details>
-
 ---
 
 ## フェーズ 9: ブルーチームと防御セキュリティ (`LC-072-075`)
+
+カテゴリ: **防御側 (ブルーチーム)**
 
 主要な書籍: Bejtlich, Carrier, Kurose & Ross, Ligh et al., NIST SP 800-61r2 / 800-86, Sanders, Sikorski & Honig, Stallings.
 
@@ -329,7 +332,7 @@ flowchart TD
 | `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/ja/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) | Advanced | 6-8h | LC-063, LC-072, LC-073 |
 | `LC-075` | [Incident Response & Digital Forensics](blue-team/ja/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) | Advanced | 7-9h | LC-006, LC-064, LC-072, LC-074 |
 
-<details><summary>このフェーズの書籍対応の詳細</summary>
+**このフェーズの書籍対応の詳細**
 
 | ID | 書籍の章 |
 |:---|:---------------|
@@ -337,7 +340,5 @@ flowchart TD
 | `LC-073` | Bejtlich, The Practice of Network Security Monitoring; Sanders, Practical Packet Analysis; Kurose & Ross, Computer Networking Ch.1-3 |
 | `LC-074` | MITRE ATT&CK Enterprise Matrix; Sigma Specification; YARA Documentation; Sikorski & Honig, Practical Malware Analysis Ch.1-3 |
 | `LC-075` | NIST SP 800-61r2; NIST SP 800-86 (Forensic Techniques); Carrier, File System Forensic Analysis; Ligh et al., The Art of Memory Forensics |
-
-</details>
 
 ---

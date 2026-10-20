@@ -6,7 +6,7 @@
 
 ![Lessons](https://img.shields.io/badge/lessons-75-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-pemula%20%E2%86%92%20lanjutan-orange) ![Phases](https://img.shields.io/badge/fase-10-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
-> **Dari nol sampai root** — basis pengetahuan cybersecurity trilingual dan roadmap offensive security, mencakup internal Linux, jaringan, keamanan aplikasi web, kriptografi, reverse engineering, dan bidang terkait. Halaman ini adalah edisi Bahasa Indonesia dan hanya menautkan ke file pelajaran berbahasa Indonesia; buka edisi English atau 日本語 di atas untuk dua bahasa lainnya.
+> **Dari nol sampai root** — basis pengetahuan cybersecurity trilingual dan roadmap karier untuk sisi serangan dan pertahanan, mencakup internal Linux, jaringan, keamanan aplikasi web, kriptografi, reverse engineering, dan bidang terkait. Halaman ini adalah edisi Bahasa Indonesia dan hanya menautkan ke file pelajaran berbahasa Indonesia; buka edisi English atau 日本語 di atas untuk dua bahasa lainnya.
 
 ---
 
@@ -15,16 +15,32 @@
 | Dokumen | Kegunaan |
 |:---------|:--------|
 | [ROADMAP.id.md](ROADMAP.id.md) | Jalur belajar utama: 75 pelajaran (`LC-001` sampai `LC-075`), 10 fase, prasyarat |
+| [CAREERS.id.md](CAREERS.id.md) | Jalur karier: 13 peran cyber security, pelajaran untuk tiap peran, jam belajar, dan apa yang belum dibahas |
 | [BOOKS.id.md](BOOKS.id.md) | Katalog PDF lokal di `~/Documents/Books/`, dipetakan ke tiap pelajaran |
 | [curriculum.json](curriculum.json) | Manifest kurikulum yang bisa dibaca mesin (ID, path, bab buku) |
 
-Cara mulai yang disarankan: buka [ROADMAP.id.md](ROADMAP.id.md), mulai dari **LC-001**, baca bab buku yang ditautkan dari [BOOKS.id.md](BOOKS.id.md), lalu buka file pelajarannya (tiap file punya blok `Curriculum ID` di bagian atas).
+Cara mulai yang disarankan: pilih dulu peran di [CAREERS.id.md](CAREERS.id.md). Belum yakin? Buka [ROADMAP.id.md](ROADMAP.id.md) dan mulai dari **LC-001**, baca bab buku yang ditautkan dari [BOOKS.id.md](BOOKS.id.md), lalu buka file pelajarannya (tiap file punya blok `Curriculum ID` di bagian atas).
+
+---
+
+## Kategori
+
+Setiap pelajaran masuk ke satu fase, dan setiap fase masuk ke satu kategori. Pilih karier di [CAREERS.id.md](CAREERS.id.md) untuk melihat kategori mana yang penting buatmu.
+
+| Kategori | Fase | Isinya |
+|:---|:---|:---|
+| Fondasi | 0, 1, 2, 4 | Komputer, Linux, jaringan, kriptografi. Dibutuhkan semua jalur. |
+| Offensive (red team) | 3, 5 | Serangan web, metodologi pentest, scanning, eksploitasi, privilege escalation. Hanya untuk lab dan pengujian berizin. |
+| Eksploitasi & reverse engineering | 6 | Bug memori, shellcode, assembly, analisis malware statis dan dinamis. |
+| Defensive (blue team) | 9 | SOC dan log, monitoring jaringan, threat hunting, incident response dan forensik. |
+| Domain spesialisasi | 7 | Android, pembuatan tool keamanan dengan Python dan Go, social engineering, OSINT, hardware dan IoT. |
+| Bonus | 8 | Keterampilan editor dan produktivitas. |
 
 ---
 
 ## Tentang repositori ini
 
-Repositori ini adalah basis pengetahuan belajar mandiri yang mencakup offensive security, internal Linux, analisis protokol jaringan, penetration testing aplikasi web, kriptografi, reverse engineering, analisis malware, binary exploitation, pemrograman keamanan, social engineering, OSINT, keamanan mobile, dan keamanan hardware/IoT.
+Repositori ini adalah basis pengetahuan belajar mandiri yang mencakup offensive security, internal Linux, analisis protokol jaringan, penetration testing aplikasi web, kriptografi, reverse engineering, analisis malware, binary exploitation, pemrograman keamanan, social engineering, OSINT, keamanan mobile, keamanan hardware/IoT, dan pertahanan blue team (SOC, monitoring jaringan, threat hunting, incident response dan forensik).
 
 Setiap pelajaran ada sebagai tiga file independen, masing-masing dalam Bahasa Indonesia, Inggris, dan Jepang, disimpan di subfolder `id/`, `en/`, dan `ja/` di samping tiap topik. Setiap file berisi tabel perbandingan, contoh perintah, catatan keamanan, cheatsheet, dan referensi ke buku teknis yang tersimpan lokal di `~/Documents/Books/`.
 
@@ -35,7 +51,7 @@ Setiap pelajaran ada sebagai tiga file independen, masing-masing dalam Bahasa In
 ```
 Zero2Root/
   basics/               # Dasar-dasar komputasi, Git, filesystem OS, PowerShell/CMD
-  linux/                # Shell, alur kerja, administrasi sistem, jaringan, hardening (mengikuti struktur HTB Academy Module 18)
+  linux/                # Shell, alur kerja, administrasi sistem, jaringan, hardening
   networking/           # Model OSI, TCP/IP, DNS, ARP, subnetting, keamanan wireless
   web/                  # HTTP/HTTPS, SQLi, XSS, CSRF, SSRF, LFI/RFI, upload file, serangan JWT/session
   cryptography/         # Kriptografi simetris/asimetris, hashing, PKI, TLS 1.3
@@ -72,7 +88,7 @@ Dasar-dasar komputasi, Git, filesystem OS, PowerShell/CMD.
 
 ## 2. Dasar-Dasar & Keamanan Linux (`linux/`)
 
-Shell, alur kerja, administrasi sistem, jaringan, hardening (mengikuti struktur HTB Academy Module 18).
+Shell, alur kerja, administrasi sistem, jaringan, hardening.
 
 | LC-ID | Topik |
 |:------|:------|
@@ -252,6 +268,21 @@ SOC dan analisis log, monitoring jaringan, threat hunting, incident response dan
 | `LC-073` | [Network Security Monitoring (Wireshark, Zeek, Suricata)](blue-team/id/2.%20Network%20Security%20Monitoring%20%28Wireshark%2C%20Zeek%2C%20Suricata%29.md) |
 | `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/id/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) |
 | `LC-075` | [Incident Response & Digital Forensics](blue-team/id/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) |
+
+---
+
+## Status cakupan
+
+Zero2Root belum membahas semuanya. Topik-topik ini belum ada sekarang, jadi pelajari dari sumber lain kalau kariermu membutuhkannya. Setiap karier di [CAREERS.id.md](CAREERS.id.md) juga mencantumkan bagian yang masih kurang.
+
+| Topik | Status | Karier yang paling terdampak |
+|:---|:---|:---|
+| Active Directory (serangan, pertahanan, log event Windows) | direncanakan | Pentester, Red Team, SOC Analyst |
+| Keamanan cloud (AWS, Azure, GCP, Kubernetes) | direncanakan | Cloud Security Engineer |
+| DevSecOps dan secure SDLC (scanning di CI, supply chain) | direncanakan | AppSec & DevSecOps Engineer |
+| Keamanan AI dan LLM | direncanakan | AppSec, Red Team |
+| GRC (risiko, ISO 27001, NIST CSF, hukum perlindungan data) | direncanakan | GRC Analyst |
+| Keamanan API, eksploitasi heap, fuzzing, iOS | belum direncanakan | Web pentester, Vulnerability Researcher, Mobile |
 
 ---
 
