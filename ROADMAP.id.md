@@ -2,7 +2,7 @@
 
 # Zero2Root: Roadmap Utama
 
-> 80 pelajaran dalam 15 fase, masing-masing ditulis secara independen dalam Bahasa Indonesia, Inggris, dan Jepang.
+> 81 pelajaran dalam 15 fase, masing-masing ditulis secara independen dalam Bahasa Indonesia, Inggris, dan Jepang.
 > Buku: `~/Documents/Books/`, lihat [BOOKS.id.md](BOOKS.id.md) untuk katalog lengkap.
 > Halaman ini adalah edisi Bahasa Indonesia dan hanya menautkan ke file pelajaran berbahasa Indonesia.
 > Penulis: [kodoktheGr3at](https://github.com/Kodokthegr3at/) | 2026
@@ -12,11 +12,11 @@
 ## Cara menggunakan roadmap ini
 
 0. Belum tahu mau ke mana? Pilih dulu peran di [CAREERS.id.md](CAREERS.id.md). Halaman itu memberi tahu pelajaran mana yang perlu diambil dan urutannya.
-1. Ikuti urutan `LC-001` sampai `LC-080`, kecuali kamu sudah menguasai suatu fase.
+1. Ikuti urutan `LC-001` sampai `LC-081`, kecuali kamu sudah menguasai suatu fase.
 2. Setiap file pelajaran punya blok Curriculum ID di bagian atas (cari `LC-CURRICULUM`).
 3. Baca baris peta buku, lalu buka bab yang dirujuk dari [BOOKS.id.md](BOOKS.id.md).
 4. Kerjakan bagian catatan keamanan dan cheatsheet secara langsung di lab VM.
-5. Estimasi total waktu untuk penguasaan penuh: sekitar 330 sampai 410 jam.
+5. Estimasi total waktu untuk penguasaan penuh: sekitar 335 sampai 415 jam.
 
 ```mermaid
 flowchart TD
@@ -30,7 +30,7 @@ flowchart TD
     P1 --> P8[Phase 8: Bonus LC-071]
     P5 --> P9[Phase 9: Blue Team LC-072-075]
     P2 --> P10[Phase 10: Active Directory LC-076]
-    P3 --> P11[Phase 11: Cloud Security LC-077]
+    P3 --> P11[Phase 11: Cloud Security LC-077, LC-081]
     P3 --> P12[Phase 12: DevSecOps LC-078]
     P9 --> P13[Phase 13: GRC LC-079]
     P3 --> P14[Phase 14: AI Security LC-080]
@@ -366,7 +366,7 @@ Buku utama: Desmond et al., Microsoft Learn.
 
 ---
 
-## Fase 11: Keamanan Cloud (`LC-077`)
+## Fase 11: Keamanan Cloud (`LC-077`, `LC-081`)
 
 Kategori: **Domain spesialisasi**
 
@@ -375,12 +375,14 @@ Buku utama: Dotson, AWS Well-Architected Framework, CIS Benchmarks.
 | ID | Topik | Level | Jam | Prasyarat |
 |:---|:------|:------|:------|:---------------|
 | `LC-077` | [Cloud Security Fundamentals](cloud-security/id/1.%20Cloud%20Security%20Fundamentals.md) | Intermediate | 5-6h | LC-030, LC-040, LC-050 |
+| `LC-081` | [Cloud IAM in Depth](cloud-security/id/2.%20Cloud%20IAM%20in%20Depth.md) | Advanced | 6-7h | LC-077 |
 
 **Detail peta buku untuk fase ini**
 
 | ID | Bab buku |
 |:---|:---------------|
 | `LC-077` | Dotson, Practical Cloud Security 2nd Ed. Ch.1-5; AWS Well-Architected Framework, Security Pillar; CIS AWS Foundations Benchmark |
+| `LC-081` | Dotson, Practical Cloud Security 2nd Ed. Ch.4; AWS IAM User Guide, Policy evaluation logic; Microsoft Learn, Azure RBAC; Google Cloud IAM documentation |
 
 ---
 

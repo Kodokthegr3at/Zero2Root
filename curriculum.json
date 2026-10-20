@@ -1,6 +1,6 @@
 {
   "version": "2026.1",
-  "total_lessons": 80,
+  "total_lessons": 81,
   "phases": [
     {
       "id": 0,
@@ -71,7 +71,7 @@
     {
       "id": 11,
       "name": "Cloud Security",
-      "lessons": "LC-077",
+      "lessons": "LC-077, LC-081",
       "category": "specialized"
     },
     {
@@ -1226,6 +1226,22 @@
       ],
       "dir": "ai-security",
       "file": "1. AI & LLM Security Fundamentals.md"
+    },
+    {
+      "id": "LC-081",
+      "phase": 11,
+      "phase_name": "Cloud Security",
+      "hours": "6-7h",
+      "level": "Advanced",
+      "prerequisites": "LC-077",
+      "books_short": [
+        "Dotson, Practical Cloud Security 2nd Ed. Ch.4",
+        "AWS IAM User Guide, Policy evaluation logic",
+        "Microsoft Learn, Azure RBAC",
+        "Google Cloud IAM documentation"
+      ],
+      "dir": "cloud-security",
+      "file": "2. Cloud IAM in Depth.md"
     }
   ],
   "core_foundation": [
@@ -1503,7 +1519,8 @@
         "LC-067",
         "LC-077",
         "LC-078",
-        "LC-080"
+        "LC-080",
+        "LC-081"
       ],
       "not_covered_yet": [
         "Threat modeling in depth (data-flow diagrams, attack trees)",
@@ -1527,13 +1544,14 @@
         "LC-057",
         "LC-072",
         "LC-077",
-        "LC-078"
+        "LC-078",
+        "LC-081"
       ],
       "not_covered_yet": [
-        "Cloud IAM in depth (policy evaluation, cross-account access, Azure and GCP specifics)",
         "Kubernetes security",
         "Infrastructure as code and its misconfigurations",
-        "Cloud incident response and detection in depth"
+        "Cloud incident response and detection in depth",
+        "Cloud network security in depth (private endpoints, egress control)"
       ]
     },
     {
