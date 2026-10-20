@@ -371,7 +371,7 @@ flowchart TD
 
 | ID | トピック | レベル | 時間 | 前提 |
 |:---|:------|:------|:------|:---------------|
-| `LC-077` | [Cloud Security Fundamentals](cloud-security/ja/1.%20Cloud%20Security%20Fundamentals.md) | Intermediate | 5-6h | LC-006, LC-026, LC-041 |
+| `LC-077` | [Cloud Security Fundamentals](cloud-security/ja/1.%20Cloud%20Security%20Fundamentals.md) | Intermediate | 5-6h | LC-030, LC-040, LC-050 |
 
 **このフェーズの書籍対応の詳細**
 

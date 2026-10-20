@@ -371,7 +371,7 @@ Buku utama: Dotson, AWS Well-Architected Framework, CIS Benchmarks.
 
 | ID | Topik | Level | Jam | Prasyarat |
 |:---|:------|:------|:------|:---------------|
-| `LC-077` | [Cloud Security Fundamentals](cloud-security/id/1.%20Cloud%20Security%20Fundamentals.md) | Intermediate | 5-6h | LC-006, LC-026, LC-041 |
+| `LC-077` | [Cloud Security Fundamentals](cloud-security/id/1.%20Cloud%20Security%20Fundamentals.md) | Intermediate | 5-6h | LC-030, LC-040, LC-050 |
 
 **Detail peta buku untuk fase ini**
 

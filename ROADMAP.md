@@ -371,7 +371,7 @@ Primary books: Dotson, AWS Well-Architected Framework, CIS Benchmarks.
 
 | ID | Topic | Level | Hours | Prerequisites |
 |:---|:------|:------|:------|:---------------|
-| `LC-077` | [Cloud Security Fundamentals](cloud-security/en/1.%20Cloud%20Security%20Fundamentals.md) | Intermediate | 5-6h | LC-006, LC-026, LC-041 |
+| `LC-077` | [Cloud Security Fundamentals](cloud-security/en/1.%20Cloud%20Security%20Fundamentals.md) | Intermediate | 5-6h | LC-030, LC-040, LC-050 |
 
 **Book map detail for this phase**
 
