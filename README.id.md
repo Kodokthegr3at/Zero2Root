@@ -4,7 +4,7 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/Kodokthegr3at/Zero2Root?style=social)](https://github.com/Kodokthegr3at/Zero2Root/stargazers)
 
-![Lessons](https://img.shields.io/badge/lessons-71-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-pemula%20%E2%86%92%20lanjutan-orange) ![Phases](https://img.shields.io/badge/fase-9-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
+![Lessons](https://img.shields.io/badge/lessons-75-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-pemula%20%E2%86%92%20lanjutan-orange) ![Phases](https://img.shields.io/badge/fase-10-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
 > **Dari nol sampai root** — basis pengetahuan cybersecurity trilingual dan roadmap offensive security, mencakup internal Linux, jaringan, keamanan aplikasi web, kriptografi, reverse engineering, dan bidang terkait. Halaman ini adalah edisi Bahasa Indonesia dan hanya menautkan ke file pelajaran berbahasa Indonesia; buka edisi English atau 日本語 di atas untuk dua bahasa lainnya.
 
@@ -14,7 +14,7 @@
 
 | Dokumen | Kegunaan |
 |:---------|:--------|
-| [ROADMAP.id.md](ROADMAP.id.md) | Jalur belajar utama: 71 pelajaran (`LC-001` sampai `LC-071`), 9 fase, prasyarat |
+| [ROADMAP.id.md](ROADMAP.id.md) | Jalur belajar utama: 75 pelajaran (`LC-001` sampai `LC-075`), 10 fase, prasyarat |
 | [BOOKS.id.md](BOOKS.id.md) | Katalog PDF lokal di `~/Documents/Books/`, dipetakan ke tiap pelajaran |
 | [curriculum.json](curriculum.json) | Manifest kurikulum yang bisa dibaca mesin (ID, path, bab buku) |
 
@@ -47,6 +47,7 @@ Zero2Root/
   social-engineering/   # Prinsip pengaruh, vektor, pertahanan organisasi
   osint/                # Siklus intelijen, OPSEC, kerangka investigasi
   hardware-iot/         # UART/JTAG/SPI, ekstraksi firmware, CAN bus
+  blue-team/            # SOC, analisis log, monitoring jaringan, threat hunting, IR dan forensik
 ```
 
 Setiap folder topik mengikuti layout yang sama: sebuah direktori dasar berisi subfolder `id/`, `en/`, `ja/`, masing-masing menyimpan set file pelajaran yang sama, diterjemahkan dan ditulis secara independen untuk bahasa tersebut.
@@ -238,6 +239,19 @@ UART/JTAG/SPI, ekstraksi firmware, CAN bus.
 | LC-ID | Topik |
 |:------|:------|
 | `LC-070` | [Hardware & IoT Security — Interfaces, Firmware & Automotive](hardware-iot/id/Hardware%20%26%20IoT%20Security%20%E2%80%94%20Interfaces%2C%20Firmware%20%26%20Automotive.md) |
+
+---
+
+## 14. Blue Team & Keamanan Defensif (`blue-team/`)
+
+SOC dan analisis log, monitoring jaringan, threat hunting, incident response dan forensik.
+
+| LC-ID | Topik |
+|:------|:------|
+| `LC-072` | [SOC & Log Analysis](blue-team/id/1.%20SOC%20%26%20Log%20Analysis.md) |
+| `LC-073` | [Network Security Monitoring (Wireshark, Zeek, Suricata)](blue-team/id/2.%20Network%20Security%20Monitoring%20%28Wireshark%2C%20Zeek%2C%20Suricata%29.md) |
+| `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/id/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) |
+| `LC-075` | [Incident Response & Digital Forensics](blue-team/id/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) |
 
 ---
 

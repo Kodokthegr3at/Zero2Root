@@ -4,7 +4,7 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/Kodokthegr3at/Zero2Root?style=social)](https://github.com/Kodokthegr3at/Zero2Root/stargazers)
 
-![Lessons](https://img.shields.io/badge/lessons-71-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-beginner%20%E2%86%92%20advanced-orange) ![Phases](https://img.shields.io/badge/phases-9-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
+![Lessons](https://img.shields.io/badge/lessons-75-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-beginner%20%E2%86%92%20advanced-orange) ![Phases](https://img.shields.io/badge/phases-10-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
 > **ゼロからroot(管理者権限)まで** — Linux内部構造、ネットワーキング、Webアプリケーションセキュリティ、暗号技術、リバースエンジニアリングなどを扱う、3言語対応のサイバーセキュリティ知識ベース兼攻撃的セキュリティのロードマップ。このページは日本語版であり、日本語のレッスンファイルにのみリンクしている。他の2言語は上のEnglishまたはBahasa Indonesiaを開くこと。
 
@@ -14,7 +14,7 @@
 
 | ドキュメント | 目的 |
 |:---------|:--------|
-| [ROADMAP.ja.md](ROADMAP.ja.md) | 主要な学習パス: 71レッスン（`LC-001`から`LC-071`）、9フェーズ、前提条件 |
+| [ROADMAP.ja.md](ROADMAP.ja.md) | 主要な学習パス: 75レッスン（`LC-001`から`LC-075`）、10フェーズ、前提条件 |
 | [BOOKS.ja.md](BOOKS.ja.md) | `~/Documents/Books/`にあるローカルPDFカタログ、各レッスンに対応 |
 | [curriculum.json](curriculum.json) | 機械可読なカリキュラムマニフェスト（ID、パス、書籍の章） |
 
@@ -47,6 +47,7 @@ Zero2Root/
   social-engineering/   # 影響力の原理、経路、組織的防御
   osint/                # インテリジェンスのライフサイクル、OPSEC、調査フレームワーク
   hardware-iot/         # UART/JTAG/SPI、ファームウェア抽出、CANバス
+  blue-team/            # SOC、ログ分析、ネットワーク監視、スレットハンティング、IRとフォレンジック
 ```
 
 すべてのトピックフォルダは同じレイアウトに従う。基本ディレクトリの下に`id/`、`en/`、`ja/`サブフォルダがあり、それぞれにその言語向けに独立して翻訳・執筆された同じレッスンファイル群が入っている。
@@ -238,6 +239,19 @@ UART/JTAG/SPI、ファームウェア抽出、CANバス.
 | LC-ID | トピック |
 |:------|:------|
 | `LC-070` | [Hardware & IoT Security — Interfaces, Firmware & Automotive](hardware-iot/ja/Hardware%20%26%20IoT%20Security%20%E2%80%94%20Interfaces%2C%20Firmware%20%26%20Automotive.md) |
+
+---
+
+## 14. ブルーチームと防御セキュリティ (`blue-team/`)
+
+SOCとログ分析、ネットワーク監視、スレットハンティング、インシデント対応とフォレンジック。
+
+| LC-ID | トピック |
+|:------|:------|
+| `LC-072` | [SOC & Log Analysis](blue-team/ja/1.%20SOC%20%26%20Log%20Analysis.md) |
+| `LC-073` | [Network Security Monitoring (Wireshark, Zeek, Suricata)](blue-team/ja/2.%20Network%20Security%20Monitoring%20%28Wireshark%2C%20Zeek%2C%20Suricata%29.md) |
+| `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/ja/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) |
+| `LC-075` | [Incident Response & Digital Forensics](blue-team/ja/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) |
 
 ---
 

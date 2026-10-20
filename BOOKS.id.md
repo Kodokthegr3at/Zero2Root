@@ -100,4 +100,4 @@ Katalog ini memetakan setiap PDF di perpustakaan lokal ke pelajaran Zero2Root. B
 
 ---
 
-> Lihat [ROADMAP.id.md](ROADMAP.id.md) untuk jalur belajar berurutan dari `LC-001` sampai `LC-071`.
+> Lihat [ROADMAP.id.md](ROADMAP.id.md) untuk jalur belajar berurutan dari `LC-001` sampai `LC-075`.

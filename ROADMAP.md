@@ -2,7 +2,7 @@
 
 # Zero2Root: Master Roadmap
 
-> 71 lessons across 9 phases, each written independently in Bahasa Indonesia, English, and Japanese.
+> 75 lessons across 10 phases, each written independently in Bahasa Indonesia, English, and Japanese.
 > Books: `~/Documents/Books/`, see [BOOKS.md](BOOKS.md) for the full catalog.
 > This page is the English edition and links only to the English lesson files.
 > Author: [kodoktheGr3at](https://github.com/Kodokthegr3at/) | 2026
@@ -11,11 +11,11 @@
 
 ## How to use this roadmap
 
-1. Follow the order `LC-001` through `LC-071` unless you have already mastered a phase.
+1. Follow the order `LC-001` through `LC-075` unless you have already mastered a phase.
 2. Each lesson file carries a Curriculum ID block near the top (search for `LC-CURRICULUM`).
 3. Read the book map line, then open the referenced chapters from [BOOKS.md](BOOKS.md).
 4. Work through the security notes and cheatsheet sections hands-on in a lab VM.
-5. Estimated total time for full mastery: roughly 280 to 350 hours.
+5. Estimated total time for full mastery: roughly 305 to 380 hours.
 
 ```mermaid
 flowchart TD
@@ -27,6 +27,7 @@ flowchart TD
     P5 --> P6[Phase 6: Exploitation and RE LC-062-065]
     P6 --> P7[Phase 7: Specialized LC-066-070]
     P1 --> P8[Phase 8: Bonus LC-071]
+    P5 --> P9[Phase 9: Blue Team LC-072-075]
 ```
 
 ---
@@ -317,3 +318,26 @@ Primary books: Shotts.
 
 ---
 
+## Phase 9: Blue Team & Defensive Security (`LC-072-075`)
+
+Primary books: Bejtlich, Carrier, Kurose & Ross, Ligh et al., NIST SP 800-61r2 / 800-86, Sanders, Sikorski & Honig, Stallings.
+
+| ID | Topic | Level | Hours | Prerequisites |
+|:---|:------|:------|:------|:---------------|
+| `LC-072` | [SOC & Log Analysis](blue-team/en/1.%20SOC%20%26%20Log%20Analysis.md) | Beginner | 5-6h | LC-035, LC-038 |
+| `LC-073` | [Network Security Monitoring (Wireshark, Zeek, Suricata)](blue-team/en/2.%20Network%20Security%20Monitoring%20%28Wireshark%2C%20Zeek%2C%20Suricata%29.md) | Intermediate | 6-7h | LC-032, LC-039, LC-072 |
+| `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/en/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) | Advanced | 6-8h | LC-063, LC-072, LC-073 |
+| `LC-075` | [Incident Response & Digital Forensics](blue-team/en/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) | Advanced | 7-9h | LC-006, LC-064, LC-072, LC-074 |
+
+<details><summary>Book map detail for this phase</summary>
+
+| ID | Book chapters |
+|:---|:---------------|
+| `LC-072` | Stallings, Network Security Essentials Ch.9; NIST SP 800-61r2 (Incident Handling Guide) |
+| `LC-073` | Bejtlich, The Practice of Network Security Monitoring; Sanders, Practical Packet Analysis; Kurose & Ross, Computer Networking Ch.1-3 |
+| `LC-074` | MITRE ATT&CK Enterprise Matrix; Sigma Specification; YARA Documentation; Sikorski & Honig, Practical Malware Analysis Ch.1-3 |
+| `LC-075` | NIST SP 800-61r2; NIST SP 800-86 (Forensic Techniques); Carrier, File System Forensic Analysis; Ligh et al., The Art of Memory Forensics |
+
+</details>
+
+---

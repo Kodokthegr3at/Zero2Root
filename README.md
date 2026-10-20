@@ -4,7 +4,7 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/Kodokthegr3at/Zero2Root?style=social)](https://github.com/Kodokthegr3at/Zero2Root/stargazers)
 
-![Lessons](https://img.shields.io/badge/lessons-71-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-beginner%20%E2%86%92%20advanced-orange) ![Phases](https://img.shields.io/badge/phases-9-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
+![Lessons](https://img.shields.io/badge/lessons-75-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-beginner%20%E2%86%92%20advanced-orange) ![Phases](https://img.shields.io/badge/phases-10-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
 > **From zero to root** — a trilingual cybersecurity knowledge base and offensive security roadmap, covering Linux internals, networking, web application security, cryptography, reverse engineering, and related fields. This page is the English edition and links only to the English lesson files; open the Bahasa Indonesia or 日本語 edition above for the other two.
 
@@ -14,7 +14,7 @@
 
 | Document | Purpose |
 |:---------|:--------|
-| [ROADMAP.md](ROADMAP.md) | Master learning path: 71 lessons (`LC-001` to `LC-071`), 9 phases, prerequisites |
+| [ROADMAP.md](ROADMAP.md) | Master learning path: 75 lessons (`LC-001` to `LC-075`), 10 phases, prerequisites |
 | [BOOKS.md](BOOKS.md) | Local PDF catalog at `~/Documents/Books/`, mapped to each lesson |
 | [curriculum.json](curriculum.json) | Machine-readable curriculum manifest (IDs, paths, book chapters) |
 
@@ -47,6 +47,7 @@ Zero2Root/
   social-engineering/   # Influence principles, vectors, organizational defense
   osint/                # Intelligence lifecycle, OPSEC, investigation frameworks
   hardware-iot/         # UART/JTAG/SPI, firmware extraction, CAN bus
+  blue-team/            # SOC, log analysis, network monitoring, threat hunting, IR and forensics
 ```
 
 Every topic folder follows the same layout: a base directory containing `id/`, `en/`, `ja/` subfolders, each holding the same set of lesson files translated and written independently for that language.
@@ -238,6 +239,19 @@ UART/JTAG/SPI, firmware extraction, CAN bus.
 | LC-ID | Topic |
 |:------|:------|
 | `LC-070` | [Hardware & IoT Security — Interfaces, Firmware & Automotive](hardware-iot/en/Hardware%20%26%20IoT%20Security%20%E2%80%94%20Interfaces%2C%20Firmware%20%26%20Automotive.md) |
+
+---
+
+## 14. Blue Team & Defensive Security (`blue-team/`)
+
+SOC and log analysis, network monitoring, threat hunting, incident response and forensics.
+
+| LC-ID | Topic |
+|:------|:------|
+| `LC-072` | [SOC & Log Analysis](blue-team/en/1.%20SOC%20%26%20Log%20Analysis.md) |
+| `LC-073` | [Network Security Monitoring (Wireshark, Zeek, Suricata)](blue-team/en/2.%20Network%20Security%20Monitoring%20%28Wireshark%2C%20Zeek%2C%20Suricata%29.md) |
+| `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/en/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) |
+| `LC-075` | [Incident Response & Digital Forensics](blue-team/en/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) |
 
 ---
 

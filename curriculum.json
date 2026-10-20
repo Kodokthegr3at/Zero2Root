@@ -1,6 +1,6 @@
 {
   "version": "2026.1",
-  "total_lessons": 71,
+  "total_lessons": 75,
   "phases": [
     {
       "id": 0,
@@ -46,6 +46,11 @@
       "id": 8,
       "name": "Bonus & Productivity",
       "lessons": "LC-071"
+    },
+    {
+      "id": 9,
+      "name": "Blue Team & Defensive Security",
+      "lessons": "LC-072-075"
     }
   ],
   "lessons": [
@@ -1045,6 +1050,67 @@
       ],
       "dir": "linux/Tips & Tricks",
       "file": "Neovim — Tips & Tricks.md"
+    },
+    {
+      "id": "LC-072",
+      "phase": 9,
+      "phase_name": "Blue Team",
+      "hours": "5-6h",
+      "level": "Beginner",
+      "prerequisites": "LC-035, LC-038",
+      "books_short": [
+        "Stallings, Network Security Essentials Ch.9",
+        "NIST SP 800-61r2 (Incident Handling Guide)"
+      ],
+      "dir": "blue-team",
+      "file": "1. SOC & Log Analysis.md"
+    },
+    {
+      "id": "LC-073",
+      "phase": 9,
+      "phase_name": "Blue Team",
+      "hours": "6-7h",
+      "level": "Intermediate",
+      "prerequisites": "LC-032, LC-039, LC-072",
+      "books_short": [
+        "Bejtlich, The Practice of Network Security Monitoring",
+        "Sanders, Practical Packet Analysis",
+        "Kurose & Ross, Computer Networking Ch.1-3"
+      ],
+      "dir": "blue-team",
+      "file": "2. Network Security Monitoring (Wireshark, Zeek, Suricata).md"
+    },
+    {
+      "id": "LC-074",
+      "phase": 9,
+      "phase_name": "Blue Team",
+      "hours": "6-8h",
+      "level": "Advanced",
+      "prerequisites": "LC-063, LC-072, LC-073",
+      "books_short": [
+        "MITRE ATT&CK Enterprise Matrix",
+        "Sigma Specification",
+        "YARA Documentation",
+        "Sikorski & Honig, Practical Malware Analysis Ch.1-3"
+      ],
+      "dir": "blue-team",
+      "file": "3. Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK).md"
+    },
+    {
+      "id": "LC-075",
+      "phase": 9,
+      "phase_name": "Blue Team",
+      "hours": "7-9h",
+      "level": "Advanced",
+      "prerequisites": "LC-006, LC-064, LC-072, LC-074",
+      "books_short": [
+        "NIST SP 800-61r2",
+        "NIST SP 800-86 (Forensic Techniques)",
+        "Carrier, File System Forensic Analysis",
+        "Ligh et al., The Art of Memory Forensics"
+      ],
+      "dir": "blue-team",
+      "file": "4. Incident Response & Digital Forensics.md"
     }
   ]
 }
