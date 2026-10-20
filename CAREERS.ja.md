@@ -29,8 +29,8 @@
 | [レッドチームオペレーター](#レッドチームオペレーター) | 数週間にわたり現実的な攻撃者を演じ、ブルーチームが気付くかを試す | いいえ | 24 | 107-131 | 一部 |
 | [マルウェアアナリスト・リバースエンジニア](#マルウェアアナリストリバースエンジニア) | 不審なファイルを分解し、何をするのか、どう検知するのか、どう後始末するのかを調べる | いいえ | 7 | 40-50 | 十分 |
 | [脆弱性リサーチャー・エクスプロイト開発者](#脆弱性リサーチャーエクスプロイト開発者) | ソフトウェアの新しいバグを見つけ、悪用可能かを示して、ベンダーが修正できるようにする | いいえ | 4 | 25-32 | 最小限 |
-| [アプリケーションセキュリティ・DevSecOpsエンジニア](#アプリケーションセキュリティdevsecopsエンジニア) | 開発者と協力してコードを安全にリリースする | いいえ | 15 | 58-72 | 一部 |
-| [クラウドセキュリティエンジニア](#クラウドセキュリティエンジニア) | AWS、Azure、Google Cloud上のアカウント、ID、ネットワーク、ワークロードを守る | いいえ | 8 | 32-37 | 最小限 |
+| [アプリケーションセキュリティ・DevSecOpsエンジニア](#アプリケーションセキュリティdevsecopsエンジニア) | 開発者と協力してコードを安全にリリースする | いいえ | 16 | 63-78 | 一部 |
+| [クラウドセキュリティエンジニア](#クラウドセキュリティエンジニア) | AWS、Azure、Google Cloud上のアカウント、ID、ネットワーク、ワークロードを守る | いいえ | 9 | 37-43 | 一部 |
 | [脅威インテリジェンス・OSINTアナリスト](#脅威インテリジェンスosintアナリスト) | 公開・非公開の情報源から攻撃グループと手口を追跡し、防御側が使える助言にまとめる | いいえ | 5 | 25-30 | 一部 |
 | [モバイル・IoTセキュリティスペシャリスト](#モバイルiotセキュリティスペシャリスト) | スマホアプリ、スマートデバイス、そのファームウェアを、アプリのコードから基板まで検証する | いいえ | 14 | 66-81 | 一部 |
 | [GRC・セキュリティコンプライアンスアナリスト](#grcセキュリティコンプライアンスアナリスト) | ISO 27001やNIST CSFなどの基準に沿ってリスク、ポリシー、監査を管理する | はい | 5 | 25-29 | 最小限 |
@@ -393,8 +393,9 @@
 | 13 | `LC-056` | [Hash Functions & Message Authentication](cryptography/ja/3.%20Hash%20Functions%20%26%20Message%20Authentication.md) | 中級 | 3-4時間 |
 | 14 | `LC-057` | [Public Key Infrastructure (PKI) & TLS 1.3](cryptography/ja/4.%20Public%20Key%20Infrastructure%20%28PKI%29%20%26%20TLS%201.3.md) | 上級 | 5時間 |
 | 15 | `LC-067` | [Offensive Python & Go for Pentesters](programming-security/ja/Offensive%20Python%20%26%20Go%20for%20Pentesters.md) | 上級 | 6-8時間 |
+| 16 | `LC-077` | [Cloud Security Fundamentals](cloud-security/ja/1.%20Cloud%20Security%20Fundamentals.md) | 中級 | 5-6時間 |
 
-この進路の学習時間: 共通基礎とは別に約58〜72時間。
+この進路の学習時間: 共通基礎とは別に約63〜78時間。
 
 **Zero2Rootでまだ扱っていない内容** (ほかの教材で学ぶ):
 
@@ -410,7 +411,7 @@
 **仕事内容:** AWS、Azure、Google Cloud上のアカウント、ID、ネットワーク、ワークロードを守る。
 
 **最初の仕事向き:** いいえ。通常は関連職で1〜2年の経験を積んだ後  
-**Zero2Rootでのカバー範囲:** 最小限
+**Zero2Rootでのカバー範囲:** 一部
 
 **レッスン (共通基礎の後、この順で):**
 
@@ -424,15 +425,16 @@
 | 6 | `LC-053` | [Authentication, Session & JWT Attacks](web/Vulnerabilities/ja/7.%20Authentication%2C%20Session%20%26%20JWT%20Attacks.md) | 上級 | 4-5時間 |
 | 7 | `LC-057` | [Public Key Infrastructure (PKI) & TLS 1.3](cryptography/ja/4.%20Public%20Key%20Infrastructure%20%28PKI%29%20%26%20TLS%201.3.md) | 上級 | 5時間 |
 | 8 | `LC-072` | [SOC & Log Analysis](blue-team/ja/1.%20SOC%20%26%20Log%20Analysis.md) | 初級 | 5-6時間 |
+| 9 | `LC-077` | [Cloud Security Fundamentals](cloud-security/ja/1.%20Cloud%20Security%20Fundamentals.md) | 中級 | 5-6時間 |
 
-この進路の学習時間: 共通基礎とは別に約32〜37時間。
+この進路の学習時間: 共通基礎とは別に約37〜43時間。
 
 **Zero2Rootでまだ扱っていない内容** (ほかの教材で学ぶ):
 
-- クラウドIAM (AWS、Azure、GCP)
+- クラウドIAMの詳細 (ポリシー評価、アカウント間アクセス、AzureとGCP固有の点)
 - Kubernetesのセキュリティ
 - Infrastructure as Codeとその設定ミス
-- クラウドのログと検知
+- クラウドでのインシデント対応と検知の詳細
 
 ---
 

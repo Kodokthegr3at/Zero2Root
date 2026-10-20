@@ -2,7 +2,7 @@
 
 # Zero2Root: Roadmap Utama
 
-> 76 pelajaran dalam 11 fase, masing-masing ditulis secara independen dalam Bahasa Indonesia, Inggris, dan Jepang.
+> 77 pelajaran dalam 12 fase, masing-masing ditulis secara independen dalam Bahasa Indonesia, Inggris, dan Jepang.
 > Buku: `~/Documents/Books/`, lihat [BOOKS.id.md](BOOKS.id.md) untuk katalog lengkap.
 > Halaman ini adalah edisi Bahasa Indonesia dan hanya menautkan ke file pelajaran berbahasa Indonesia.
 > Penulis: [kodoktheGr3at](https://github.com/Kodokthegr3at/) | 2026
@@ -12,11 +12,11 @@
 ## Cara menggunakan roadmap ini
 
 0. Belum tahu mau ke mana? Pilih dulu peran di [CAREERS.id.md](CAREERS.id.md). Halaman itu memberi tahu pelajaran mana yang perlu diambil dan urutannya.
-1. Ikuti urutan `LC-001` sampai `LC-076`, kecuali kamu sudah menguasai suatu fase.
+1. Ikuti urutan `LC-001` sampai `LC-077`, kecuali kamu sudah menguasai suatu fase.
 2. Setiap file pelajaran punya blok Curriculum ID di bagian atas (cari `LC-CURRICULUM`).
 3. Baca baris peta buku, lalu buka bab yang dirujuk dari [BOOKS.id.md](BOOKS.id.md).
 4. Kerjakan bagian catatan keamanan dan cheatsheet secara langsung di lab VM.
-5. Estimasi total waktu untuk penguasaan penuh: sekitar 310 sampai 385 jam.
+5. Estimasi total waktu untuk penguasaan penuh: sekitar 315 sampai 390 jam.
 
 ```mermaid
 flowchart TD
@@ -30,6 +30,7 @@ flowchart TD
     P1 --> P8[Phase 8: Bonus LC-071]
     P5 --> P9[Phase 9: Blue Team LC-072-075]
     P2 --> P10[Phase 10: Active Directory LC-076]
+    P3 --> P11[Phase 11: Cloud Security LC-077]
 ```
 
 ---
@@ -359,5 +360,23 @@ Buku utama: Desmond et al., Microsoft Learn.
 | ID | Bab buku |
 |:---|:---------------|
 | `LC-076` | Desmond et al., Active Directory 5th Ed. Ch.1-4; Microsoft Learn, AD DS Overview |
+
+---
+
+## Fase 11: Keamanan Cloud (`LC-077`)
+
+Kategori: **Domain spesialisasi**
+
+Buku utama: Dotson, AWS Well-Architected Framework, CIS Benchmarks.
+
+| ID | Topik | Level | Jam | Prasyarat |
+|:---|:------|:------|:------|:---------------|
+| `LC-077` | [Cloud Security Fundamentals](cloud-security/id/1.%20Cloud%20Security%20Fundamentals.md) | Intermediate | 5-6h | LC-006, LC-026, LC-041 |
+
+**Detail peta buku untuk fase ini**
+
+| ID | Bab buku |
+|:---|:---------------|
+| `LC-077` | Dotson, Practical Cloud Security 2nd Ed. Ch.1-5; AWS Well-Architected Framework, Security Pillar; CIS AWS Foundations Benchmark |
 
 ---

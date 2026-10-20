@@ -1,6 +1,6 @@
 {
   "version": "2026.1",
-  "total_lessons": 76,
+  "total_lessons": 77,
   "phases": [
     {
       "id": 0,
@@ -66,6 +66,12 @@
       "id": 10,
       "name": "Active Directory Security",
       "lessons": "LC-076",
+      "category": "specialized"
+    },
+    {
+      "id": 11,
+      "name": "Cloud Security",
+      "lessons": "LC-077",
       "category": "specialized"
     }
   ],
@@ -1141,6 +1147,21 @@
       ],
       "dir": "active-directory",
       "file": "1. Active Directory Fundamentals.md"
+    },
+    {
+      "id": "LC-077",
+      "phase": 11,
+      "phase_name": "Cloud Security",
+      "hours": "5-6h",
+      "level": "Intermediate",
+      "prerequisites": "LC-030, LC-040, LC-050",
+      "books_short": [
+        "Dotson, Practical Cloud Security 2nd Ed. Ch.1-5",
+        "AWS Well-Architected Framework, Security Pillar",
+        "CIS AWS Foundations Benchmark"
+      ],
+      "dir": "cloud-security",
+      "file": "1. Cloud Security Fundamentals.md"
     }
   ],
   "core_foundation": [
@@ -1415,7 +1436,8 @@
         "LC-055",
         "LC-056",
         "LC-057",
-        "LC-067"
+        "LC-067",
+        "LC-077"
       ],
       "not_covered_yet": [
         "Secure SDLC and threat modeling",
@@ -1428,7 +1450,7 @@
       "id": "cloud-security",
       "name": "Cloud Security Engineer",
       "entry_level": false,
-      "coverage": "minimal",
+      "coverage": "partial",
       "lessons": [
         "LC-027",
         "LC-030",
@@ -1437,13 +1459,14 @@
         "LC-050",
         "LC-053",
         "LC-057",
-        "LC-072"
+        "LC-072",
+        "LC-077"
       ],
       "not_covered_yet": [
-        "Cloud IAM (AWS, Azure, GCP)",
+        "Cloud IAM in depth (policy evaluation, cross-account access, Azure and GCP specifics)",
         "Kubernetes security",
         "Infrastructure as code and its misconfigurations",
-        "Cloud logging and detection"
+        "Cloud incident response and detection in depth"
       ]
     },
     {

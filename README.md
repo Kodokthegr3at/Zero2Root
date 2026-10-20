@@ -4,7 +4,7 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/Kodokthegr3at/Zero2Root?style=social)](https://github.com/Kodokthegr3at/Zero2Root/stargazers)
 
-![Lessons](https://img.shields.io/badge/lessons-76-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-beginner%20%E2%86%92%20advanced-orange) ![Phases](https://img.shields.io/badge/phases-11-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
+![Lessons](https://img.shields.io/badge/lessons-77-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-beginner%20%E2%86%92%20advanced-orange) ![Phases](https://img.shields.io/badge/phases-12-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
 > **From zero to root** — a trilingual cybersecurity knowledge base and career roadmap for both attack and defense, covering Linux internals, networking, web application security, cryptography, reverse engineering, and related fields. This page is the English edition and links only to the English lesson files; open the Bahasa Indonesia or 日本語 edition above for the other two.
 
@@ -14,7 +14,7 @@
 
 | Document | Purpose |
 |:---------|:--------|
-| [ROADMAP.md](ROADMAP.md) | Master learning path: 76 lessons (`LC-001` to `LC-076`), 11 phases, prerequisites |
+| [ROADMAP.md](ROADMAP.md) | Master learning path: 77 lessons (`LC-001` to `LC-077`), 12 phases, prerequisites |
 | [CAREERS.md](CAREERS.md) | Career paths: 13 cyber security roles, the lessons for each, study hours, and what is not covered yet |
 | [BOOKS.md](BOOKS.md) | Local PDF catalog at `~/Documents/Books/`, mapped to each lesson |
 | [curriculum.json](curriculum.json) | Machine-readable curriculum manifest (IDs, paths, book chapters) |
@@ -33,7 +33,7 @@ Every lesson belongs to one phase, and every phase belongs to one category. Pick
 | Offensive (red team) | 3, 5 | Web attacks, pentest methodology, scanning, exploitation, privilege escalation. Lab and authorized testing only. |
 | Exploitation & reverse engineering | 6 | Memory bugs, shellcode, assembly, static and dynamic malware analysis. |
 | Defensive (blue team) | 9 | SOC and logs, network monitoring, threat hunting, incident response and forensics. |
-| Specialized domains | 7, 10 | Active Directory, Android, security tooling in Python and Go, social engineering, OSINT, hardware and IoT. |
+| Specialized domains | 7, 10, 11 | Active Directory, cloud security, Android, security tooling in Python and Go, social engineering, OSINT, hardware and IoT. |
 | Bonus | 8 | Editor and productivity skills. |
 
 ---
@@ -65,6 +65,7 @@ Zero2Root/
   hardware-iot/         # UART/JTAG/SPI, firmware extraction, CAN bus
   blue-team/            # SOC, log analysis, network monitoring, threat hunting, IR and forensics
   active-directory/     # Domains, domain controllers, objects, Group Policy, trusts
+  cloud-security/       # Shared responsibility, IAM, storage, network, logging, auditing
 ```
 
 Every topic folder follows the same layout: a base directory containing `id/`, `en/`, `ja/` subfolders, each holding the same set of lesson files translated and written independently for that language.
@@ -282,6 +283,16 @@ Domains, domain controllers, objects, Group Policy, trusts.
 
 ---
 
+## 16. Cloud Security (`cloud-security/`)
+
+Shared responsibility, IAM, storage, network, logging, auditing.
+
+| LC-ID | Topic |
+|:------|:------|
+| `LC-077` | [Cloud Security Fundamentals](cloud-security/en/1.%20Cloud%20Security%20Fundamentals.md) |
+
+---
+
 ## Coverage status
 
 Zero2Root does not cover everything yet. These topics are missing today, so study them from other sources if your career needs them. Each career in [CAREERS.md](CAREERS.md) lists its own gaps.
@@ -289,7 +300,7 @@ Zero2Root does not cover everything yet. These topics are missing today, so stud
 | Topic | Status | Most affected careers |
 |:---|:---|:---|
 | Active Directory: attacks, defense, Windows event logs (fundamentals are in LC-076) | partly available | Pentester, Red Team, SOC Analyst |
-| Cloud security (AWS, Azure, GCP, Kubernetes) | planned | Cloud Security Engineer |
+| Cloud security: IAM in depth, Kubernetes, infrastructure as code (fundamentals are in LC-077) | partly available | Cloud Security Engineer |
 | DevSecOps and secure SDLC (CI scanning, supply chain) | planned | AppSec & DevSecOps Engineer |
 | AI and LLM security | planned | AppSec, Red Team |
 | GRC (risk, ISO 27001, NIST CSF, data protection law) | planned | GRC Analyst |

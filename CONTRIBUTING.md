@@ -14,7 +14,7 @@ Thanks for helping make Zero2Root better! Fixes, clearer explanations, and new t
 ## How the repo is organized
 
 - Each topic folder (e.g. `networking/`) has `id/`, `en/`, `ja/` subfolders with the same lessons in each language.
-- Every lesson has a `Curriculum ID` block at the top (`LC-001` … `LC-076`) and a **Key Terms** table right before section 1.
+- Every lesson has a `Curriculum ID` block at the top (`LC-001` … `LC-077`) and a **Key Terms** table right before section 1.
 - Career paths live in [CAREERS.md](CAREERS.md) (the same data is in the `careers` section of `curriculum.json`; keep both in sync).
 - The learning path lives in [ROADMAP.md](ROADMAP.md); book references in [BOOKS.md](BOOKS.md).
 

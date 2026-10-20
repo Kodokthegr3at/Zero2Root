@@ -29,8 +29,8 @@
 | [Red Team Operator](#red-team-operator) | Berperan sebagai penyerang realistis selama berminggu-minggu untuk menguji apakah blue team menyadarinya | tidak | 24 | 107-131 | sebagian |
 | [Malware Analyst & Reverse Engineer](#malware-analyst--reverse-engineer) | Membongkar file mencurigakan untuk tahu apa yang dilakukannya, cara mendeteksinya, dan cara membersihkan dampaknya | tidak | 7 | 40-50 | baik |
 | [Vulnerability Researcher & Exploit Developer](#vulnerability-researcher--exploit-developer) | Mencari bug baru di software dan membuktikan apakah bisa dieksploitasi, supaya vendor bisa memperbaikinya | tidak | 4 | 25-32 | minim |
-| [Application Security & DevSecOps Engineer](#application-security--devsecops-engineer) | Bekerja bersama developer supaya kode dirilis dengan aman: meninjau desain dan kode, serta menambahkan pengecekan keamanan ke pipeline build | tidak | 15 | 58-72 | sebagian |
-| [Cloud Security Engineer](#cloud-security-engineer) | Mengamankan akun, identitas, jaringan, dan workload di AWS, Azure, atau Google Cloud | tidak | 8 | 32-37 | minim |
+| [Application Security & DevSecOps Engineer](#application-security--devsecops-engineer) | Bekerja bersama developer supaya kode dirilis dengan aman: meninjau desain dan kode, serta menambahkan pengecekan keamanan ke pipeline build | tidak | 16 | 63-78 | sebagian |
+| [Cloud Security Engineer](#cloud-security-engineer) | Mengamankan akun, identitas, jaringan, dan workload di AWS, Azure, atau Google Cloud | tidak | 9 | 37-43 | sebagian |
 | [Threat Intelligence & OSINT Analyst](#threat-intelligence--osint-analyst) | Melacak kelompok penyerang dan metodenya dari sumber publik maupun privat, lalu mengubahnya jadi saran yang bisa dipakai tim defender | tidak | 5 | 25-30 | sebagian |
 | [Spesialis Keamanan Mobile & IoT](#spesialis-keamanan-mobile--iot) | Menguji aplikasi ponsel, perangkat pintar, dan firmware-nya, mulai dari kode aplikasi sampai papan sirkuit | tidak | 14 | 66-81 | sebagian |
 | [GRC & Security Compliance Analyst](#grc--security-compliance-analyst) | Mengelola risiko, kebijakan, dan audit berdasarkan standar seperti ISO 27001 atau NIST CSF | ya | 5 | 25-29 | minim |
@@ -393,8 +393,9 @@ Waktu belajar jalur ini: sekitar 25 sampai 32 jam di luar fondasi inti.
 | 13 | `LC-056` | [Hash Functions & Message Authentication](cryptography/id/3.%20Hash%20Functions%20%26%20Message%20Authentication.md) | Menengah | 3-4 jam |
 | 14 | `LC-057` | [Public Key Infrastructure (PKI) & TLS 1.3](cryptography/id/4.%20Public%20Key%20Infrastructure%20%28PKI%29%20%26%20TLS%201.3.md) | Lanjutan | 5 jam |
 | 15 | `LC-067` | [Offensive Python & Go for Pentesters](programming-security/id/Offensive%20Python%20%26%20Go%20for%20Pentesters.md) | Lanjutan | 6-8 jam |
+| 16 | `LC-077` | [Cloud Security Fundamentals](cloud-security/id/1.%20Cloud%20Security%20Fundamentals.md) | Menengah | 5-6 jam |
 
-Waktu belajar jalur ini: sekitar 58 sampai 72 jam di luar fondasi inti.
+Waktu belajar jalur ini: sekitar 63 sampai 78 jam di luar fondasi inti.
 
 **Belum dibahas di Zero2Root** (pelajari dari sumber lain):
 
@@ -410,7 +411,7 @@ Waktu belajar jalur ini: sekitar 58 sampai 72 jam di luar fondasi inti.
 **Pekerjaannya:** Mengamankan akun, identitas, jaringan, dan workload di AWS, Azure, atau Google Cloud.
 
 **Cocok untuk kerja pertama:** tidak, biasanya setelah 1-2 tahun di peran terkait  
-**Cakupan di Zero2Root:** minim
+**Cakupan di Zero2Root:** sebagian
 
 **Pelajaran, berurutan (setelah fondasi inti):**
 
@@ -424,15 +425,16 @@ Waktu belajar jalur ini: sekitar 58 sampai 72 jam di luar fondasi inti.
 | 6 | `LC-053` | [Authentication, Session & JWT Attacks](web/Vulnerabilities/id/7.%20Authentication%2C%20Session%20%26%20JWT%20Attacks.md) | Lanjutan | 4-5 jam |
 | 7 | `LC-057` | [Public Key Infrastructure (PKI) & TLS 1.3](cryptography/id/4.%20Public%20Key%20Infrastructure%20%28PKI%29%20%26%20TLS%201.3.md) | Lanjutan | 5 jam |
 | 8 | `LC-072` | [SOC & Log Analysis](blue-team/id/1.%20SOC%20%26%20Log%20Analysis.md) | Pemula | 5-6 jam |
+| 9 | `LC-077` | [Cloud Security Fundamentals](cloud-security/id/1.%20Cloud%20Security%20Fundamentals.md) | Menengah | 5-6 jam |
 
-Waktu belajar jalur ini: sekitar 32 sampai 37 jam di luar fondasi inti.
+Waktu belajar jalur ini: sekitar 37 sampai 43 jam di luar fondasi inti.
 
 **Belum dibahas di Zero2Root** (pelajari dari sumber lain):
 
-- IAM cloud (AWS, Azure, GCP)
+- IAM cloud secara mendalam (evaluasi policy, akses lintas akun, kekhususan Azure dan GCP)
 - Keamanan Kubernetes
 - Infrastructure as code dan miskonfigurasinya
-- Logging dan deteksi di cloud
+- Incident response dan deteksi di cloud secara mendalam
 
 ---
 
