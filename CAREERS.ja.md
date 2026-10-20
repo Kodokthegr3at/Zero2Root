@@ -21,12 +21,12 @@
 
 | 職種 | 仕事内容 | 最初の仕事向き | 共通基礎の後のレッスン数 | 学習時間 | カバー範囲 |
 |:---|:---|:---|:---|:---|:---|
-| [SOCアナリスト](#socアナリスト) | 多くのシステムからのアラートを監視し、本物の攻撃を見分けてエスカレーションする | はい | 16 | 70-85 | 十分 |
-| [インシデント対応・フォレンジックアナリスト (DFIR)](#インシデント対応フォレンジックアナリスト-dfir) | 攻撃が確定したら引き継ぎ、封じ込め、ディスクとメモリから証拠を集め、タイムラインを再構成し、報告書を書く | いいえ | 11 | 53-63 | 十分 |
+| [SOCアナリスト](#socアナリスト) | 多くのシステムからのアラートを監視し、本物の攻撃を見分けてエスカレーションする | はい | 17 | 75-91 | 十分 |
+| [インシデント対応・フォレンジックアナリスト (DFIR)](#インシデント対応フォレンジックアナリスト-dfir) | 攻撃が確定したら引き継ぎ、封じ込め、ディスクとメモリから証拠を集め、タイムラインを再構成し、報告書を書く | いいえ | 12 | 58-69 | 十分 |
 | [スレットハンター・検知エンジニア](#スレットハンター検知エンジニア) | アラートを出すルールを書いて調整し、それをすり抜けた攻撃者を能動的に探す | いいえ | 9 | 47-57 | 十分 |
-| [ペネトレーションテスター](#ペネトレーションテスター) | 書面の許可を得てネットワークやアプリケーションを検証し、本物の攻撃者より先に弱点を見つけ、修正方法を報告する | いいえ | 25 | 100-118 | 一部 |
+| [ペネトレーションテスター](#ペネトレーションテスター) | 書面の許可を得てネットワークやアプリケーションを検証し、本物の攻撃者より先に弱点を見つけ、修正方法を報告する | いいえ | 26 | 105-124 | 一部 |
 | [Webアプリケーションペンテスター・バグハンター](#webアプリケーションペンテスターバグハンター) | WebサイトとAPIに集中し、インジェクション、アクセス制御、セッションのバグを見つけて、所有者やバグバウンティに報告する | いいえ | 15 | 59-72 | 十分 |
-| [レッドチームオペレーター](#レッドチームオペレーター) | 数週間にわたり現実的な攻撃者を演じ、ブルーチームが気付くかを試す | いいえ | 23 | 102-125 | 一部 |
+| [レッドチームオペレーター](#レッドチームオペレーター) | 数週間にわたり現実的な攻撃者を演じ、ブルーチームが気付くかを試す | いいえ | 24 | 107-131 | 一部 |
 | [マルウェアアナリスト・リバースエンジニア](#マルウェアアナリストリバースエンジニア) | 不審なファイルを分解し、何をするのか、どう検知するのか、どう後始末するのかを調べる | いいえ | 7 | 40-50 | 十分 |
 | [脆弱性リサーチャー・エクスプロイト開発者](#脆弱性リサーチャーエクスプロイト開発者) | ソフトウェアの新しいバグを見つけ、悪用可能かを示して、ベンダーが修正できるようにする | いいえ | 4 | 25-32 | 最小限 |
 | [アプリケーションセキュリティ・DevSecOpsエンジニア](#アプリケーションセキュリティdevsecopsエンジニア) | 開発者と協力してコードを安全にリリースする | いいえ | 15 | 58-72 | 一部 |
@@ -103,8 +103,9 @@
 | 14 | `LC-073` | [Network Security Monitoring (Wireshark, Zeek, Suricata)](blue-team/ja/2.%20Network%20Security%20Monitoring%20%28Wireshark%2C%20Zeek%2C%20Suricata%29.md) | 中級 | 6-7時間 |
 | 15 | `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/ja/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) | 上級 | 6-8時間 |
 | 16 | `LC-075` | [Incident Response & Digital Forensics](blue-team/ja/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) | 上級 | 7-9時間 |
+| 17 | `LC-076` | [Active Directory Fundamentals](active-directory/ja/1.%20Active%20Directory%20Fundamentals.md) | 中級 | 5-6時間 |
 
-この進路の学習時間: 共通基礎とは別に約70〜85時間。
+この進路の学習時間: 共通基礎とは別に約75〜91時間。
 
 **Zero2Rootでまだ扱っていない内容** (ほかの教材で学ぶ):
 
@@ -137,8 +138,9 @@
 | 9 | `LC-073` | [Network Security Monitoring (Wireshark, Zeek, Suricata)](blue-team/ja/2.%20Network%20Security%20Monitoring%20%28Wireshark%2C%20Zeek%2C%20Suricata%29.md) | 中級 | 6-7時間 |
 | 10 | `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/ja/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) | 上級 | 6-8時間 |
 | 11 | `LC-075` | [Incident Response & Digital Forensics](blue-team/ja/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) | 上級 | 7-9時間 |
+| 12 | `LC-076` | [Active Directory Fundamentals](active-directory/ja/1.%20Active%20Directory%20Fundamentals.md) | 中級 | 5-6時間 |
 
-この進路の学習時間: 共通基礎とは別に約53〜63時間。
+この進路の学習時間: 共通基礎とは別に約58〜69時間。
 
 **Zero2Rootでまだ扱っていない内容** (ほかの教材で学ぶ):
 
@@ -214,8 +216,9 @@
 | 23 | `LC-061` | [Privilege Escalation & Post-Exploitation](ethical-hacking/ja/4.%20Privilege%20Escalation%20%26%20Post-Exploitation.md) | 上級 | 5-6時間 |
 | 24 | `LC-067` | [Offensive Python & Go for Pentesters](programming-security/ja/Offensive%20Python%20%26%20Go%20for%20Pentesters.md) | 上級 | 6-8時間 |
 | 25 | `LC-069` | [OSINT — Open Source Intelligence Framework & Techniques](osint/ja/OSINT%20%E2%80%94%20Open%20Source%20Intelligence%20Framework%20%26%20Techniques.md) | 中級 | 5時間 |
+| 26 | `LC-076` | [Active Directory Fundamentals](active-directory/ja/1.%20Active%20Directory%20Fundamentals.md) | 中級 | 5-6時間 |
 
-この進路の学習時間: 共通基礎とは別に約100〜118時間。
+この進路の学習時間: 共通基礎とは別に約105〜124時間。
 
 **Zero2Rootでまだ扱っていない内容** (ほかの教材で学ぶ):
 
@@ -296,8 +299,9 @@
 | 21 | `LC-069` | [OSINT — Open Source Intelligence Framework & Techniques](osint/ja/OSINT%20%E2%80%94%20Open%20Source%20Intelligence%20Framework%20%26%20Techniques.md) | 中級 | 5時間 |
 | 22 | `LC-072` | [SOC & Log Analysis](blue-team/ja/1.%20SOC%20%26%20Log%20Analysis.md) | 初級 | 5-6時間 |
 | 23 | `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/ja/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) | 上級 | 6-8時間 |
+| 24 | `LC-076` | [Active Directory Fundamentals](active-directory/ja/1.%20Active%20Directory%20Fundamentals.md) | 中級 | 5-6時間 |
 
-この進路の学習時間: 共通基礎とは別に約102〜125時間。
+この進路の学習時間: 共通基礎とは別に約107〜131時間。
 
 **Zero2Rootでまだ扱っていない内容** (ほかの教材で学ぶ):
 

@@ -21,12 +21,12 @@
 
 | Role | What the job is | Good first job | Lessons after the core | Study hours | Coverage |
 |:---|:---|:---|:---|:---|:---|
-| [SOC Analyst](#soc-analyst) | Watches alerts from many systems, decides which ones are real attacks, and escalates them | yes | 16 | 70-85 | good |
-| [Incident Responder & Forensic Analyst (DFIR)](#incident-responder--forensic-analyst-dfir) | Takes over when an attack is confirmed: contains it, collects evidence from disks and memory, rebuilds the timeline, and writes the report | no | 11 | 53-63 | good |
+| [SOC Analyst](#soc-analyst) | Watches alerts from many systems, decides which ones are real attacks, and escalates them | yes | 17 | 75-91 | good |
+| [Incident Responder & Forensic Analyst (DFIR)](#incident-responder--forensic-analyst-dfir) | Takes over when an attack is confirmed: contains it, collects evidence from disks and memory, rebuilds the timeline, and writes the report | no | 12 | 58-69 | good |
 | [Threat Hunter & Detection Engineer](#threat-hunter--detection-engineer) | Writes and tunes the rules that raise alerts, and searches proactively for attackers that slipped past them | no | 9 | 47-57 | good |
-| [Penetration Tester](#penetration-tester) | Tests networks and applications with written permission, finds weaknesses before real attackers do, and reports how to fix them | no | 25 | 100-118 | partial |
+| [Penetration Tester](#penetration-tester) | Tests networks and applications with written permission, finds weaknesses before real attackers do, and reports how to fix them | no | 26 | 105-124 | partial |
 | [Web Application Pentester & Bug Hunter](#web-application-pentester--bug-hunter) | Focuses on websites and APIs: finds injection, access-control, and session bugs, and reports them to the owner or a bug bounty program | no | 15 | 59-72 | good |
-| [Red Team Operator](#red-team-operator) | Plays a realistic attacker over weeks to test whether the blue team notices | no | 23 | 102-125 | partial |
+| [Red Team Operator](#red-team-operator) | Plays a realistic attacker over weeks to test whether the blue team notices | no | 24 | 107-131 | partial |
 | [Malware Analyst & Reverse Engineer](#malware-analyst--reverse-engineer) | Takes a suspicious file apart to learn what it does, how to detect it, and how to clean up after it | no | 7 | 40-50 | good |
 | [Vulnerability Researcher & Exploit Developer](#vulnerability-researcher--exploit-developer) | Finds new bugs in software and proves whether they can be exploited, so vendors can fix them | no | 4 | 25-32 | minimal |
 | [Application Security & DevSecOps Engineer](#application-security--devsecops-engineer) | Works with developers so code ships safely: reviews designs and code, and adds security checks to the build pipeline | no | 15 | 58-72 | partial |
@@ -103,8 +103,9 @@ These lessons are shared by every role: how computers, Linux, and networks work,
 | 14 | `LC-073` | [Network Security Monitoring (Wireshark, Zeek, Suricata)](blue-team/en/2.%20Network%20Security%20Monitoring%20%28Wireshark%2C%20Zeek%2C%20Suricata%29.md) | Intermediate | 6-7h |
 | 15 | `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/en/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) | Advanced | 6-8h |
 | 16 | `LC-075` | [Incident Response & Digital Forensics](blue-team/en/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) | Advanced | 7-9h |
+| 17 | `LC-076` | [Active Directory Fundamentals](active-directory/en/1.%20Active%20Directory%20Fundamentals.md) | Intermediate | 5-6h |
 
-Study time for this path: about 70 to 85 hours on top of the core foundation.
+Study time for this path: about 75 to 91 hours on top of the core foundation.
 
 **Not covered in Zero2Root yet** (study these from other sources):
 
@@ -137,8 +138,9 @@ Study time for this path: about 70 to 85 hours on top of the core foundation.
 | 9 | `LC-073` | [Network Security Monitoring (Wireshark, Zeek, Suricata)](blue-team/en/2.%20Network%20Security%20Monitoring%20%28Wireshark%2C%20Zeek%2C%20Suricata%29.md) | Intermediate | 6-7h |
 | 10 | `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/en/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) | Advanced | 6-8h |
 | 11 | `LC-075` | [Incident Response & Digital Forensics](blue-team/en/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) | Advanced | 7-9h |
+| 12 | `LC-076` | [Active Directory Fundamentals](active-directory/en/1.%20Active%20Directory%20Fundamentals.md) | Intermediate | 5-6h |
 
-Study time for this path: about 53 to 63 hours on top of the core foundation.
+Study time for this path: about 58 to 69 hours on top of the core foundation.
 
 **Not covered in Zero2Root yet** (study these from other sources):
 
@@ -214,8 +216,9 @@ Study time for this path: about 47 to 57 hours on top of the core foundation.
 | 23 | `LC-061` | [Privilege Escalation & Post-Exploitation](ethical-hacking/en/4.%20Privilege%20Escalation%20%26%20Post-Exploitation.md) | Advanced | 5-6h |
 | 24 | `LC-067` | [Offensive Python & Go for Pentesters](programming-security/en/Offensive%20Python%20%26%20Go%20for%20Pentesters.md) | Advanced | 6-8h |
 | 25 | `LC-069` | [OSINT — Open Source Intelligence Framework & Techniques](osint/en/OSINT%20%E2%80%94%20Open%20Source%20Intelligence%20Framework%20%26%20Techniques.md) | Intermediate | 5h |
+| 26 | `LC-076` | [Active Directory Fundamentals](active-directory/en/1.%20Active%20Directory%20Fundamentals.md) | Intermediate | 5-6h |
 
-Study time for this path: about 100 to 118 hours on top of the core foundation.
+Study time for this path: about 105 to 124 hours on top of the core foundation.
 
 **Not covered in Zero2Root yet** (study these from other sources):
 
@@ -296,8 +299,9 @@ Study time for this path: about 59 to 72 hours on top of the core foundation.
 | 21 | `LC-069` | [OSINT — Open Source Intelligence Framework & Techniques](osint/en/OSINT%20%E2%80%94%20Open%20Source%20Intelligence%20Framework%20%26%20Techniques.md) | Intermediate | 5h |
 | 22 | `LC-072` | [SOC & Log Analysis](blue-team/en/1.%20SOC%20%26%20Log%20Analysis.md) | Beginner | 5-6h |
 | 23 | `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/en/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) | Advanced | 6-8h |
+| 24 | `LC-076` | [Active Directory Fundamentals](active-directory/en/1.%20Active%20Directory%20Fundamentals.md) | Intermediate | 5-6h |
 
-Study time for this path: about 102 to 125 hours on top of the core foundation.
+Study time for this path: about 107 to 131 hours on top of the core foundation.
 
 **Not covered in Zero2Root yet** (study these from other sources):
 

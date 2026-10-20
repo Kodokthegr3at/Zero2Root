@@ -2,7 +2,7 @@
 
 # Zero2Root: マスターロードマップ
 
-> 10フェーズにわたる75レッスン、それぞれインドネシア語、英語、日本語で独立して書かれている。
+> 11フェーズにわたる76レッスン、それぞれインドネシア語、英語、日本語で独立して書かれている。
 > 書籍: `~/Documents/Books/`、完全なカタログは[BOOKS.ja.md](BOOKS.ja.md)を参照。
 > このページは日本語版であり、日本語のレッスンファイルにのみリンクしている。
 > 著者: [kodoktheGr3at](https://github.com/Kodokthegr3at/) | 2026
@@ -12,11 +12,11 @@
 ## このロードマップの使い方
 
 0. 進む方向がまだ決まっていなければ、まず[CAREERS.ja.md](CAREERS.ja.md)で職種を選ぶ。どのレッスンをどの順で受ければよいかが分かる。
-1. すでにあるフェーズを習得済みでない限り、`LC-001`から`LC-075`の順に進める。
+1. すでにあるフェーズを習得済みでない限り、`LC-001`から`LC-076`の順に進める。
 2. 各レッスンファイルの冒頭にCurriculum IDブロックがある（`LC-CURRICULUM`で検索）。
 3. 書籍対応の行を読み、[BOOKS.ja.md](BOOKS.ja.md)から参照されている章を開く。
 4. セキュリティノートとチートシートのセクションをラボVMで実際に手を動かして進める。
-5. 完全習得までの推定総時間: おおよそ305〜380時間。
+5. 完全習得までの推定総時間: おおよそ310〜385時間。
 
 ```mermaid
 flowchart TD
@@ -29,6 +29,7 @@ flowchart TD
     P6 --> P7[Phase 7: Specialized LC-066-070]
     P1 --> P8[Phase 8: Bonus LC-071]
     P5 --> P9[Phase 9: Blue Team LC-072-075]
+    P2 --> P10[Phase 10: Active Directory LC-076]
 ```
 
 ---
@@ -340,5 +341,23 @@ flowchart TD
 | `LC-073` | Bejtlich, The Practice of Network Security Monitoring; Sanders, Practical Packet Analysis; Kurose & Ross, Computer Networking Ch.1-3 |
 | `LC-074` | MITRE ATT&CK Enterprise Matrix; Sigma Specification; YARA Documentation; Sikorski & Honig, Practical Malware Analysis Ch.1-3 |
 | `LC-075` | NIST SP 800-61r2; NIST SP 800-86 (Forensic Techniques); Carrier, File System Forensic Analysis; Ligh et al., The Art of Memory Forensics |
+
+---
+
+## フェーズ 10: Active Directoryセキュリティ (`LC-076`)
+
+カテゴリ: **専門分野**
+
+主要な書籍: Desmond et al., Microsoft Learn.
+
+| ID | トピック | レベル | 時間 | 前提 |
+|:---|:------|:------|:------|:---------------|
+| `LC-076` | [Active Directory Fundamentals](active-directory/ja/1.%20Active%20Directory%20Fundamentals.md) | Intermediate | 5-6h | LC-006, LC-026, LC-041 |
+
+**このフェーズの書籍対応の詳細**
+
+| ID | 書籍の章 |
+|:---|:---------------|
+| `LC-076` | Desmond et al., Active Directory 5th Ed. Ch.1-4; Microsoft Learn, AD DS Overview |
 
 ---

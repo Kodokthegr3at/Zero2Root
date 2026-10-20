@@ -2,7 +2,7 @@
 
 # Zero2Root: Master Roadmap
 
-> 75 lessons across 10 phases, each written independently in Bahasa Indonesia, English, and Japanese.
+> 76 lessons across 11 phases, each written independently in Bahasa Indonesia, English, and Japanese.
 > Books: `~/Documents/Books/`, see [BOOKS.md](BOOKS.md) for the full catalog.
 > This page is the English edition and links only to the English lesson files.
 > Author: [kodoktheGr3at](https://github.com/Kodokthegr3at/) | 2026
@@ -12,11 +12,11 @@
 ## How to use this roadmap
 
 0. Not sure where you are heading? Pick a role in [CAREERS.md](CAREERS.md) first. It tells you which of these lessons to take and in what order.
-1. Follow the order `LC-001` through `LC-075` unless you have already mastered a phase.
+1. Follow the order `LC-001` through `LC-076` unless you have already mastered a phase.
 2. Each lesson file carries a Curriculum ID block near the top (search for `LC-CURRICULUM`).
 3. Read the book map line, then open the referenced chapters from [BOOKS.md](BOOKS.md).
 4. Work through the security notes and cheatsheet sections hands-on in a lab VM.
-5. Estimated total time for full mastery: roughly 305 to 380 hours.
+5. Estimated total time for full mastery: roughly 310 to 385 hours.
 
 ```mermaid
 flowchart TD
@@ -29,6 +29,7 @@ flowchart TD
     P6 --> P7[Phase 7: Specialized LC-066-070]
     P1 --> P8[Phase 8: Bonus LC-071]
     P5 --> P9[Phase 9: Blue Team LC-072-075]
+    P2 --> P10[Phase 10: Active Directory LC-076]
 ```
 
 ---
@@ -340,5 +341,23 @@ Primary books: Bejtlich, Carrier, Kurose & Ross, Ligh et al., NIST SP 800-61r2 /
 | `LC-073` | Bejtlich, The Practice of Network Security Monitoring; Sanders, Practical Packet Analysis; Kurose & Ross, Computer Networking Ch.1-3 |
 | `LC-074` | MITRE ATT&CK Enterprise Matrix; Sigma Specification; YARA Documentation; Sikorski & Honig, Practical Malware Analysis Ch.1-3 |
 | `LC-075` | NIST SP 800-61r2; NIST SP 800-86 (Forensic Techniques); Carrier, File System Forensic Analysis; Ligh et al., The Art of Memory Forensics |
+
+---
+
+## Phase 10: Active Directory Security (`LC-076`)
+
+Category: **Specialized domains**
+
+Primary books: Desmond et al., Microsoft Learn.
+
+| ID | Topic | Level | Hours | Prerequisites |
+|:---|:------|:------|:------|:---------------|
+| `LC-076` | [Active Directory Fundamentals](active-directory/en/1.%20Active%20Directory%20Fundamentals.md) | Intermediate | 5-6h | LC-006, LC-026, LC-041 |
+
+**Book map detail for this phase**
+
+| ID | Book chapters |
+|:---|:---------------|
+| `LC-076` | Desmond et al., Active Directory 5th Ed. Ch.1-4; Microsoft Learn, AD DS Overview |
 
 ---

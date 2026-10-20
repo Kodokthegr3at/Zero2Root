@@ -2,7 +2,7 @@
 
 # Zero2Root: Roadmap Utama
 
-> 75 pelajaran dalam 10 fase, masing-masing ditulis secara independen dalam Bahasa Indonesia, Inggris, dan Jepang.
+> 76 pelajaran dalam 11 fase, masing-masing ditulis secara independen dalam Bahasa Indonesia, Inggris, dan Jepang.
 > Buku: `~/Documents/Books/`, lihat [BOOKS.id.md](BOOKS.id.md) untuk katalog lengkap.
 > Halaman ini adalah edisi Bahasa Indonesia dan hanya menautkan ke file pelajaran berbahasa Indonesia.
 > Penulis: [kodoktheGr3at](https://github.com/Kodokthegr3at/) | 2026
@@ -12,11 +12,11 @@
 ## Cara menggunakan roadmap ini
 
 0. Belum tahu mau ke mana? Pilih dulu peran di [CAREERS.id.md](CAREERS.id.md). Halaman itu memberi tahu pelajaran mana yang perlu diambil dan urutannya.
-1. Ikuti urutan `LC-001` sampai `LC-075`, kecuali kamu sudah menguasai suatu fase.
+1. Ikuti urutan `LC-001` sampai `LC-076`, kecuali kamu sudah menguasai suatu fase.
 2. Setiap file pelajaran punya blok Curriculum ID di bagian atas (cari `LC-CURRICULUM`).
 3. Baca baris peta buku, lalu buka bab yang dirujuk dari [BOOKS.id.md](BOOKS.id.md).
 4. Kerjakan bagian catatan keamanan dan cheatsheet secara langsung di lab VM.
-5. Estimasi total waktu untuk penguasaan penuh: sekitar 305 sampai 380 jam.
+5. Estimasi total waktu untuk penguasaan penuh: sekitar 310 sampai 385 jam.
 
 ```mermaid
 flowchart TD
@@ -29,6 +29,7 @@ flowchart TD
     P6 --> P7[Phase 7: Specialized LC-066-070]
     P1 --> P8[Phase 8: Bonus LC-071]
     P5 --> P9[Phase 9: Blue Team LC-072-075]
+    P2 --> P10[Phase 10: Active Directory LC-076]
 ```
 
 ---
@@ -340,5 +341,23 @@ Buku utama: Bejtlich, Carrier, Kurose & Ross, Ligh et al., NIST SP 800-61r2 / 80
 | `LC-073` | Bejtlich, The Practice of Network Security Monitoring; Sanders, Practical Packet Analysis; Kurose & Ross, Computer Networking Ch.1-3 |
 | `LC-074` | MITRE ATT&CK Enterprise Matrix; Sigma Specification; YARA Documentation; Sikorski & Honig, Practical Malware Analysis Ch.1-3 |
 | `LC-075` | NIST SP 800-61r2; NIST SP 800-86 (Forensic Techniques); Carrier, File System Forensic Analysis; Ligh et al., The Art of Memory Forensics |
+
+---
+
+## Fase 10: Keamanan Active Directory (`LC-076`)
+
+Kategori: **Domain spesialisasi**
+
+Buku utama: Desmond et al., Microsoft Learn.
+
+| ID | Topik | Level | Jam | Prasyarat |
+|:---|:------|:------|:------|:---------------|
+| `LC-076` | [Active Directory Fundamentals](active-directory/id/1.%20Active%20Directory%20Fundamentals.md) | Intermediate | 5-6h | LC-006, LC-026, LC-041 |
+
+**Detail peta buku untuk fase ini**
+
+| ID | Bab buku |
+|:---|:---------------|
+| `LC-076` | Desmond et al., Active Directory 5th Ed. Ch.1-4; Microsoft Learn, AD DS Overview |
 
 ---

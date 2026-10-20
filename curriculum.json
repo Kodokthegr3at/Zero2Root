@@ -1,6 +1,6 @@
 {
   "version": "2026.1",
-  "total_lessons": 75,
+  "total_lessons": 76,
   "phases": [
     {
       "id": 0,
@@ -61,6 +61,12 @@
       "name": "Blue Team & Defensive Security",
       "lessons": "LC-072-075",
       "category": "defensive"
+    },
+    {
+      "id": 10,
+      "name": "Active Directory Security",
+      "lessons": "LC-076",
+      "category": "specialized"
     }
   ],
   "lessons": [
@@ -1121,6 +1127,20 @@
       ],
       "dir": "blue-team",
       "file": "4. Incident Response & Digital Forensics.md"
+    },
+    {
+      "id": "LC-076",
+      "phase": 10,
+      "phase_name": "Active Directory",
+      "hours": "5-6h",
+      "level": "Intermediate",
+      "prerequisites": "LC-006, LC-026, LC-041",
+      "books_short": [
+        "Desmond et al., Active Directory 5th Ed. Ch.1-4",
+        "Microsoft Learn, AD DS Overview"
+      ],
+      "dir": "active-directory",
+      "file": "1. Active Directory Fundamentals.md"
     }
   ],
   "core_foundation": [
@@ -1177,7 +1197,8 @@
         "LC-072",
         "LC-073",
         "LC-074",
-        "LC-075"
+        "LC-075",
+        "LC-076"
       ],
       "not_covered_yet": [
         "Active Directory and Windows event logs in depth",
@@ -1202,7 +1223,8 @@
         "LC-072",
         "LC-073",
         "LC-074",
-        "LC-075"
+        "LC-075",
+        "LC-076"
       ],
       "not_covered_yet": [
         "Windows registry and artifact forensics in depth",
@@ -1261,7 +1283,8 @@
         "LC-060",
         "LC-061",
         "LC-067",
-        "LC-069"
+        "LC-069",
+        "LC-076"
       ],
       "not_covered_yet": [
         "Active Directory attacks and defenses (most internal tests involve AD)",
@@ -1325,7 +1348,8 @@
         "LC-068",
         "LC-069",
         "LC-072",
-        "LC-074"
+        "LC-074",
+        "LC-076"
       ],
       "not_covered_yet": [
         "Active Directory attack paths",

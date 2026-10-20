@@ -21,12 +21,12 @@
 
 | Peran | Pekerjaannya | Cocok untuk kerja pertama | Pelajaran setelah fondasi | Jam belajar | Cakupan |
 |:---|:---|:---|:---|:---|:---|
-| [SOC Analyst](#soc-analyst) | Memantau alert dari banyak sistem, memilah mana yang serangan sungguhan, lalu meneruskannya | ya | 16 | 70-85 | baik |
-| [Incident Responder & Analis Forensik (DFIR)](#incident-responder--analis-forensik-dfir) | Mengambil alih saat serangan sudah pasti: membatasi dampaknya, mengumpulkan bukti dari disk dan memori, menyusun ulang timeline, lalu menulis laporan | tidak | 11 | 53-63 | baik |
+| [SOC Analyst](#soc-analyst) | Memantau alert dari banyak sistem, memilah mana yang serangan sungguhan, lalu meneruskannya | ya | 17 | 75-91 | baik |
+| [Incident Responder & Analis Forensik (DFIR)](#incident-responder--analis-forensik-dfir) | Mengambil alih saat serangan sudah pasti: membatasi dampaknya, mengumpulkan bukti dari disk dan memori, menyusun ulang timeline, lalu menulis laporan | tidak | 12 | 58-69 | baik |
 | [Threat Hunter & Detection Engineer](#threat-hunter--detection-engineer) | Menulis dan menyetel aturan yang memicu alert, lalu secara aktif mencari penyerang yang lolos dari aturan itu | tidak | 9 | 47-57 | baik |
-| [Penetration Tester](#penetration-tester) | Menguji jaringan dan aplikasi dengan izin tertulis, menemukan kelemahan sebelum penyerang sungguhan, lalu melaporkan cara memperbaikinya | tidak | 25 | 100-118 | sebagian |
+| [Penetration Tester](#penetration-tester) | Menguji jaringan dan aplikasi dengan izin tertulis, menemukan kelemahan sebelum penyerang sungguhan, lalu melaporkan cara memperbaikinya | tidak | 26 | 105-124 | sebagian |
 | [Web Application Pentester & Bug Hunter](#web-application-pentester--bug-hunter) | Fokus pada website dan API: mencari bug injection, kontrol akses, dan session, lalu melaporkannya ke pemilik atau program bug bounty | tidak | 15 | 59-72 | baik |
-| [Red Team Operator](#red-team-operator) | Berperan sebagai penyerang realistis selama berminggu-minggu untuk menguji apakah blue team menyadarinya | tidak | 23 | 102-125 | sebagian |
+| [Red Team Operator](#red-team-operator) | Berperan sebagai penyerang realistis selama berminggu-minggu untuk menguji apakah blue team menyadarinya | tidak | 24 | 107-131 | sebagian |
 | [Malware Analyst & Reverse Engineer](#malware-analyst--reverse-engineer) | Membongkar file mencurigakan untuk tahu apa yang dilakukannya, cara mendeteksinya, dan cara membersihkan dampaknya | tidak | 7 | 40-50 | baik |
 | [Vulnerability Researcher & Exploit Developer](#vulnerability-researcher--exploit-developer) | Mencari bug baru di software dan membuktikan apakah bisa dieksploitasi, supaya vendor bisa memperbaikinya | tidak | 4 | 25-32 | minim |
 | [Application Security & DevSecOps Engineer](#application-security--devsecops-engineer) | Bekerja bersama developer supaya kode dirilis dengan aman: meninjau desain dan kode, serta menambahkan pengecekan keamanan ke pipeline build | tidak | 15 | 58-72 | sebagian |
@@ -103,8 +103,9 @@ Pelajaran ini dipakai bersama oleh semua peran: cara kerja komputer, Linux, dan 
 | 14 | `LC-073` | [Network Security Monitoring (Wireshark, Zeek, Suricata)](blue-team/id/2.%20Network%20Security%20Monitoring%20%28Wireshark%2C%20Zeek%2C%20Suricata%29.md) | Menengah | 6-7 jam |
 | 15 | `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/id/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) | Lanjutan | 6-8 jam |
 | 16 | `LC-075` | [Incident Response & Digital Forensics](blue-team/id/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) | Lanjutan | 7-9 jam |
+| 17 | `LC-076` | [Active Directory Fundamentals](active-directory/id/1.%20Active%20Directory%20Fundamentals.md) | Menengah | 5-6 jam |
 
-Waktu belajar jalur ini: sekitar 70 sampai 85 jam di luar fondasi inti.
+Waktu belajar jalur ini: sekitar 75 sampai 91 jam di luar fondasi inti.
 
 **Belum dibahas di Zero2Root** (pelajari dari sumber lain):
 
@@ -137,8 +138,9 @@ Waktu belajar jalur ini: sekitar 70 sampai 85 jam di luar fondasi inti.
 | 9 | `LC-073` | [Network Security Monitoring (Wireshark, Zeek, Suricata)](blue-team/id/2.%20Network%20Security%20Monitoring%20%28Wireshark%2C%20Zeek%2C%20Suricata%29.md) | Menengah | 6-7 jam |
 | 10 | `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/id/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) | Lanjutan | 6-8 jam |
 | 11 | `LC-075` | [Incident Response & Digital Forensics](blue-team/id/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) | Lanjutan | 7-9 jam |
+| 12 | `LC-076` | [Active Directory Fundamentals](active-directory/id/1.%20Active%20Directory%20Fundamentals.md) | Menengah | 5-6 jam |
 
-Waktu belajar jalur ini: sekitar 53 sampai 63 jam di luar fondasi inti.
+Waktu belajar jalur ini: sekitar 58 sampai 69 jam di luar fondasi inti.
 
 **Belum dibahas di Zero2Root** (pelajari dari sumber lain):
 
@@ -214,8 +216,9 @@ Waktu belajar jalur ini: sekitar 47 sampai 57 jam di luar fondasi inti.
 | 23 | `LC-061` | [Privilege Escalation & Post-Exploitation](ethical-hacking/id/4.%20Privilege%20Escalation%20%26%20Post-Exploitation.md) | Lanjutan | 5-6 jam |
 | 24 | `LC-067` | [Offensive Python & Go for Pentesters](programming-security/id/Offensive%20Python%20%26%20Go%20for%20Pentesters.md) | Lanjutan | 6-8 jam |
 | 25 | `LC-069` | [OSINT — Open Source Intelligence Framework & Techniques](osint/id/OSINT%20%E2%80%94%20Open%20Source%20Intelligence%20Framework%20%26%20Techniques.md) | Menengah | 5 jam |
+| 26 | `LC-076` | [Active Directory Fundamentals](active-directory/id/1.%20Active%20Directory%20Fundamentals.md) | Menengah | 5-6 jam |
 
-Waktu belajar jalur ini: sekitar 100 sampai 118 jam di luar fondasi inti.
+Waktu belajar jalur ini: sekitar 105 sampai 124 jam di luar fondasi inti.
 
 **Belum dibahas di Zero2Root** (pelajari dari sumber lain):
 
@@ -296,8 +299,9 @@ Waktu belajar jalur ini: sekitar 59 sampai 72 jam di luar fondasi inti.
 | 21 | `LC-069` | [OSINT — Open Source Intelligence Framework & Techniques](osint/id/OSINT%20%E2%80%94%20Open%20Source%20Intelligence%20Framework%20%26%20Techniques.md) | Menengah | 5 jam |
 | 22 | `LC-072` | [SOC & Log Analysis](blue-team/id/1.%20SOC%20%26%20Log%20Analysis.md) | Pemula | 5-6 jam |
 | 23 | `LC-074` | [Threat Hunting & Detection Engineering (Sigma, YARA, ATT&CK)](blue-team/id/3.%20Threat%20Hunting%20%26%20Detection%20Engineering%20%28Sigma%2C%20YARA%2C%20ATT%26CK%29.md) | Lanjutan | 6-8 jam |
+| 24 | `LC-076` | [Active Directory Fundamentals](active-directory/id/1.%20Active%20Directory%20Fundamentals.md) | Menengah | 5-6 jam |
 
-Waktu belajar jalur ini: sekitar 102 sampai 125 jam di luar fondasi inti.
+Waktu belajar jalur ini: sekitar 107 sampai 131 jam di luar fondasi inti.
 
 **Belum dibahas di Zero2Root** (pelajari dari sumber lain):
 
