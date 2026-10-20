@@ -2,7 +2,7 @@
 
 # Zero2Root: Master Roadmap
 
-> 78 lessons across 13 phases, each written independently in Bahasa Indonesia, English, and Japanese.
+> 79 lessons across 14 phases, each written independently in Bahasa Indonesia, English, and Japanese.
 > Books: `~/Documents/Books/`, see [BOOKS.md](BOOKS.md) for the full catalog.
 > This page is the English edition and links only to the English lesson files.
 > Author: [kodoktheGr3at](https://github.com/Kodokthegr3at/) | 2026
@@ -12,11 +12,11 @@
 ## How to use this roadmap
 
 0. Not sure where you are heading? Pick a role in [CAREERS.md](CAREERS.md) first. It tells you which of these lessons to take and in what order.
-1. Follow the order `LC-001` through `LC-078` unless you have already mastered a phase.
+1. Follow the order `LC-001` through `LC-079` unless you have already mastered a phase.
 2. Each lesson file carries a Curriculum ID block near the top (search for `LC-CURRICULUM`).
 3. Read the book map line, then open the referenced chapters from [BOOKS.md](BOOKS.md).
 4. Work through the security notes and cheatsheet sections hands-on in a lab VM.
-5. Estimated total time for full mastery: roughly 320 to 400 hours.
+5. Estimated total time for full mastery: roughly 325 to 405 hours.
 
 ```mermaid
 flowchart TD
@@ -32,6 +32,7 @@ flowchart TD
     P2 --> P10[Phase 10: Active Directory LC-076]
     P3 --> P11[Phase 11: Cloud Security LC-077]
     P3 --> P12[Phase 12: DevSecOps LC-078]
+    P9 --> P13[Phase 13: GRC LC-079]
 ```
 
 ---
@@ -397,5 +398,23 @@ Primary books: Kim et al., Shostack, OWASP DevSecOps Guideline.
 | ID | Book chapters |
 |:---|:---------------|
 | `LC-078` | Kim et al., The DevOps Handbook 2nd Ed. Ch.22-23; Shostack, Threat Modeling Ch.1-3; OWASP DevSecOps Guideline |
+
+---
+
+## Phase 13: Governance, Risk & Compliance (`LC-079`)
+
+Category: **Specialized domains**
+
+Primary books: Hubbard & Seiersen, ISO/IEC 27001, NIST CSF 2.0, NIST SP 800-30.
+
+| ID | Topic | Level | Hours | Prerequisites |
+|:---|:------|:------|:------|:---------------|
+| `LC-079` | [GRC Fundamentals](grc/en/1.%20GRC%20Fundamentals.md) | Beginner | 5-6h | LC-068, LC-072 |
+
+**Book map detail for this phase**
+
+| ID | Book chapters |
+|:---|:---------------|
+| `LC-079` | NIST CSF 2.0; ISO/IEC 27001:2022; NIST SP 800-30 Rev.1; Hubbard & Seiersen, How to Measure Anything in Cybersecurity Risk Ch.1-4 |
 
 ---

@@ -2,7 +2,7 @@
 
 # Zero2Root: Roadmap Utama
 
-> 78 pelajaran dalam 13 fase, masing-masing ditulis secara independen dalam Bahasa Indonesia, Inggris, dan Jepang.
+> 79 pelajaran dalam 14 fase, masing-masing ditulis secara independen dalam Bahasa Indonesia, Inggris, dan Jepang.
 > Buku: `~/Documents/Books/`, lihat [BOOKS.id.md](BOOKS.id.md) untuk katalog lengkap.
 > Halaman ini adalah edisi Bahasa Indonesia dan hanya menautkan ke file pelajaran berbahasa Indonesia.
 > Penulis: [kodoktheGr3at](https://github.com/Kodokthegr3at/) | 2026
@@ -12,11 +12,11 @@
 ## Cara menggunakan roadmap ini
 
 0. Belum tahu mau ke mana? Pilih dulu peran di [CAREERS.id.md](CAREERS.id.md). Halaman itu memberi tahu pelajaran mana yang perlu diambil dan urutannya.
-1. Ikuti urutan `LC-001` sampai `LC-078`, kecuali kamu sudah menguasai suatu fase.
+1. Ikuti urutan `LC-001` sampai `LC-079`, kecuali kamu sudah menguasai suatu fase.
 2. Setiap file pelajaran punya blok Curriculum ID di bagian atas (cari `LC-CURRICULUM`).
 3. Baca baris peta buku, lalu buka bab yang dirujuk dari [BOOKS.id.md](BOOKS.id.md).
 4. Kerjakan bagian catatan keamanan dan cheatsheet secara langsung di lab VM.
-5. Estimasi total waktu untuk penguasaan penuh: sekitar 320 sampai 400 jam.
+5. Estimasi total waktu untuk penguasaan penuh: sekitar 325 sampai 405 jam.
 
 ```mermaid
 flowchart TD
@@ -32,6 +32,7 @@ flowchart TD
     P2 --> P10[Phase 10: Active Directory LC-076]
     P3 --> P11[Phase 11: Cloud Security LC-077]
     P3 --> P12[Phase 12: DevSecOps LC-078]
+    P9 --> P13[Phase 13: GRC LC-079]
 ```
 
 ---
@@ -397,5 +398,23 @@ Buku utama: Kim et al., Shostack, OWASP DevSecOps Guideline.
 | ID | Bab buku |
 |:---|:---------------|
 | `LC-078` | Kim et al., The DevOps Handbook 2nd Ed. Ch.22-23; Shostack, Threat Modeling Ch.1-3; OWASP DevSecOps Guideline |
+
+---
+
+## Fase 13: Governance, Risk & Compliance (`LC-079`)
+
+Kategori: **Domain spesialisasi**
+
+Buku utama: Hubbard & Seiersen, ISO/IEC 27001, NIST CSF 2.0, NIST SP 800-30.
+
+| ID | Topik | Level | Jam | Prasyarat |
+|:---|:------|:------|:------|:---------------|
+| `LC-079` | [GRC Fundamentals](grc/id/1.%20GRC%20Fundamentals.md) | Beginner | 5-6h | LC-068, LC-072 |
+
+**Detail peta buku untuk fase ini**
+
+| ID | Bab buku |
+|:---|:---------------|
+| `LC-079` | NIST CSF 2.0; ISO/IEC 27001:2022; NIST SP 800-30 Rev.1; Hubbard & Seiersen, How to Measure Anything in Cybersecurity Risk Ch.1-4 |
 
 ---

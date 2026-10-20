@@ -4,7 +4,7 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/Kodokthegr3at/Zero2Root?style=social)](https://github.com/Kodokthegr3at/Zero2Root/stargazers)
 
-![Lessons](https://img.shields.io/badge/lessons-78-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-beginner%20%E2%86%92%20advanced-orange) ![Phases](https://img.shields.io/badge/phases-13-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
+![Lessons](https://img.shields.io/badge/lessons-79-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-beginner%20%E2%86%92%20advanced-orange) ![Phases](https://img.shields.io/badge/phases-14-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
 > **ゼロからroot(管理者権限)まで** — Linux内部構造、ネットワーキング、Webアプリケーションセキュリティ、暗号技術、リバースエンジニアリングなどを扱う、3言語対応のサイバーセキュリティ知識ベース兼キャリアロードマップで、攻撃と防御の両方を含む。このページは日本語版であり、日本語のレッスンファイルにのみリンクしている。他の2言語は上のEnglishまたはBahasa Indonesiaを開くこと。
 
@@ -14,7 +14,7 @@
 
 | ドキュメント | 目的 |
 |:---------|:--------|
-| [ROADMAP.ja.md](ROADMAP.ja.md) | 主要な学習パス: 78レッスン（`LC-001`から`LC-078`）、13フェーズ、前提条件 |
+| [ROADMAP.ja.md](ROADMAP.ja.md) | 主要な学習パス: 79レッスン（`LC-001`から`LC-079`）、14フェーズ、前提条件 |
 | [CAREERS.ja.md](CAREERS.ja.md) | キャリアパス: サイバーセキュリティの13職種、それぞれのレッスン、学習時間、まだ扱っていない内容 |
 | [BOOKS.ja.md](BOOKS.ja.md) | `~/Documents/Books/`にあるローカルPDFカタログ、各レッスンに対応 |
 | [curriculum.json](curriculum.json) | 機械可読なカリキュラムマニフェスト（ID、パス、書籍の章） |
@@ -33,7 +33,7 @@
 | 攻撃側 (レッドチーム) | 3, 5 | Web攻撃、ペンテスト手法、スキャン、エクスプロイト、権限昇格。ラボと許可された検証でのみ使う。 |
 | エクスプロイトとリバースエンジニアリング | 6 | メモリのバグ、シェルコード、アセンブリ、マルウェアの静的・動的解析。 |
 | 防御側 (ブルーチーム) | 9 | SOCとログ、ネットワーク監視、スレットハンティング、インシデント対応とフォレンジック。 |
-| 専門分野 | 7, 10, 11, 12 | Active Directory、クラウドセキュリティ、DevSecOps、Android、PythonとGoによるセキュリティツール開発、ソーシャルエンジニアリング、OSINT、ハードウェアとIoT。 |
+| 専門分野 | 7, 10, 11, 12, 13 | Active Directory、クラウドセキュリティ、DevSecOps、GRC、Android、PythonとGoによるセキュリティツール開発、ソーシャルエンジニアリング、OSINT、ハードウェアとIoT。 |
 | ボーナス | 8 | エディタと生産性のスキル。 |
 
 ---
@@ -67,6 +67,7 @@ Zero2Root/
   active-directory/     # ドメイン、ドメインコントローラー、オブジェクト、グループポリシー、トラスト
   cloud-security/       # 責任共有、IAM、ストレージ、ネットワーク、ログ、監査
   devsecops/            # 脅威モデリング、シークレットスキャン、SAST、SCA、DAST、CIパイプラインの保護
+  grc/                  # ポリシー、リスクマネジメント、管理策、フレームワーク、個人情報保護法、監査
 ```
 
 すべてのトピックフォルダは同じレイアウトに従う。基本ディレクトリの下に`id/`、`en/`、`ja/`サブフォルダがあり、それぞれにその言語向けに独立して翻訳・執筆された同じレッスンファイル群が入っている。
@@ -304,6 +305,16 @@ SOCとログ分析、ネットワーク監視、スレットハンティング�
 
 ---
 
+## 18. ガバナンス、リスク、コンプライアンス (`grc/`)
+
+ポリシー、リスクマネジメント、管理策、フレームワーク、個人情報保護法、監査。
+
+| LC-ID | トピック |
+|:------|:------|
+| `LC-079` | [GRC Fundamentals](grc/ja/1.%20GRC%20Fundamentals.md) |
+
+---
+
 ## カバー状況
 
 Zero2Rootはまだすべてを扱っていない。以下のトピックは現在ないので、自分の進路に必要ならほかの教材で学んでほしい。[CAREERS.ja.md](CAREERS.ja.md)の各職種にも、不足している内容を記載している。
@@ -314,7 +325,7 @@ Zero2Rootはまだすべてを扱っていない。以下のトピックは現�
 | クラウドセキュリティ: IAMの詳細、Kubernetes、Infrastructure as Code (基礎はLC-077にある) | 一部あり | クラウドセキュリティエンジニア |
 | DevSecOps: 成果物の署名、SLSA、シークレット管理基盤 (基礎はLC-078にある) | 一部あり | AppSec・DevSecOpsエンジニア |
 | AIとLLMのセキュリティ | 予定あり | AppSec、レッドチーム |
-| GRC (リスク、ISO 27001、NIST CSF、個人情報保護法) | 予定あり | GRCアナリスト |
+| GRC: ISO 27001の導入、定量的リスク分析、業界ごとの規制 (基礎はLC-079にある) | 一部あり | GRCアナリスト |
 | APIセキュリティ、ヒープのエクスプロイト、ファジング、iOS | 未定 | Webペンテスター、脆弱性リサーチャー、モバイル |
 
 ---

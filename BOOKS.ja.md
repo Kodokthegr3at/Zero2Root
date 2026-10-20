@@ -100,4 +100,4 @@
 
 ---
 
-> `LC-001`から`LC-078`までの順序立てられた学習パスは[ROADMAP.ja.md](ROADMAP.ja.md)を参照。
+> `LC-001`から`LC-079`までの順序立てられた学習パスは[ROADMAP.ja.md](ROADMAP.ja.md)を参照。

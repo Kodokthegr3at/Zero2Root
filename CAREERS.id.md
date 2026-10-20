@@ -33,7 +33,7 @@
 | [Cloud Security Engineer](#cloud-security-engineer) | Mengamankan akun, identitas, jaringan, dan workload di AWS, Azure, atau Google Cloud | tidak | 10 | 43-50 | sebagian |
 | [Threat Intelligence & OSINT Analyst](#threat-intelligence--osint-analyst) | Melacak kelompok penyerang dan metodenya dari sumber publik maupun privat, lalu mengubahnya jadi saran yang bisa dipakai tim defender | tidak | 5 | 25-30 | sebagian |
 | [Spesialis Keamanan Mobile & IoT](#spesialis-keamanan-mobile--iot) | Menguji aplikasi ponsel, perangkat pintar, dan firmware-nya, mulai dari kode aplikasi sampai papan sirkuit | tidak | 14 | 66-81 | sebagian |
-| [GRC & Security Compliance Analyst](#grc--security-compliance-analyst) | Mengelola risiko, kebijakan, dan audit berdasarkan standar seperti ISO 27001 atau NIST CSF | ya | 5 | 25-29 | minim |
+| [GRC & Security Compliance Analyst](#grc--security-compliance-analyst) | Mengelola risiko, kebijakan, dan audit berdasarkan standar seperti ISO 27001 atau NIST CSF | ya | 6 | 30-35 | sebagian |
 
 ---
 
@@ -508,7 +508,7 @@ Waktu belajar jalur ini: sekitar 66 sampai 81 jam di luar fondasi inti.
 **Pekerjaannya:** Mengelola risiko, kebijakan, dan audit berdasarkan standar seperti ISO 27001 atau NIST CSF. Lebih sedikit bekerja dengan tool, lebih banyak dengan orang dan dokumen.
 
 **Cocok untuk kerja pertama:** ya  
-**Cakupan di Zero2Root:** minim
+**Cakupan di Zero2Root:** sebagian
 
 **Pelajaran, berurutan (setelah fondasi inti):**
 
@@ -519,12 +519,13 @@ Waktu belajar jalur ini: sekitar 66 sampai 81 jam di luar fondasi inti.
 | 3 | `LC-068` | [Social Engineering — Principles, Vectors & Defense](social-engineering/id/Social%20Engineering%20%E2%80%94%20Principles%2C%20Vectors%20%26%20Defense.md) | Menengah | 4-5 jam |
 | 4 | `LC-072` | [SOC & Log Analysis](blue-team/id/1.%20SOC%20%26%20Log%20Analysis.md) | Pemula | 5-6 jam |
 | 5 | `LC-075` | [Incident Response & Digital Forensics](blue-team/id/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) | Lanjutan | 7-9 jam |
+| 6 | `LC-079` | [GRC Fundamentals](grc/id/1.%20GRC%20Fundamentals.md) | Pemula | 5-6 jam |
 
-Waktu belajar jalur ini: sekitar 25 sampai 29 jam di luar fondasi inti.
+Waktu belajar jalur ini: sekitar 30 sampai 35 jam di luar fondasi inti.
 
 **Belum dibahas di Zero2Root** (pelajari dari sumber lain):
 
-- Metode penilaian risiko
-- ISO 27001, NIST CSF, dan kerangka lainnya
-- Hukum perlindungan data Indonesia dan Jepang (UU PDP, APPI)
-- Audit dan pengumpulan bukti
+- Menerapkan ISO 27001 langkah demi langkah (dokumen ISMS, audit internal)
+- Analisis risiko kuantitatif (FAIR) secara mendalam
+- Regulasi sektor (keuangan, kesehatan, pembayaran)
+- Privacy engineering dan penilaian dampak pelindungan data (DPIA)

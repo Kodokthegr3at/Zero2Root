@@ -33,7 +33,7 @@
 | [Cloud Security Engineer](#cloud-security-engineer) | Secures accounts, identities, networks, and workloads on AWS, Azure, or Google Cloud | no | 10 | 43-50 | partial |
 | [Threat Intelligence & OSINT Analyst](#threat-intelligence--osint-analyst) | Tracks attacker groups and their methods from public and private sources, and turns that into advice the defenders can use | no | 5 | 25-30 | partial |
 | [Mobile & IoT Security Specialist](#mobile--iot-security-specialist) | Tests phone apps, smart devices, and their firmware, from the app code down to the circuit board | no | 14 | 66-81 | partial |
-| [GRC & Security Compliance Analyst](#grc--security-compliance-analyst) | Manages risk, policies, and audits against standards like ISO 27001 or NIST CSF | yes | 5 | 25-29 | minimal |
+| [GRC & Security Compliance Analyst](#grc--security-compliance-analyst) | Manages risk, policies, and audits against standards like ISO 27001 or NIST CSF | yes | 6 | 30-35 | partial |
 
 ---
 
@@ -508,7 +508,7 @@ Study time for this path: about 66 to 81 hours on top of the core foundation.
 **What the job is:** Manages risk, policies, and audits against standards like ISO 27001 or NIST CSF. Less hands-on with tools, more with people and documents.
 
 **Good first job:** yes  
-**Coverage in Zero2Root:** minimal
+**Coverage in Zero2Root:** partial
 
 **Lessons, in order (after the core foundation):**
 
@@ -519,12 +519,13 @@ Study time for this path: about 66 to 81 hours on top of the core foundation.
 | 3 | `LC-068` | [Social Engineering — Principles, Vectors & Defense](social-engineering/en/Social%20Engineering%20%E2%80%94%20Principles%2C%20Vectors%20%26%20Defense.md) | Intermediate | 4-5h |
 | 4 | `LC-072` | [SOC & Log Analysis](blue-team/en/1.%20SOC%20%26%20Log%20Analysis.md) | Beginner | 5-6h |
 | 5 | `LC-075` | [Incident Response & Digital Forensics](blue-team/en/4.%20Incident%20Response%20%26%20Digital%20Forensics.md) | Advanced | 7-9h |
+| 6 | `LC-079` | [GRC Fundamentals](grc/en/1.%20GRC%20Fundamentals.md) | Beginner | 5-6h |
 
-Study time for this path: about 25 to 29 hours on top of the core foundation.
+Study time for this path: about 30 to 35 hours on top of the core foundation.
 
 **Not covered in Zero2Root yet** (study these from other sources):
 
-- Risk assessment methods
-- ISO 27001, NIST CSF, and other frameworks
-- Indonesian and Japanese data protection law (UU PDP, APPI)
-- Audit and evidence collection
+- Implementing ISO 27001 step by step (ISMS documents, internal audit)
+- Quantitative risk analysis (FAIR) in depth
+- Sector regulations (finance, health, payments)
+- Privacy engineering and data protection impact assessments (DPIA)
