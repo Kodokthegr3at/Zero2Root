@@ -304,7 +304,7 @@ REM Add user to local Administrators group
 C:\> net localgroup administrators alex /add
 
 REM Change a user's password
-C:\> net user alex NewP@ssw0rd /add
+C:\> net user alex NewP@ssw0rd
 
 REM Delete a user
 C:\> net user alex /delete
