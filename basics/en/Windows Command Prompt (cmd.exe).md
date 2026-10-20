@@ -521,7 +521,6 @@ wevtutil qe Security /c:3 /f:text   :: sample recent Security events
 > - Allen Harper et al., *Gray Hat Hacking* (`~/Documents/Books/CyberSec/Handbook/`)
 > - Microsoft Docs, [Windows Commands](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands), Audit Process Creation
 > - [LOLBAS Project](https://lolbas-project.github.io), defender awareness of living-off-the-land binaries
-> - [HackTheBox Academy - Windows Fundamentals](https://academy.hackthebox.com)
 > - `help`, `<command> /?`
 
 > **Zero2Root** | Basics Series | kodoktheGr3at | 2026

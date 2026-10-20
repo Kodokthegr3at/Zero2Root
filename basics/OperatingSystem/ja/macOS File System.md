@@ -1160,7 +1160,6 @@ codesign -d --entitlements - App.app       # entitlements
 > - Apple, *Apple Platform Security Guide* (`https://support.apple.com/guide/security/welcome/web`)
 > - [Apple Developer — File System Programming Guide](https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/FileSystemProgrammingGuide/)
 > - Brian Ward, *How Linux Works* (`~/Documents/Books/CyberSec/Linux/`) — DarwinにもUnixファイルシステムの概念が転用できる
-> - [HackTheBox Academy - macOS Fundamentals](https://academy.hackthebox.com)
 > - [Objective-See - macOS Security Resources](https://objective-see.org)
 > - `man hier` — macOSファイルシステム階層のマニュアルページ
 

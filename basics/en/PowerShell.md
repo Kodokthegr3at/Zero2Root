@@ -601,7 +601,6 @@ Get-PSSessionConfiguration | Format-Table Name, Permission
 > - Georgia Weidman — *Penetration Testing: A Hands-On Introduction to Hacking* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
 > - Allen Harper et al. — *Gray Hat Hacking* (`~/Documents/Books/CyberSec/Handbook/`)
 > - Microsoft Docs — [PowerShell Security](https://learn.microsoft.com/en-us/powershell/scripting/security/overview) · Script Block Logging · JEA · Constrained Language Mode
-> - [HackTheBox Academy - Windows Fundamentals](https://academy.hackthebox.com)
 > - `Get-Help <cmdlet> -Full`
 
 > Zero2Root | Basics Series | kodoktheGr3at | 2026

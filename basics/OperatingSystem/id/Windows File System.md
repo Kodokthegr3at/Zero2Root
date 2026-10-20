@@ -889,7 +889,6 @@ PS> Get-LocalGroupMember Administrators    :: net localgroup administrators
 > - Georgia Weidman, *Penetration Testing* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
 > - Allen Harper et al., *Gray Hat Hacking* (`~/Documents/Books/CyberSec/Handbook/`)
 > - [Microsoft Docs — Windows File Systems](https://docs.microsoft.com/en-us/windows/win32/fileio/file-systems)
-> - [HackTheBox Academy - Windows Fundamentals](https://academy.hackthebox.com)
 > - [LOLBAS Project](https://lolbas-project.github.io), untuk kesadaran defender
 
 > **Zero2Root** | Seri Dasar-Dasar | kodoktheGr3at | 2026

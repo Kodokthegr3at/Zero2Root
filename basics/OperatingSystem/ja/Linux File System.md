@@ -313,7 +313,7 @@ docker:x:999:alice
 # Static hostname resolution
 $ cat /etc/hosts
 127.0.0.1   localhost
-10.10.10.1  target.htb
+10.10.10.1  target.lab
 
 # Sudo permissions
 $ sudo cat /etc/sudoers
@@ -876,7 +876,6 @@ sudo umount /mnt/usb             # unmount a device
 > - Remzi H. Arpaci-Dusseau & Andrea C. Arpaci-Dusseau, *Operating Systems: Three Easy Pieces*（カリキュラム蔵書で参照）
 > - [Linux Filesystem Hierarchy Standard (FHS)](https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html)
 > - `man hier` — Linuxファイルシステム階層のマニュアルページ
-> - [HackTheBox Academy - Linux Fundamentals](https://academy.hackthebox.com)
 > - [GTFOBins](https://gtfobins.github.io) — 危険なSUID/sudoバイナリに対する防御側の認識向上のために参照
 
 > Zero2Root | 基礎シリーズ | kodoktheGr3at | 2026
