@@ -30,7 +30,7 @@
 | [Malware Analyst & Reverse Engineer](#malware-analyst--reverse-engineer) | Takes a suspicious file apart to learn what it does, how to detect it, and how to clean up after it | no | 7 | 40-50 | good |
 | [Vulnerability Researcher & Exploit Developer](#vulnerability-researcher--exploit-developer) | Finds new bugs in software and proves whether they can be exploited, so vendors can fix them | no | 4 | 25-32 | minimal |
 | [Application Security & DevSecOps Engineer](#application-security--devsecops-engineer) | Works with developers so code ships safely: reviews designs and code, and adds security checks to the build pipeline | no | 19 | 80-98 | good |
-| [Cloud Security Engineer](#cloud-security-engineer) | Secures accounts, identities, networks, and workloads on AWS, Azure, or Google Cloud | no | 11 | 49-57 | partial |
+| [Cloud Security Engineer](#cloud-security-engineer) | Secures accounts, identities, networks, and workloads on AWS, Azure, or Google Cloud | no | 12 | 56-65 | partial |
 | [Threat Intelligence & OSINT Analyst](#threat-intelligence--osint-analyst) | Tracks attacker groups and their methods from public and private sources, and turns that into advice the defenders can use | no | 5 | 25-30 | partial |
 | [Mobile & IoT Security Specialist](#mobile--iot-security-specialist) | Tests phone apps, smart devices, and their firmware, from the app code down to the circuit board | no | 14 | 66-81 | partial |
 | [GRC & Security Compliance Analyst](#grc--security-compliance-analyst) | Manages risk, policies, and audits against standards like ISO 27001 or NIST CSF | yes | 6 | 30-35 | partial |
@@ -112,7 +112,7 @@ Study time for this path: about 75 to 91 hours on top of the core foundation.
 - Active Directory and Windows event logs in depth
 - Hands-on SIEM labs with a specific product
 - Phishing email analysis as its own lesson
-- Cloud logs (AWS CloudTrail, Microsoft 365)
+- Microsoft 365 and Entra ID sign-in logs
 
 ---
 
@@ -431,15 +431,16 @@ Study time for this path: about 80 to 98 hours on top of the core foundation.
 | 9 | `LC-077` | [Cloud Security Fundamentals](cloud-security/en/1.%20Cloud%20Security%20Fundamentals.md) | Intermediate | 5-6h |
 | 10 | `LC-078` | [DevSecOps Fundamentals](devsecops/en/1.%20DevSecOps%20Fundamentals.md) | Intermediate | 6-7h |
 | 11 | `LC-081` | [Cloud IAM in Depth](cloud-security/en/2.%20Cloud%20IAM%20in%20Depth.md) | Advanced | 6-7h |
+| 12 | `LC-082` | [Kubernetes Security](cloud-security/en/3.%20Kubernetes%20Security.md) | Advanced | 7-8h |
 
-Study time for this path: about 49 to 57 hours on top of the core foundation.
+Study time for this path: about 56 to 65 hours on top of the core foundation.
 
 **Not covered in Zero2Root yet** (study these from other sources):
 
-- Kubernetes security
-- Infrastructure as code and its misconfigurations
+- Infrastructure as code security in depth (Terraform modules, policy as code)
 - Cloud incident response and detection in depth
 - Cloud network security in depth (private endpoints, egress control)
+- Serverless security
 
 ---
 

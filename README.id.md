@@ -4,7 +4,7 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/Kodokthegr3at/Zero2Root?style=social)](https://github.com/Kodokthegr3at/Zero2Root/stargazers)
 
-![Lessons](https://img.shields.io/badge/lessons-81-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-pemula%20%E2%86%92%20lanjutan-orange) ![Phases](https://img.shields.io/badge/fase-15-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
+![Lessons](https://img.shields.io/badge/lessons-82-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-pemula%20%E2%86%92%20lanjutan-orange) ![Phases](https://img.shields.io/badge/fase-15-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
 > **Dari nol sampai root** — basis pengetahuan cybersecurity trilingual dan roadmap karier untuk sisi serangan dan pertahanan, mencakup internal Linux, jaringan, keamanan aplikasi web, kriptografi, reverse engineering, dan bidang terkait. Halaman ini adalah edisi Bahasa Indonesia dan hanya menautkan ke file pelajaran berbahasa Indonesia; buka edisi English atau 日本語 di atas untuk dua bahasa lainnya.
 
@@ -14,7 +14,7 @@
 
 | Dokumen | Kegunaan |
 |:---------|:--------|
-| [ROADMAP.id.md](ROADMAP.id.md) | Jalur belajar utama: 81 pelajaran (`LC-001` sampai `LC-081`), 15 fase, prasyarat |
+| [ROADMAP.id.md](ROADMAP.id.md) | Jalur belajar utama: 82 pelajaran (`LC-001` sampai `LC-082`), 15 fase, prasyarat |
 | [CAREERS.id.md](CAREERS.id.md) | Jalur karier: 13 peran cyber security, pelajaran untuk tiap peran, jam belajar, dan apa yang belum dibahas |
 | [BOOKS.id.md](BOOKS.id.md) | Katalog PDF lokal di `~/Documents/Books/`, dipetakan ke tiap pelajaran |
 | [curriculum.json](curriculum.json) | Manifest kurikulum yang bisa dibaca mesin (ID, path, bab buku) |
@@ -294,6 +294,7 @@ Tanggung jawab bersama, IAM, penyimpanan, jaringan, logging, audit.
 |:------|:------|
 | `LC-077` | [Cloud Security Fundamentals](cloud-security/id/1.%20Cloud%20Security%20Fundamentals.md) |
 | `LC-081` | [Cloud IAM in Depth](cloud-security/id/2.%20Cloud%20IAM%20in%20Depth.md) |
+| `LC-082` | [Kubernetes Security](cloud-security/id/3.%20Kubernetes%20Security.md) |
 
 ---
 
@@ -334,7 +335,7 @@ Zero2Root belum membahas semuanya. Topik-topik ini belum ada sekarang, jadi pela
 | Topik | Status | Karier yang paling terdampak |
 |:---|:---|:---|
 | Active Directory: serangan, pertahanan, log event Windows (dasar-dasarnya ada di LC-076) | sebagian tersedia | Pentester, Red Team, SOC Analyst |
-| Keamanan cloud: Kubernetes, infrastructure as code, incident response di cloud (dasar-dasar di LC-077 dan IAM di LC-081 sudah tersedia) | sebagian tersedia | Cloud Security Engineer |
+| Keamanan cloud: infrastructure as code mendalam, incident response di cloud, serverless (dasar-dasar di LC-077, IAM di LC-081, dan Kubernetes di LC-082 sudah tersedia) | sebagian tersedia | Cloud Security Engineer |
 | DevSecOps: penandatanganan artefak, SLSA, platform secret (dasar-dasarnya ada di LC-078) | sebagian tersedia | AppSec & DevSecOps Engineer |
 | Keamanan AI dan LLM: pelatihan model dan poisoning secara mendalam, framework agent (dasar-dasarnya ada di LC-080) | sebagian tersedia | AppSec, Red Team |
 | GRC: penerapan ISO 27001, risiko kuantitatif, regulasi sektor (dasar-dasarnya ada di LC-079) | sebagian tersedia | GRC Analyst |

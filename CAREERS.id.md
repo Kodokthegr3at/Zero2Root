@@ -30,7 +30,7 @@
 | [Malware Analyst & Reverse Engineer](#malware-analyst--reverse-engineer) | Membongkar file mencurigakan untuk tahu apa yang dilakukannya, cara mendeteksinya, dan cara membersihkan dampaknya | tidak | 7 | 40-50 | baik |
 | [Vulnerability Researcher & Exploit Developer](#vulnerability-researcher--exploit-developer) | Mencari bug baru di software dan membuktikan apakah bisa dieksploitasi, supaya vendor bisa memperbaikinya | tidak | 4 | 25-32 | minim |
 | [Application Security & DevSecOps Engineer](#application-security--devsecops-engineer) | Bekerja bersama developer supaya kode dirilis dengan aman: meninjau desain dan kode, serta menambahkan pengecekan keamanan ke pipeline build | tidak | 19 | 80-98 | baik |
-| [Cloud Security Engineer](#cloud-security-engineer) | Mengamankan akun, identitas, jaringan, dan workload di AWS, Azure, atau Google Cloud | tidak | 11 | 49-57 | sebagian |
+| [Cloud Security Engineer](#cloud-security-engineer) | Mengamankan akun, identitas, jaringan, dan workload di AWS, Azure, atau Google Cloud | tidak | 12 | 56-65 | sebagian |
 | [Threat Intelligence & OSINT Analyst](#threat-intelligence--osint-analyst) | Melacak kelompok penyerang dan metodenya dari sumber publik maupun privat, lalu mengubahnya jadi saran yang bisa dipakai tim defender | tidak | 5 | 25-30 | sebagian |
 | [Spesialis Keamanan Mobile & IoT](#spesialis-keamanan-mobile--iot) | Menguji aplikasi ponsel, perangkat pintar, dan firmware-nya, mulai dari kode aplikasi sampai papan sirkuit | tidak | 14 | 66-81 | sebagian |
 | [GRC & Security Compliance Analyst](#grc--security-compliance-analyst) | Mengelola risiko, kebijakan, dan audit berdasarkan standar seperti ISO 27001 atau NIST CSF | ya | 6 | 30-35 | sebagian |
@@ -112,7 +112,7 @@ Waktu belajar jalur ini: sekitar 75 sampai 91 jam di luar fondasi inti.
 - Active Directory dan log event Windows secara mendalam
 - Lab SIEM langsung dengan produk tertentu
 - Analisis email phishing sebagai pelajaran tersendiri
-- Log cloud (AWS CloudTrail, Microsoft 365)
+- Log Microsoft 365 dan sign-in Entra ID
 
 ---
 
@@ -431,15 +431,16 @@ Waktu belajar jalur ini: sekitar 80 sampai 98 jam di luar fondasi inti.
 | 9 | `LC-077` | [Cloud Security Fundamentals](cloud-security/id/1.%20Cloud%20Security%20Fundamentals.md) | Menengah | 5-6 jam |
 | 10 | `LC-078` | [DevSecOps Fundamentals](devsecops/id/1.%20DevSecOps%20Fundamentals.md) | Menengah | 6-7 jam |
 | 11 | `LC-081` | [Cloud IAM in Depth](cloud-security/id/2.%20Cloud%20IAM%20in%20Depth.md) | Lanjutan | 6-7 jam |
+| 12 | `LC-082` | [Kubernetes Security](cloud-security/id/3.%20Kubernetes%20Security.md) | Lanjutan | 7-8 jam |
 
-Waktu belajar jalur ini: sekitar 49 sampai 57 jam di luar fondasi inti.
+Waktu belajar jalur ini: sekitar 56 sampai 65 jam di luar fondasi inti.
 
 **Belum dibahas di Zero2Root** (pelajari dari sumber lain):
 
-- Keamanan Kubernetes
-- Infrastructure as code dan miskonfigurasinya
+- Keamanan infrastructure as code secara mendalam (modul Terraform, policy as code)
 - Incident response dan deteksi di cloud secara mendalam
 - Keamanan jaringan cloud secara mendalam (private endpoint, kontrol lalu lintas keluar)
+- Keamanan serverless
 
 ---
 

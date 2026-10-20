@@ -2,7 +2,7 @@
 
 # Zero2Root: マスターロードマップ
 
-> 15フェーズにわたる81レッスン、それぞれインドネシア語、英語、日本語で独立して書かれている。
+> 15フェーズにわたる82レッスン、それぞれインドネシア語、英語、日本語で独立して書かれている。
 > 書籍: `~/Documents/Books/`、完全なカタログは[BOOKS.ja.md](BOOKS.ja.md)を参照。
 > このページは日本語版であり、日本語のレッスンファイルにのみリンクしている。
 > 著者: [kodoktheGr3at](https://github.com/Kodokthegr3at/) | 2026
@@ -12,11 +12,11 @@
 ## このロードマップの使い方
 
 0. 進む方向がまだ決まっていなければ、まず[CAREERS.ja.md](CAREERS.ja.md)で職種を選ぶ。どのレッスンをどの順で受ければよいかが分かる。
-1. すでにあるフェーズを習得済みでない限り、`LC-001`から`LC-081`の順に進める。
+1. すでにあるフェーズを習得済みでない限り、`LC-001`から`LC-082`の順に進める。
 2. 各レッスンファイルの冒頭にCurriculum IDブロックがある（`LC-CURRICULUM`で検索）。
 3. 書籍対応の行を読み、[BOOKS.ja.md](BOOKS.ja.md)から参照されている章を開く。
 4. セキュリティノートとチートシートのセクションをラボVMで実際に手を動かして進める。
-5. 完全習得までの推定総時間: おおよそ335〜415時間。
+5. 完全習得までの推定総時間: おおよそ340〜425時間。
 
 ```mermaid
 flowchart TD
@@ -30,7 +30,7 @@ flowchart TD
     P1 --> P8[Phase 8: Bonus LC-071]
     P5 --> P9[Phase 9: Blue Team LC-072-075]
     P2 --> P10[Phase 10: Active Directory LC-076]
-    P3 --> P11[Phase 11: Cloud Security LC-077, LC-081]
+    P3 --> P11[Phase 11: Cloud Security LC-077, LC-081, LC-082]
     P3 --> P12[Phase 12: DevSecOps LC-078]
     P9 --> P13[Phase 13: GRC LC-079]
     P3 --> P14[Phase 14: AI Security LC-080]
@@ -366,7 +366,7 @@ flowchart TD
 
 ---
 
-## フェーズ 11: クラウドセキュリティ (`LC-077`, `LC-081`)
+## フェーズ 11: クラウドセキュリティ (`LC-077`, `LC-081`, `LC-082`)
 
 カテゴリ: **専門分野**
 
@@ -376,6 +376,7 @@ flowchart TD
 |:---|:------|:------|:------|:---------------|
 | `LC-077` | [Cloud Security Fundamentals](cloud-security/ja/1.%20Cloud%20Security%20Fundamentals.md) | Intermediate | 5-6h | LC-030, LC-040, LC-050 |
 | `LC-081` | [Cloud IAM in Depth](cloud-security/ja/2.%20Cloud%20IAM%20in%20Depth.md) | Advanced | 6-7h | LC-077 |
+| `LC-082` | [Kubernetes Security](cloud-security/ja/3.%20Kubernetes%20Security.md) | Advanced | 7-8h | LC-030, LC-081 |
 
 **このフェーズの書籍対応の詳細**
 
@@ -383,6 +384,7 @@ flowchart TD
 |:---|:---------------|
 | `LC-077` | Dotson, Practical Cloud Security 2nd Ed. Ch.1-5; AWS Well-Architected Framework, Security Pillar; CIS AWS Foundations Benchmark |
 | `LC-081` | Dotson, Practical Cloud Security 2nd Ed. Ch.4; AWS IAM User Guide, Policy evaluation logic; Microsoft Learn, Azure RBAC; Google Cloud IAM documentation |
+| `LC-082` | Rice, Container Security Ch.6-10; Kubernetes Documentation, Security; CIS Kubernetes Benchmark; NSA/CISA Kubernetes Hardening Guidance |
 
 ---
 

@@ -2,7 +2,7 @@
 
 # Zero2Root: Master Roadmap
 
-> 81 lessons across 15 phases, each written independently in Bahasa Indonesia, English, and Japanese.
+> 82 lessons across 15 phases, each written independently in Bahasa Indonesia, English, and Japanese.
 > Books: `~/Documents/Books/`, see [BOOKS.md](BOOKS.md) for the full catalog.
 > This page is the English edition and links only to the English lesson files.
 > Author: [kodoktheGr3at](https://github.com/Kodokthegr3at/) | 2026
@@ -12,11 +12,11 @@
 ## How to use this roadmap
 
 0. Not sure where you are heading? Pick a role in [CAREERS.md](CAREERS.md) first. It tells you which of these lessons to take and in what order.
-1. Follow the order `LC-001` through `LC-081` unless you have already mastered a phase.
+1. Follow the order `LC-001` through `LC-082` unless you have already mastered a phase.
 2. Each lesson file carries a Curriculum ID block near the top (search for `LC-CURRICULUM`).
 3. Read the book map line, then open the referenced chapters from [BOOKS.md](BOOKS.md).
 4. Work through the security notes and cheatsheet sections hands-on in a lab VM.
-5. Estimated total time for full mastery: roughly 335 to 415 hours.
+5. Estimated total time for full mastery: roughly 340 to 425 hours.
 
 ```mermaid
 flowchart TD
@@ -30,7 +30,7 @@ flowchart TD
     P1 --> P8[Phase 8: Bonus LC-071]
     P5 --> P9[Phase 9: Blue Team LC-072-075]
     P2 --> P10[Phase 10: Active Directory LC-076]
-    P3 --> P11[Phase 11: Cloud Security LC-077, LC-081]
+    P3 --> P11[Phase 11: Cloud Security LC-077, LC-081, LC-082]
     P3 --> P12[Phase 12: DevSecOps LC-078]
     P9 --> P13[Phase 13: GRC LC-079]
     P3 --> P14[Phase 14: AI Security LC-080]
@@ -366,7 +366,7 @@ Primary books: Desmond et al., Microsoft Learn.
 
 ---
 
-## Phase 11: Cloud Security (`LC-077`, `LC-081`)
+## Phase 11: Cloud Security (`LC-077`, `LC-081`, `LC-082`)
 
 Category: **Specialized domains**
 
@@ -376,6 +376,7 @@ Primary books: Dotson, AWS Well-Architected Framework, CIS Benchmarks.
 |:---|:------|:------|:------|:---------------|
 | `LC-077` | [Cloud Security Fundamentals](cloud-security/en/1.%20Cloud%20Security%20Fundamentals.md) | Intermediate | 5-6h | LC-030, LC-040, LC-050 |
 | `LC-081` | [Cloud IAM in Depth](cloud-security/en/2.%20Cloud%20IAM%20in%20Depth.md) | Advanced | 6-7h | LC-077 |
+| `LC-082` | [Kubernetes Security](cloud-security/en/3.%20Kubernetes%20Security.md) | Advanced | 7-8h | LC-030, LC-081 |
 
 **Book map detail for this phase**
 
@@ -383,6 +384,7 @@ Primary books: Dotson, AWS Well-Architected Framework, CIS Benchmarks.
 |:---|:---------------|
 | `LC-077` | Dotson, Practical Cloud Security 2nd Ed. Ch.1-5; AWS Well-Architected Framework, Security Pillar; CIS AWS Foundations Benchmark |
 | `LC-081` | Dotson, Practical Cloud Security 2nd Ed. Ch.4; AWS IAM User Guide, Policy evaluation logic; Microsoft Learn, Azure RBAC; Google Cloud IAM documentation |
+| `LC-082` | Rice, Container Security Ch.6-10; Kubernetes Documentation, Security; CIS Kubernetes Benchmark; NSA/CISA Kubernetes Hardening Guidance |
 
 ---
 

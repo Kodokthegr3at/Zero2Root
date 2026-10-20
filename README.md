@@ -4,7 +4,7 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/Kodokthegr3at/Zero2Root?style=social)](https://github.com/Kodokthegr3at/Zero2Root/stargazers)
 
-![Lessons](https://img.shields.io/badge/lessons-81-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-beginner%20%E2%86%92%20advanced-orange) ![Phases](https://img.shields.io/badge/phases-15-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
+![Lessons](https://img.shields.io/badge/lessons-82-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-beginner%20%E2%86%92%20advanced-orange) ![Phases](https://img.shields.io/badge/phases-15-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
 > **From zero to root** — a trilingual cybersecurity knowledge base and career roadmap for both attack and defense, covering Linux internals, networking, web application security, cryptography, reverse engineering, and related fields. This page is the English edition and links only to the English lesson files; open the Bahasa Indonesia or 日本語 edition above for the other two.
 
@@ -14,7 +14,7 @@
 
 | Document | Purpose |
 |:---------|:--------|
-| [ROADMAP.md](ROADMAP.md) | Master learning path: 81 lessons (`LC-001` to `LC-081`), 15 phases, prerequisites |
+| [ROADMAP.md](ROADMAP.md) | Master learning path: 82 lessons (`LC-001` to `LC-082`), 15 phases, prerequisites |
 | [CAREERS.md](CAREERS.md) | Career paths: 13 cyber security roles, the lessons for each, study hours, and what is not covered yet |
 | [BOOKS.md](BOOKS.md) | Local PDF catalog at `~/Documents/Books/`, mapped to each lesson |
 | [curriculum.json](curriculum.json) | Machine-readable curriculum manifest (IDs, paths, book chapters) |
@@ -294,6 +294,7 @@ Shared responsibility, IAM, storage, network, logging, auditing.
 |:------|:------|
 | `LC-077` | [Cloud Security Fundamentals](cloud-security/en/1.%20Cloud%20Security%20Fundamentals.md) |
 | `LC-081` | [Cloud IAM in Depth](cloud-security/en/2.%20Cloud%20IAM%20in%20Depth.md) |
+| `LC-082` | [Kubernetes Security](cloud-security/en/3.%20Kubernetes%20Security.md) |
 
 ---
 
@@ -334,7 +335,7 @@ Zero2Root does not cover everything yet. These topics are missing today, so stud
 | Topic | Status | Most affected careers |
 |:---|:---|:---|
 | Active Directory: attacks, defense, Windows event logs (fundamentals are in LC-076) | partly available | Pentester, Red Team, SOC Analyst |
-| Cloud security: Kubernetes, infrastructure as code, cloud incident response (LC-077 fundamentals and LC-081 IAM are available) | partly available | Cloud Security Engineer |
+| Cloud security: infrastructure as code in depth, cloud incident response, serverless (LC-077 fundamentals, LC-081 IAM, and LC-082 Kubernetes are available) | partly available | Cloud Security Engineer |
 | DevSecOps: artifact signing, SLSA, secrets platforms (fundamentals are in LC-078) | partly available | AppSec & DevSecOps Engineer |
 | AI and LLM security: model training and poisoning in depth, agent frameworks (fundamentals are in LC-080) | partly available | AppSec, Red Team |
 | GRC: implementing ISO 27001, quantitative risk, sector regulations (fundamentals are in LC-079) | partly available | GRC Analyst |

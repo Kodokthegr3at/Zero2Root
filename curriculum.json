@@ -1,6 +1,6 @@
 {
   "version": "2026.1",
-  "total_lessons": 81,
+  "total_lessons": 82,
   "phases": [
     {
       "id": 0,
@@ -71,7 +71,7 @@
     {
       "id": 11,
       "name": "Cloud Security",
-      "lessons": "LC-077, LC-081",
+      "lessons": "LC-077, LC-081, LC-082",
       "category": "specialized"
     },
     {
@@ -1242,6 +1242,22 @@
       ],
       "dir": "cloud-security",
       "file": "2. Cloud IAM in Depth.md"
+    },
+    {
+      "id": "LC-082",
+      "phase": 11,
+      "phase_name": "Cloud Security",
+      "hours": "7-8h",
+      "level": "Advanced",
+      "prerequisites": "LC-030, LC-081",
+      "books_short": [
+        "Rice, Container Security Ch.6-10",
+        "Kubernetes Documentation, Security",
+        "CIS Kubernetes Benchmark",
+        "NSA/CISA Kubernetes Hardening Guidance"
+      ],
+      "dir": "cloud-security",
+      "file": "3. Kubernetes Security.md"
     }
   ],
   "core_foundation": [
@@ -1305,7 +1321,7 @@
         "Active Directory and Windows event logs in depth",
         "Hands-on SIEM labs with a specific product",
         "Phishing email analysis as its own lesson",
-        "Cloud logs (AWS CloudTrail, Microsoft 365)"
+        "Microsoft 365 and Entra ID sign-in logs"
       ]
     },
     {
@@ -1545,13 +1561,14 @@
         "LC-072",
         "LC-077",
         "LC-078",
-        "LC-081"
+        "LC-081",
+        "LC-082"
       ],
       "not_covered_yet": [
-        "Kubernetes security",
-        "Infrastructure as code and its misconfigurations",
+        "Infrastructure as code security in depth (Terraform modules, policy as code)",
         "Cloud incident response and detection in depth",
-        "Cloud network security in depth (private endpoints, egress control)"
+        "Cloud network security in depth (private endpoints, egress control)",
+        "Serverless security"
       ]
     },
     {
