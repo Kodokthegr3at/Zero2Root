@@ -313,7 +313,7 @@ docker:x:999:alice
 # Static hostname resolution
 $ cat /etc/hosts
 127.0.0.1   localhost
-10.10.10.1  target.htb
+10.10.10.1  target.lab
 
 # Sudo permissions
 $ sudo cat /etc/sudoers
@@ -868,6 +868,98 @@ sudo mount /dev/sdb1 /mnt/usb   # mount a device
 sudo umount /mnt/usb             # unmount a device
 ```
 
+## Latihan
+
+### Task 1: di mana letaknya?
+
+| Yang dicari | Direktori / file |
+|:---|:---|
+| Daftar semua akun user | |
+| Hash password | |
+| Log login SSH (Debian/Ubuntu) | |
+| File website default Apache | |
+| Info CPU, langsung dari kernel | |
+| Kernel Linux yang di-boot | |
+| Software pihak ketiga seperti Burp Suite | |
+| Folder yang bisa ditulis semua user dan dikosongkan saat reboot | |
+
+<details><summary>Kunci jawaban</summary>
+
+`/etc/passwd` · `/etc/shadow` · `/var/log/auth.log` · `/var/www/html` · `/proc/cpuinfo` · `/boot` (file `vmlinuz`) · `/opt` · `/tmp`
+
+</details>
+
+### Task 2: jelajahi sistemmu
+
+Jalankan di Linux-mu sendiri:
+
+```bash
+grep -c . /etc/passwd                      # Soal 1
+grep "/bin/bash$" /etc/passwd | cut -d: -f1   # Soal 2
+ls -l /etc/shadow                          # Soal 3
+ls -ld /tmp                                # Soal 4
+cat /proc/version                          # Soal 5
+```
+
+1. Ada berapa baris (akun) di `/etc/passwd`?
+2. Akun mana saja yang memakai shell bash?
+3. Siapa pemilik `/etc/shadow`, dan apakah user biasa boleh membacanya?
+4. Huruf terakhir di permission `/tmp` adalah `t`. Apa artinya?
+5. Versi kernel berapa yang sedang jalan?
+
+<details><summary>Kunci jawaban</summary>
+
+Jawaban 1, 2, dan 5 tergantung mesinmu.
+
+3. Pemiliknya `root`, dan biasanya grupnya `shadow` (atau `root` di Fedora). User biasa tidak bisa membacanya.
+4. Sticky bit. Semua orang boleh membuat file di `/tmp`, tapi hanya pemilik file yang boleh menghapus atau mengganti nama file miliknya.
+
+</details>
+
+### Task 3: real atau virtual?
+
+Mana yang benar-benar tersimpan di disk, dan mana yang dibuat kernel saat itu juga: `/etc`, `/proc`, `/home`, `/sys`, `/dev/null`?
+
+<details><summary>Kunci jawaban</summary>
+
+Tersimpan di disk: `/etc`, `/home`. Dibuat kernel: `/proc`, `/sys`, `/dev/null`. Cobalah `ls -l /proc/cpuinfo`: ukurannya 0 byte, padahal `cat` menampilkan banyak isi.
+
+</details>
+
+### Task 4: audit sebagai admin
+
+Kamu admin server ini. Jalankan lalu nilai apakah hasilnya aman:
+
+```bash
+ls -ld ~/.ssh ; ls -l ~/.ssh 2>/dev/null
+find / -xdev -type f -perm -0002 2>/dev/null | head
+grep -i "^PermitRootLogin" /etc/ssh/sshd_config
+```
+
+1. Permission yang aman untuk folder `~/.ssh` dan private key di dalamnya berapa?
+2. Perintah `find` kedua mencari apa? Kenapa hasilnya perlu dicek?
+3. Nilai `PermitRootLogin` yang disarankan apa?
+
+<details><summary>Kunci jawaban</summary>
+
+1. Folder `700`, private key `600`. SSH bahkan menolak memakai key yang bisa dibaca orang lain.
+2. Mencari file yang bisa ditulis semua user (world-writable). Kalau file itu skrip yang dijalankan root atau cron, siapa pun bisa mengubahnya dan menumpang hak root.
+3. `no`, atau `prohibit-password` kalau root memang harus login dengan key.
+
+</details>
+
+### Lab gratis
+
+| Tool | Yang bisa dilatih | Biaya |
+|:---|:---|:---|
+| OverTheWire Bandit (overthewire.org) | Navigasi file system dan mencari file lewat SSH, level 0 sampai 10 | Gratis |
+| `man hier` | Penjelasan resmi tiap direktori, langsung di terminal | Gratis |
+| VM Ubuntu atau Debian (VirtualBox) | Lab bebas rusak untuk mencoba semua perintah | Gratis |
+
+Kamu dianggap lulus pelajaran ini kalau Task 1 bisa dijawab tanpa melihat materi dan kamu bisa menjelaskan kenapa `/proc` disebut virtual.
+
+---
+
 ---
 
 > Referensi & Sumber Buku:
@@ -876,7 +968,6 @@ sudo umount /mnt/usb             # unmount a device
 > - Remzi H. Arpaci-Dusseau & Andrea C. Arpaci-Dusseau, *Operating Systems: Three Easy Pieces* (referenced in curriculum library)
 > - [Linux Filesystem Hierarchy Standard (FHS)](https://refspecs.linuxfoundation.org/FHS_3.0/fhs/index.html)
 > - `man hier` — manual page untuk Linux filesystem hierarchy
-> - [HackTheBox Academy - Linux Fundamentals](https://academy.hackthebox.com)
 > - [GTFOBins](https://gtfobins.github.io) — kesadaran defender terhadap SUID/sudo binary berbahaya
 
 > Zero2Root | Basics Series | kodoktheGr3at | 2026

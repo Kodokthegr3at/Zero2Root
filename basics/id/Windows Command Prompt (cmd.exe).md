@@ -304,7 +304,7 @@ REM Add user to local Administrators group
 C:\> net localgroup administrators alex /add
 
 REM Change a user's password
-C:\> net user alex NewP@ssw0rd /add
+C:\> net user alex NewP@ssw0rd
 
 REM Delete a user
 C:\> net user alex /delete
@@ -513,6 +513,89 @@ wevtutil qe Security /c:3 /f:text   :: sample recent Security events
 :: Prefer AppLocker/WDAC + 4688 command-line auditing in production
 ```
 
+## Latihan
+
+Pakai Windows asli atau VM evaluasi Windows gratis dari Microsoft.
+
+### Task 1: padanan Linux
+
+| Linux | CMD |
+|:---|:---|
+| `ls -a` | |
+| `cat file.txt` | |
+| `grep "admin" file.txt` | |
+| `ps aux` | |
+| `kill -9 1234` | |
+| `ip a` | |
+
+<details><summary>Kunci jawaban</summary>
+
+`dir /a` · `type file.txt` · `findstr "admin" file.txt` · `tasklist` · `taskkill /PID 1234 /F` · `ipconfig /all`
+
+</details>
+
+### Task 2: siapa yang membuka port?
+
+```cmd
+netstat -ano | findstr LISTENING
+tasklist | findstr <PID dari baris di atas>
+```
+
+1. Pilih satu baris yang listening di port 135 atau 445. Berapa PID-nya?
+2. Proses apa yang memiliki PID itu?
+3. Kolom terakhir di `netstat -ano` berisi apa?
+
+<details><summary>Kunci jawaban</summary>
+
+1 dan 2 berbeda di tiap mesin. Port 135 biasanya milik `svchost.exe` (RPC), dan port 445 milik `System` (PID 4). Kolom terakhir adalah PID.
+
+</details>
+
+### Task 3: cari kesalahannya
+
+Salah satu baris di bawah tidak melakukan apa yang tertulis di komentarnya. Yang mana, dan bagaimana yang benar?
+
+```cmd
+REM Hapus folder beserta isinya tanpa konfirmasi
+rmdir /s /q temp
+REM Ganti password user alex
+net user alex PasswordBaru123 /add
+REM Cari semua file .log di drive C
+dir /s /b C:\*.log
+```
+
+<details><summary>Kunci jawaban</summary>
+
+Baris kedua. `/add` dipakai untuk membuat user baru, jadi perintah itu gagal kalau `alex` sudah ada. Untuk mengganti password cukup `net user alex PasswordBaru123`, atau `net user alex *` supaya password diketik tanpa terlihat di layar dan tidak tersimpan di riwayat.
+
+</details>
+
+### Task 4: sisi blue team
+
+1. Event ID apa yang mencatat setiap proses baru beserta command line-nya?
+2. Di log kamu menemukan rangkaian ini dari satu akun dalam 30 detik: `whoami /all`, `net user`, `net localgroup administrators`, `findstr /si password *.txt`. Apa kemungkinan yang sedang terjadi?
+3. Apa itu LOLBin, dan kenapa antivirus sering tidak memblokirnya?
+
+<details><summary>Kunci jawaban</summary>
+
+1. 4688, dengan opsi "Include command line in process creation events" diaktifkan lewat GPO.
+2. Seseorang sedang melakukan enumerasi setelah masuk. Pengguna biasa jarang mengetik perintah-perintah ini berurutan secepat itu. Selidiki akun dan mesinnya.
+3. LOLBin adalah program bawaan Windows yang sah (misalnya `certutil`, `bitsadmin`) tapi disalahgunakan penyerang. Antivirus jarang memblokirnya karena program itu bertanda tangan Microsoft dan dibutuhkan sistem.
+
+</details>
+
+### Lab gratis
+
+| Tool | Yang bisa dilatih | Biaya |
+|:---|:---|:---|
+| Windows Evaluation VM (Microsoft) | Semua perintah di pelajaran ini | Gratis |
+| LOLBAS Project (lolbas-project.github.io) | Daftar binary bawaan yang sering disalahgunakan, beserta cara mendeteksinya | Gratis |
+| Sysinternals Suite | Process Explorer dan TCPView untuk melihat proses dan port secara visual | Gratis |
+
+Kamu dianggap lulus pelajaran ini kalau bisa menemukan proses pemilik sebuah port hanya dengan `netstat` dan `tasklist`.
+
+---
+
 ---
 
 > **Referensi dan sumber buku:**
@@ -521,7 +604,6 @@ wevtutil qe Security /c:3 /f:text   :: sample recent Security events
 > - Allen Harper et al., *Gray Hat Hacking* (`~/Documents/Books/CyberSec/Handbook/`)
 > - Microsoft Docs, [Windows Commands](https://learn.microsoft.com/en-us/windows-server/administration/windows-commands/windows-commands), Audit Process Creation
 > - [LOLBAS Project](https://lolbas-project.github.io), kesadaran defender terhadap living-off-the-land binaries
-> - [HackTheBox Academy - Windows Fundamentals](https://academy.hackthebox.com)
 > - `help`, `<command> /?`
 
 > **Zero2Root** | Basics Series | kodoktheGr3at | 2026

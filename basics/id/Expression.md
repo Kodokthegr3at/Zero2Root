@@ -324,6 +324,97 @@ Expression berubah jadi kerentanan saat input tak tepercaya dievaluasi sebagai k
 | Cast | `(type) value` | nilai yang dikonversi |
 | Objek | `new Class()` | objek baru |
 
+## Latihan
+
+Kerjakan dulu di kertas atau di kepala, baru cek dengan menjalankan kodenya.
+
+### Task 1: hitung hasilnya
+
+| Expression | Hasil |
+|:---|:---|
+| `17 % 5` | |
+| `2 + 3 * 4` | |
+| `(2 + 3) * 4` | |
+| `7 / 2` (keduanya `int`) | |
+| `6 & 3` | |
+| `6 \| 3` | |
+| `6 ^ 3` | |
+| `1 << 4` | |
+
+<details><summary>Kunci jawaban</summary>
+
+2 · 14 · 20 · 3 · 2 · 7 · 5 · 16
+
+Untuk soal bitwise, tulis dulu dalam biner: 6 = `110`, 3 = `011`.
+
+</details>
+
+### Task 2: urutan dan efek samping
+
+1. Setelah `int a = 5; int b = a++;`, berapa nilai `a` dan `b`?
+2. Di `if (user != null && user.isAdmin())`, apa yang terjadi kalau `user` bernilai `null`?
+3. `(unsigned char)260` menghasilkan berapa?
+
+<details><summary>Kunci jawaban</summary>
+
+1. `a = 6`, `b = 5`. Tanda `++` di belakang berarti nilai lama dipakai dulu, baru ditambah.
+2. Bagian kanan tidak dijalankan karena short-circuit, jadi program tidak crash.
+3. 4. Satu byte hanya muat 0 sampai 255, dan 260 − 256 = 4.
+
+</details>
+
+### Task 3: regex
+
+Pola mana yang cocok persis dengan kode voucher `ABC123` (3 huruf besar lalu 3 angka) dan tidak cocok dengan `abc123` atau `ABC1234`?
+
+- a. `[A-Z]+\d+`
+- b. `^[A-Z]{3}\d{3}$`
+- c. `^\w{6}$`
+
+<details><summary>Kunci jawaban</summary>
+
+b. Pola a juga cocok dengan `ABC1234`, dan pola c juga cocok dengan `abc123`.
+
+</details>
+
+### Task 4: praktik di terminal
+
+```bash
+python3 -c 'print(17 % 5, 6 ^ 3, 1 << 4)'      # cocokkan dengan Task 1
+python3 -c 'k=0x5A; c=ord("A")^k; print(c, chr(c^k))'   # XOR dua kali kembali ke "A"
+echo "login dari 10.0.0.5 dan 192.168.1.20" | grep -oE '([0-9]{1,3}\.){3}[0-9]{1,3}'
+```
+
+Pertanyaan: perintah `grep` terakhir mengeluarkan berapa baris, dan apa isinya?
+
+<details><summary>Kunci jawaban</summary>
+
+Dua baris: `10.0.0.5` dan `192.168.1.20`.
+
+</details>
+
+### Task 5: sisi keamanan
+
+Di PHP, `"0e123" == "0e456"` bernilai `true`. Kenapa ini berbahaya kalau dipakai untuk membandingkan hash password, dan apa perbaikannya?
+
+<details><summary>Kunci jawaban</summary>
+
+`==` longgar membaca keduanya sebagai angka dalam notasi ilmiah (0 × 10¹²³ dan 0 × 10⁴⁵⁶), jadi keduanya dianggap 0. Dua hash yang berbeda bisa dianggap sama. Pakai `===` atau, untuk password, `password_verify()`.
+
+</details>
+
+### Lab gratis
+
+| Tool | Yang bisa dilatih | Biaya |
+|:---|:---|:---|
+| Python REPL (`python3`) | Mencoba semua expression di atas | Gratis |
+| regex101.com | Menguji pola regex sambil melihat penjelasan tiap bagiannya | Gratis |
+| Compiler Explorer (godbolt.org) | Menjalankan kode C tanpa install compiler | Gratis |
+
+Kamu dianggap lulus pelajaran ini kalau Task 1 benar semua tanpa kalkulator, dan kamu bisa menjelaskan kenapa `===` lebih aman daripada `==`.
+
+---
+
 ---
 
 > **Referensi dan Sumber Buku:**

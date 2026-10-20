@@ -373,6 +373,74 @@ TRIK MENGHAFAL
 
 ---
 
+## Latihan
+
+Coba jawab dulu tanpa membuka kunci. Kalau salah, baca lagi bagian yang disebut di soal.
+
+### Task 1: kenali layernya
+
+1. Alamat MAC dipakai di layer berapa? (Bagian 2)
+2. Router bekerja di layer apa, dan memakai alamat jenis apa?
+3. Menurut OSI, TLS (gembok di browser) masuk layer mana?
+4. Satuan data (PDU) TCP di layer 4 disebut apa?
+
+<details><summary>Kunci jawaban</summary>
+
+1. Layer 2 (Data Link)
+2. Layer 3 (Network), dengan alamat IP
+3. Layer 6 (Presentation)
+4. Segment
+
+</details>
+
+### Task 2: port yang wajib hafal
+
+| Soal | Jawaban kamu |
+|:---|:---|
+| Port default SSH? | |
+| Port default HTTPS? | |
+| Port berbagi file Windows (SMB)? | |
+| Port DNS? | |
+| Port Remote Desktop (RDP)? | |
+
+<details><summary>Kunci jawaban</summary>
+
+22 · 443 · 445 · 53 · 3389
+
+</details>
+
+### Task 3: praktik di komputermu sendiri
+
+Jalankan perintah berikut di Linux-mu, lalu jawab pertanyaan di komentarnya.
+
+```bash
+ip addr show       # Soal: berapa alamat IP kamu? (Layer 3)
+ip link show       # Soal: berapa alamat MAC kamu? (Layer 2)
+ss -tulnp          # Soal: port apa saja yang listening di mesinmu? (Layer 4)
+curl -I https://example.com   # Soal: status code apa yang dibalas? (Layer 7)
+```
+
+### Task 4: troubleshooting
+
+`ping 8.8.8.8` berhasil, tapi `ping google.com` gagal. Kemungkinan masalahnya ada di protokol apa?
+
+<details><summary>Kunci jawaban</summary>
+
+DNS (layer 7). Ping ke IP berhasil, berarti jaringan dan routing di layer 3 sudah jalan. Yang gagal adalah proses menerjemahkan nama domain ke IP.
+
+</details>
+
+### Lab gratis
+
+| Tool | Yang bisa dilatih | Biaya |
+|:---|:---|:---|
+| Wireshark | Rekam traffic-mu sendiri, lalu lihat layer 2 sampai 7 di panel detail paket | Gratis |
+| Cisco Packet Tracer | Simulasi switch dan router (daftar lewat Cisco NetAcad) | Gratis |
+
+Kamu dianggap lulus pelajaran ini kalau bisa menjelaskan ke teman di layer mana alamat MAC, alamat IP, dan port bekerja, tanpa melihat catatan.
+
+---
+
 > **Referensi & sumber buku**
 > - James Kurose & Keith Ross, *Computer Networking: A Top-Down Approach*, `~/Documents/Books/CyberSec/Networking/`
 > - William Stallings, *Network Security Essentials (4th Edition)*, `~/Documents/Books/CyberSec/Networking/`

