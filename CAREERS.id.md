@@ -29,8 +29,8 @@
 | [Red Team Operator](#red-team-operator) | Berperan sebagai penyerang realistis selama berminggu-minggu untuk menguji apakah blue team menyadarinya | tidak | 24 | 107-131 | sebagian |
 | [Malware Analyst & Reverse Engineer](#malware-analyst--reverse-engineer) | Membongkar file mencurigakan untuk tahu apa yang dilakukannya, cara mendeteksinya, dan cara membersihkan dampaknya | tidak | 7 | 40-50 | baik |
 | [Vulnerability Researcher & Exploit Developer](#vulnerability-researcher--exploit-developer) | Mencari bug baru di software dan membuktikan apakah bisa dieksploitasi, supaya vendor bisa memperbaikinya | tidak | 4 | 25-32 | minim |
-| [Application Security & DevSecOps Engineer](#application-security--devsecops-engineer) | Bekerja bersama developer supaya kode dirilis dengan aman: meninjau desain dan kode, serta menambahkan pengecekan keamanan ke pipeline build | tidak | 16 | 63-78 | sebagian |
-| [Cloud Security Engineer](#cloud-security-engineer) | Mengamankan akun, identitas, jaringan, dan workload di AWS, Azure, atau Google Cloud | tidak | 9 | 37-43 | sebagian |
+| [Application Security & DevSecOps Engineer](#application-security--devsecops-engineer) | Bekerja bersama developer supaya kode dirilis dengan aman: meninjau desain dan kode, serta menambahkan pengecekan keamanan ke pipeline build | tidak | 17 | 69-85 | baik |
+| [Cloud Security Engineer](#cloud-security-engineer) | Mengamankan akun, identitas, jaringan, dan workload di AWS, Azure, atau Google Cloud | tidak | 10 | 43-50 | sebagian |
 | [Threat Intelligence & OSINT Analyst](#threat-intelligence--osint-analyst) | Melacak kelompok penyerang dan metodenya dari sumber publik maupun privat, lalu mengubahnya jadi saran yang bisa dipakai tim defender | tidak | 5 | 25-30 | sebagian |
 | [Spesialis Keamanan Mobile & IoT](#spesialis-keamanan-mobile--iot) | Menguji aplikasi ponsel, perangkat pintar, dan firmware-nya, mulai dari kode aplikasi sampai papan sirkuit | tidak | 14 | 66-81 | sebagian |
 | [GRC & Security Compliance Analyst](#grc--security-compliance-analyst) | Mengelola risiko, kebijakan, dan audit berdasarkan standar seperti ISO 27001 atau NIST CSF | ya | 5 | 25-29 | minim |
@@ -372,7 +372,7 @@ Waktu belajar jalur ini: sekitar 25 sampai 32 jam di luar fondasi inti.
 **Pekerjaannya:** Bekerja bersama developer supaya kode dirilis dengan aman: meninjau desain dan kode, serta menambahkan pengecekan keamanan ke pipeline build.
 
 **Cocok untuk kerja pertama:** tidak, biasanya setelah 1-2 tahun di peran terkait  
-**Cakupan di Zero2Root:** sebagian
+**Cakupan di Zero2Root:** baik
 
 **Pelajaran, berurutan (setelah fondasi inti):**
 
@@ -394,15 +394,16 @@ Waktu belajar jalur ini: sekitar 25 sampai 32 jam di luar fondasi inti.
 | 14 | `LC-057` | [Public Key Infrastructure (PKI) & TLS 1.3](cryptography/id/4.%20Public%20Key%20Infrastructure%20%28PKI%29%20%26%20TLS%201.3.md) | Lanjutan | 5 jam |
 | 15 | `LC-067` | [Offensive Python & Go for Pentesters](programming-security/id/Offensive%20Python%20%26%20Go%20for%20Pentesters.md) | Lanjutan | 6-8 jam |
 | 16 | `LC-077` | [Cloud Security Fundamentals](cloud-security/id/1.%20Cloud%20Security%20Fundamentals.md) | Menengah | 5-6 jam |
+| 17 | `LC-078` | [DevSecOps Fundamentals](devsecops/id/1.%20DevSecOps%20Fundamentals.md) | Menengah | 6-7 jam |
 
-Waktu belajar jalur ini: sekitar 63 sampai 78 jam di luar fondasi inti.
+Waktu belajar jalur ini: sekitar 69 sampai 85 jam di luar fondasi inti.
 
 **Belum dibahas di Zero2Root** (pelajari dari sumber lain):
 
-- Secure SDLC dan threat modeling
-- SAST, DAST, dan pemindaian dependency di CI
-- Keamanan software supply chain
-- Manajemen secret
+- Threat modeling secara mendalam (diagram alur data, attack tree)
+- Secure code review untuk bahasa tertentu
+- Penandatanganan artefak dan provenance build SLSA
+- Platform manajemen secret seperti HashiCorp Vault
 
 ---
 
@@ -426,8 +427,9 @@ Waktu belajar jalur ini: sekitar 63 sampai 78 jam di luar fondasi inti.
 | 7 | `LC-057` | [Public Key Infrastructure (PKI) & TLS 1.3](cryptography/id/4.%20Public%20Key%20Infrastructure%20%28PKI%29%20%26%20TLS%201.3.md) | Lanjutan | 5 jam |
 | 8 | `LC-072` | [SOC & Log Analysis](blue-team/id/1.%20SOC%20%26%20Log%20Analysis.md) | Pemula | 5-6 jam |
 | 9 | `LC-077` | [Cloud Security Fundamentals](cloud-security/id/1.%20Cloud%20Security%20Fundamentals.md) | Menengah | 5-6 jam |
+| 10 | `LC-078` | [DevSecOps Fundamentals](devsecops/id/1.%20DevSecOps%20Fundamentals.md) | Menengah | 6-7 jam |
 
-Waktu belajar jalur ini: sekitar 37 sampai 43 jam di luar fondasi inti.
+Waktu belajar jalur ini: sekitar 43 sampai 50 jam di luar fondasi inti.
 
 **Belum dibahas di Zero2Root** (pelajari dari sumber lain):
 

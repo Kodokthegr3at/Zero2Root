@@ -100,4 +100,4 @@ This catalog maps every PDF in the local library to Zero2Root lessons. Read the 
 
 ---
 
-> See [ROADMAP.md](ROADMAP.md) for the ordered study path from `LC-001` to `LC-077`.
+> See [ROADMAP.md](ROADMAP.md) for the ordered study path from `LC-001` to `LC-078`.

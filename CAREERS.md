@@ -29,8 +29,8 @@
 | [Red Team Operator](#red-team-operator) | Plays a realistic attacker over weeks to test whether the blue team notices | no | 24 | 107-131 | partial |
 | [Malware Analyst & Reverse Engineer](#malware-analyst--reverse-engineer) | Takes a suspicious file apart to learn what it does, how to detect it, and how to clean up after it | no | 7 | 40-50 | good |
 | [Vulnerability Researcher & Exploit Developer](#vulnerability-researcher--exploit-developer) | Finds new bugs in software and proves whether they can be exploited, so vendors can fix them | no | 4 | 25-32 | minimal |
-| [Application Security & DevSecOps Engineer](#application-security--devsecops-engineer) | Works with developers so code ships safely: reviews designs and code, and adds security checks to the build pipeline | no | 16 | 63-78 | partial |
-| [Cloud Security Engineer](#cloud-security-engineer) | Secures accounts, identities, networks, and workloads on AWS, Azure, or Google Cloud | no | 9 | 37-43 | partial |
+| [Application Security & DevSecOps Engineer](#application-security--devsecops-engineer) | Works with developers so code ships safely: reviews designs and code, and adds security checks to the build pipeline | no | 17 | 69-85 | good |
+| [Cloud Security Engineer](#cloud-security-engineer) | Secures accounts, identities, networks, and workloads on AWS, Azure, or Google Cloud | no | 10 | 43-50 | partial |
 | [Threat Intelligence & OSINT Analyst](#threat-intelligence--osint-analyst) | Tracks attacker groups and their methods from public and private sources, and turns that into advice the defenders can use | no | 5 | 25-30 | partial |
 | [Mobile & IoT Security Specialist](#mobile--iot-security-specialist) | Tests phone apps, smart devices, and their firmware, from the app code down to the circuit board | no | 14 | 66-81 | partial |
 | [GRC & Security Compliance Analyst](#grc--security-compliance-analyst) | Manages risk, policies, and audits against standards like ISO 27001 or NIST CSF | yes | 5 | 25-29 | minimal |
@@ -372,7 +372,7 @@ Study time for this path: about 25 to 32 hours on top of the core foundation.
 **What the job is:** Works with developers so code ships safely: reviews designs and code, and adds security checks to the build pipeline.
 
 **Good first job:** no, usually after 1-2 years in a related role  
-**Coverage in Zero2Root:** partial
+**Coverage in Zero2Root:** good
 
 **Lessons, in order (after the core foundation):**
 
@@ -394,15 +394,16 @@ Study time for this path: about 25 to 32 hours on top of the core foundation.
 | 14 | `LC-057` | [Public Key Infrastructure (PKI) & TLS 1.3](cryptography/en/4.%20Public%20Key%20Infrastructure%20%28PKI%29%20%26%20TLS%201.3.md) | Advanced | 5h |
 | 15 | `LC-067` | [Offensive Python & Go for Pentesters](programming-security/en/Offensive%20Python%20%26%20Go%20for%20Pentesters.md) | Advanced | 6-8h |
 | 16 | `LC-077` | [Cloud Security Fundamentals](cloud-security/en/1.%20Cloud%20Security%20Fundamentals.md) | Intermediate | 5-6h |
+| 17 | `LC-078` | [DevSecOps Fundamentals](devsecops/en/1.%20DevSecOps%20Fundamentals.md) | Intermediate | 6-7h |
 
-Study time for this path: about 63 to 78 hours on top of the core foundation.
+Study time for this path: about 69 to 85 hours on top of the core foundation.
 
 **Not covered in Zero2Root yet** (study these from other sources):
 
-- Secure SDLC and threat modeling
-- SAST, DAST, and dependency scanning in CI
-- Software supply chain security
-- Secrets management
+- Threat modeling in depth (data-flow diagrams, attack trees)
+- Secure code review for specific languages
+- Artifact signing and SLSA build provenance
+- Secrets management platforms such as HashiCorp Vault
 
 ---
 
@@ -426,8 +427,9 @@ Study time for this path: about 63 to 78 hours on top of the core foundation.
 | 7 | `LC-057` | [Public Key Infrastructure (PKI) & TLS 1.3](cryptography/en/4.%20Public%20Key%20Infrastructure%20%28PKI%29%20%26%20TLS%201.3.md) | Advanced | 5h |
 | 8 | `LC-072` | [SOC & Log Analysis](blue-team/en/1.%20SOC%20%26%20Log%20Analysis.md) | Beginner | 5-6h |
 | 9 | `LC-077` | [Cloud Security Fundamentals](cloud-security/en/1.%20Cloud%20Security%20Fundamentals.md) | Intermediate | 5-6h |
+| 10 | `LC-078` | [DevSecOps Fundamentals](devsecops/en/1.%20DevSecOps%20Fundamentals.md) | Intermediate | 6-7h |
 
-Study time for this path: about 37 to 43 hours on top of the core foundation.
+Study time for this path: about 43 to 50 hours on top of the core foundation.
 
 **Not covered in Zero2Root yet** (study these from other sources):
 

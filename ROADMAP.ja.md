@@ -2,7 +2,7 @@
 
 # Zero2Root: マスターロードマップ
 
-> 12フェーズにわたる77レッスン、それぞれインドネシア語、英語、日本語で独立して書かれている。
+> 13フェーズにわたる78レッスン、それぞれインドネシア語、英語、日本語で独立して書かれている。
 > 書籍: `~/Documents/Books/`、完全なカタログは[BOOKS.ja.md](BOOKS.ja.md)を参照。
 > このページは日本語版であり、日本語のレッスンファイルにのみリンクしている。
 > 著者: [kodoktheGr3at](https://github.com/Kodokthegr3at/) | 2026
@@ -12,11 +12,11 @@
 ## このロードマップの使い方
 
 0. 進む方向がまだ決まっていなければ、まず[CAREERS.ja.md](CAREERS.ja.md)で職種を選ぶ。どのレッスンをどの順で受ければよいかが分かる。
-1. すでにあるフェーズを習得済みでない限り、`LC-001`から`LC-077`の順に進める。
+1. すでにあるフェーズを習得済みでない限り、`LC-001`から`LC-078`の順に進める。
 2. 各レッスンファイルの冒頭にCurriculum IDブロックがある（`LC-CURRICULUM`で検索）。
 3. 書籍対応の行を読み、[BOOKS.ja.md](BOOKS.ja.md)から参照されている章を開く。
 4. セキュリティノートとチートシートのセクションをラボVMで実際に手を動かして進める。
-5. 完全習得までの推定総時間: おおよそ315〜390時間。
+5. 完全習得までの推定総時間: おおよそ320〜400時間。
 
 ```mermaid
 flowchart TD
@@ -31,6 +31,7 @@ flowchart TD
     P5 --> P9[Phase 9: Blue Team LC-072-075]
     P2 --> P10[Phase 10: Active Directory LC-076]
     P3 --> P11[Phase 11: Cloud Security LC-077]
+    P3 --> P12[Phase 12: DevSecOps LC-078]
 ```
 
 ---
@@ -378,5 +379,23 @@ flowchart TD
 | ID | 書籍の章 |
 |:---|:---------------|
 | `LC-077` | Dotson, Practical Cloud Security 2nd Ed. Ch.1-5; AWS Well-Architected Framework, Security Pillar; CIS AWS Foundations Benchmark |
+
+---
+
+## フェーズ 12: DevSecOps (`LC-078`)
+
+カテゴリ: **専門分野**
+
+主要な書籍: Kim et al., Shostack, OWASP DevSecOps Guideline.
+
+| ID | トピック | レベル | 時間 | 前提 |
+|:---|:------|:------|:------|:---------------|
+| `LC-078` | [DevSecOps Fundamentals](devsecops/ja/1.%20DevSecOps%20Fundamentals.md) | Intermediate | 6-7h | LC-002, LC-030, LC-053 |
+
+**このフェーズの書籍対応の詳細**
+
+| ID | 書籍の章 |
+|:---|:---------------|
+| `LC-078` | Kim et al., The DevOps Handbook 2nd Ed. Ch.22-23; Shostack, Threat Modeling Ch.1-3; OWASP DevSecOps Guideline |
 
 ---
