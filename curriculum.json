@@ -1,6 +1,6 @@
 {
   "version": "2026.1",
-  "total_lessons": 79,
+  "total_lessons": 80,
   "phases": [
     {
       "id": 0,
@@ -84,6 +84,12 @@
       "id": 13,
       "name": "Governance, Risk & Compliance",
       "lessons": "LC-079",
+      "category": "specialized"
+    },
+    {
+      "id": 14,
+      "name": "AI Security",
+      "lessons": "LC-080",
       "category": "specialized"
     }
   ],
@@ -1205,6 +1211,21 @@
       ],
       "dir": "grc",
       "file": "1. GRC Fundamentals.md"
+    },
+    {
+      "id": "LC-080",
+      "phase": 14,
+      "phase_name": "AI Security",
+      "hours": "5-6h",
+      "level": "Intermediate",
+      "prerequisites": "LC-048, LC-053, LC-078",
+      "books_short": [
+        "OWASP Top 10 for LLM Applications 2025",
+        "NIST AI 100-1 (AI RMF 1.0)",
+        "MITRE ATLAS"
+      ],
+      "dir": "ai-security",
+      "file": "1. AI & LLM Security Fundamentals.md"
     }
   ],
   "core_foundation": [
@@ -1481,7 +1502,8 @@
         "LC-057",
         "LC-067",
         "LC-077",
-        "LC-078"
+        "LC-078",
+        "LC-080"
       ],
       "not_covered_yet": [
         "Threat modeling in depth (data-flow diagrams, attack trees)",

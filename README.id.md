@@ -4,7 +4,7 @@
 
 [![GitHub stars](https://img.shields.io/github/stars/Kodokthegr3at/Zero2Root?style=social)](https://github.com/Kodokthegr3at/Zero2Root/stargazers)
 
-![Lessons](https://img.shields.io/badge/lessons-79-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-pemula%20%E2%86%92%20lanjutan-orange) ![Phases](https://img.shields.io/badge/fase-14-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
+![Lessons](https://img.shields.io/badge/lessons-80-blue) ![Languages](https://img.shields.io/badge/languages-ID%20%C2%B7%20EN%20%C2%B7%20JA-success) ![Level](https://img.shields.io/badge/level-pemula%20%E2%86%92%20lanjutan-orange) ![Phases](https://img.shields.io/badge/fase-15-blueviolet) [![Last commit](https://img.shields.io/github/last-commit/Kodokthegr3at/Zero2Root)](https://github.com/Kodokthegr3at/Zero2Root/commits/main) [![License: MIT](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
 
 > **Dari nol sampai root** — basis pengetahuan cybersecurity trilingual dan roadmap karier untuk sisi serangan dan pertahanan, mencakup internal Linux, jaringan, keamanan aplikasi web, kriptografi, reverse engineering, dan bidang terkait. Halaman ini adalah edisi Bahasa Indonesia dan hanya menautkan ke file pelajaran berbahasa Indonesia; buka edisi English atau 日本語 di atas untuk dua bahasa lainnya.
 
@@ -14,7 +14,7 @@
 
 | Dokumen | Kegunaan |
 |:---------|:--------|
-| [ROADMAP.id.md](ROADMAP.id.md) | Jalur belajar utama: 79 pelajaran (`LC-001` sampai `LC-079`), 14 fase, prasyarat |
+| [ROADMAP.id.md](ROADMAP.id.md) | Jalur belajar utama: 80 pelajaran (`LC-001` sampai `LC-080`), 15 fase, prasyarat |
 | [CAREERS.id.md](CAREERS.id.md) | Jalur karier: 13 peran cyber security, pelajaran untuk tiap peran, jam belajar, dan apa yang belum dibahas |
 | [BOOKS.id.md](BOOKS.id.md) | Katalog PDF lokal di `~/Documents/Books/`, dipetakan ke tiap pelajaran |
 | [curriculum.json](curriculum.json) | Manifest kurikulum yang bisa dibaca mesin (ID, path, bab buku) |
@@ -33,7 +33,7 @@ Setiap pelajaran masuk ke satu fase, dan setiap fase masuk ke satu kategori. Pil
 | Offensive (red team) | 3, 5 | Serangan web, metodologi pentest, scanning, eksploitasi, privilege escalation. Hanya untuk lab dan pengujian berizin. |
 | Eksploitasi & reverse engineering | 6 | Bug memori, shellcode, assembly, analisis malware statis dan dinamis. |
 | Defensive (blue team) | 9 | SOC dan log, monitoring jaringan, threat hunting, incident response dan forensik. |
-| Domain spesialisasi | 7, 10, 11, 12, 13 | Active Directory, keamanan cloud, DevSecOps, GRC, Android, pembuatan tool keamanan dengan Python dan Go, social engineering, OSINT, hardware dan IoT. |
+| Domain spesialisasi | 7, 10, 11, 12, 13, 14 | Active Directory, keamanan cloud, DevSecOps, GRC, keamanan AI, Android, pembuatan tool keamanan dengan Python dan Go, social engineering, OSINT, hardware dan IoT. |
 | Bonus | 8 | Keterampilan editor dan produktivitas. |
 
 ---
@@ -68,6 +68,7 @@ Zero2Root/
   cloud-security/       # Tanggung jawab bersama, IAM, penyimpanan, jaringan, logging, audit
   devsecops/            # Threat modeling, secret scanning, SAST, SCA, DAST, keamanan pipeline CI
   grc/                  # Kebijakan, manajemen risiko, kontrol, kerangka kerja, hukum perlindungan data, audit
+  ai-security/          # OWASP Top 10 untuk LLM, prompt injection, agent, RAG, supply chain model, tata kelola AI
 ```
 
 Setiap folder topik mengikuti layout yang sama: sebuah direktori dasar berisi subfolder `id/`, `en/`, `ja/`, masing-masing menyimpan set file pelajaran yang sama, diterjemahkan dan ditulis secara independen untuk bahasa tersebut.
@@ -315,6 +316,16 @@ Kebijakan, manajemen risiko, kontrol, kerangka kerja, hukum perlindungan data, a
 
 ---
 
+## 19. Keamanan AI (`ai-security/`)
+
+OWASP Top 10 untuk LLM, prompt injection, agent, RAG, supply chain model, tata kelola AI.
+
+| LC-ID | Topik |
+|:------|:------|
+| `LC-080` | [AI & LLM Security Fundamentals](ai-security/id/1.%20AI%20%26%20LLM%20Security%20Fundamentals.md) |
+
+---
+
 ## Status cakupan
 
 Zero2Root belum membahas semuanya. Topik-topik ini belum ada sekarang, jadi pelajari dari sumber lain kalau kariermu membutuhkannya. Setiap karier di [CAREERS.id.md](CAREERS.id.md) juga mencantumkan bagian yang masih kurang.
@@ -324,7 +335,7 @@ Zero2Root belum membahas semuanya. Topik-topik ini belum ada sekarang, jadi pela
 | Active Directory: serangan, pertahanan, log event Windows (dasar-dasarnya ada di LC-076) | sebagian tersedia | Pentester, Red Team, SOC Analyst |
 | Keamanan cloud: IAM mendalam, Kubernetes, infrastructure as code (dasar-dasarnya ada di LC-077) | sebagian tersedia | Cloud Security Engineer |
 | DevSecOps: penandatanganan artefak, SLSA, platform secret (dasar-dasarnya ada di LC-078) | sebagian tersedia | AppSec & DevSecOps Engineer |
-| Keamanan AI dan LLM | direncanakan | AppSec, Red Team |
+| Keamanan AI dan LLM: pelatihan model dan poisoning secara mendalam, framework agent (dasar-dasarnya ada di LC-080) | sebagian tersedia | AppSec, Red Team |
 | GRC: penerapan ISO 27001, risiko kuantitatif, regulasi sektor (dasar-dasarnya ada di LC-079) | sebagian tersedia | GRC Analyst |
 | Keamanan API, eksploitasi heap, fuzzing, iOS | belum direncanakan | Web pentester, Vulnerability Researcher, Mobile |
 

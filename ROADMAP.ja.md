@@ -2,7 +2,7 @@
 
 # Zero2Root: マスターロードマップ
 
-> 14フェーズにわたる79レッスン、それぞれインドネシア語、英語、日本語で独立して書かれている。
+> 15フェーズにわたる80レッスン、それぞれインドネシア語、英語、日本語で独立して書かれている。
 > 書籍: `~/Documents/Books/`、完全なカタログは[BOOKS.ja.md](BOOKS.ja.md)を参照。
 > このページは日本語版であり、日本語のレッスンファイルにのみリンクしている。
 > 著者: [kodoktheGr3at](https://github.com/Kodokthegr3at/) | 2026
@@ -12,11 +12,11 @@
 ## このロードマップの使い方
 
 0. 進む方向がまだ決まっていなければ、まず[CAREERS.ja.md](CAREERS.ja.md)で職種を選ぶ。どのレッスンをどの順で受ければよいかが分かる。
-1. すでにあるフェーズを習得済みでない限り、`LC-001`から`LC-079`の順に進める。
+1. すでにあるフェーズを習得済みでない限り、`LC-001`から`LC-080`の順に進める。
 2. 各レッスンファイルの冒頭にCurriculum IDブロックがある（`LC-CURRICULUM`で検索）。
 3. 書籍対応の行を読み、[BOOKS.ja.md](BOOKS.ja.md)から参照されている章を開く。
 4. セキュリティノートとチートシートのセクションをラボVMで実際に手を動かして進める。
-5. 完全習得までの推定総時間: おおよそ325〜405時間。
+5. 完全習得までの推定総時間: おおよそ330〜410時間。
 
 ```mermaid
 flowchart TD
@@ -33,6 +33,7 @@ flowchart TD
     P3 --> P11[Phase 11: Cloud Security LC-077]
     P3 --> P12[Phase 12: DevSecOps LC-078]
     P9 --> P13[Phase 13: GRC LC-079]
+    P3 --> P14[Phase 14: AI Security LC-080]
 ```
 
 ---
@@ -416,5 +417,23 @@ flowchart TD
 | ID | 書籍の章 |
 |:---|:---------------|
 | `LC-079` | NIST CSF 2.0; ISO/IEC 27001:2022; NIST SP 800-30 Rev.1; Hubbard & Seiersen, How to Measure Anything in Cybersecurity Risk Ch.1-4 |
+
+---
+
+## フェーズ 14: AIセキュリティ (`LC-080`)
+
+カテゴリ: **専門分野**
+
+主要な書籍: OWASP Top 10 for LLM Applications, NIST AI RMF, MITRE ATLAS.
+
+| ID | トピック | レベル | 時間 | 前提 |
+|:---|:------|:------|:------|:---------------|
+| `LC-080` | [AI & LLM Security Fundamentals](ai-security/ja/1.%20AI%20%26%20LLM%20Security%20Fundamentals.md) | Intermediate | 5-6h | LC-048, LC-053, LC-078 |
+
+**このフェーズの書籍対応の詳細**
+
+| ID | 書籍の章 |
+|:---|:---------------|
+| `LC-080` | OWASP Top 10 for LLM Applications 2025; NIST AI 100-1 (AI RMF 1.0); MITRE ATLAS |
 
 ---

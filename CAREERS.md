@@ -29,7 +29,7 @@
 | [Red Team Operator](#red-team-operator) | Plays a realistic attacker over weeks to test whether the blue team notices | no | 24 | 107-131 | partial |
 | [Malware Analyst & Reverse Engineer](#malware-analyst--reverse-engineer) | Takes a suspicious file apart to learn what it does, how to detect it, and how to clean up after it | no | 7 | 40-50 | good |
 | [Vulnerability Researcher & Exploit Developer](#vulnerability-researcher--exploit-developer) | Finds new bugs in software and proves whether they can be exploited, so vendors can fix them | no | 4 | 25-32 | minimal |
-| [Application Security & DevSecOps Engineer](#application-security--devsecops-engineer) | Works with developers so code ships safely: reviews designs and code, and adds security checks to the build pipeline | no | 17 | 69-85 | good |
+| [Application Security & DevSecOps Engineer](#application-security--devsecops-engineer) | Works with developers so code ships safely: reviews designs and code, and adds security checks to the build pipeline | no | 18 | 74-91 | good |
 | [Cloud Security Engineer](#cloud-security-engineer) | Secures accounts, identities, networks, and workloads on AWS, Azure, or Google Cloud | no | 10 | 43-50 | partial |
 | [Threat Intelligence & OSINT Analyst](#threat-intelligence--osint-analyst) | Tracks attacker groups and their methods from public and private sources, and turns that into advice the defenders can use | no | 5 | 25-30 | partial |
 | [Mobile & IoT Security Specialist](#mobile--iot-security-specialist) | Tests phone apps, smart devices, and their firmware, from the app code down to the circuit board | no | 14 | 66-81 | partial |
@@ -395,8 +395,9 @@ Study time for this path: about 25 to 32 hours on top of the core foundation.
 | 15 | `LC-067` | [Offensive Python & Go for Pentesters](programming-security/en/Offensive%20Python%20%26%20Go%20for%20Pentesters.md) | Advanced | 6-8h |
 | 16 | `LC-077` | [Cloud Security Fundamentals](cloud-security/en/1.%20Cloud%20Security%20Fundamentals.md) | Intermediate | 5-6h |
 | 17 | `LC-078` | [DevSecOps Fundamentals](devsecops/en/1.%20DevSecOps%20Fundamentals.md) | Intermediate | 6-7h |
+| 18 | `LC-080` | [AI & LLM Security Fundamentals](ai-security/en/1.%20AI%20%26%20LLM%20Security%20Fundamentals.md) | Intermediate | 5-6h |
 
-Study time for this path: about 69 to 85 hours on top of the core foundation.
+Study time for this path: about 74 to 91 hours on top of the core foundation.
 
 **Not covered in Zero2Root yet** (study these from other sources):
 

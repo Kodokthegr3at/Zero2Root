@@ -2,7 +2,7 @@
 
 # Zero2Root: Master Roadmap
 
-> 79 lessons across 14 phases, each written independently in Bahasa Indonesia, English, and Japanese.
+> 80 lessons across 15 phases, each written independently in Bahasa Indonesia, English, and Japanese.
 > Books: `~/Documents/Books/`, see [BOOKS.md](BOOKS.md) for the full catalog.
 > This page is the English edition and links only to the English lesson files.
 > Author: [kodoktheGr3at](https://github.com/Kodokthegr3at/) | 2026
@@ -12,11 +12,11 @@
 ## How to use this roadmap
 
 0. Not sure where you are heading? Pick a role in [CAREERS.md](CAREERS.md) first. It tells you which of these lessons to take and in what order.
-1. Follow the order `LC-001` through `LC-079` unless you have already mastered a phase.
+1. Follow the order `LC-001` through `LC-080` unless you have already mastered a phase.
 2. Each lesson file carries a Curriculum ID block near the top (search for `LC-CURRICULUM`).
 3. Read the book map line, then open the referenced chapters from [BOOKS.md](BOOKS.md).
 4. Work through the security notes and cheatsheet sections hands-on in a lab VM.
-5. Estimated total time for full mastery: roughly 325 to 405 hours.
+5. Estimated total time for full mastery: roughly 330 to 410 hours.
 
 ```mermaid
 flowchart TD
@@ -33,6 +33,7 @@ flowchart TD
     P3 --> P11[Phase 11: Cloud Security LC-077]
     P3 --> P12[Phase 12: DevSecOps LC-078]
     P9 --> P13[Phase 13: GRC LC-079]
+    P3 --> P14[Phase 14: AI Security LC-080]
 ```
 
 ---
@@ -416,5 +417,23 @@ Primary books: Hubbard & Seiersen, ISO/IEC 27001, NIST CSF 2.0, NIST SP 800-30.
 | ID | Book chapters |
 |:---|:---------------|
 | `LC-079` | NIST CSF 2.0; ISO/IEC 27001:2022; NIST SP 800-30 Rev.1; Hubbard & Seiersen, How to Measure Anything in Cybersecurity Risk Ch.1-4 |
+
+---
+
+## Phase 14: AI Security (`LC-080`)
+
+Category: **Specialized domains**
+
+Primary books: OWASP Top 10 for LLM Applications, NIST AI RMF, MITRE ATLAS.
+
+| ID | Topic | Level | Hours | Prerequisites |
+|:---|:------|:------|:------|:---------------|
+| `LC-080` | [AI & LLM Security Fundamentals](ai-security/en/1.%20AI%20%26%20LLM%20Security%20Fundamentals.md) | Intermediate | 5-6h | LC-048, LC-053, LC-078 |
+
+**Book map detail for this phase**
+
+| ID | Book chapters |
+|:---|:---------------|
+| `LC-080` | OWASP Top 10 for LLM Applications 2025; NIST AI 100-1 (AI RMF 1.0); MITRE ATLAS |
 
 ---

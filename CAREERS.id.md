@@ -29,7 +29,7 @@
 | [Red Team Operator](#red-team-operator) | Berperan sebagai penyerang realistis selama berminggu-minggu untuk menguji apakah blue team menyadarinya | tidak | 24 | 107-131 | sebagian |
 | [Malware Analyst & Reverse Engineer](#malware-analyst--reverse-engineer) | Membongkar file mencurigakan untuk tahu apa yang dilakukannya, cara mendeteksinya, dan cara membersihkan dampaknya | tidak | 7 | 40-50 | baik |
 | [Vulnerability Researcher & Exploit Developer](#vulnerability-researcher--exploit-developer) | Mencari bug baru di software dan membuktikan apakah bisa dieksploitasi, supaya vendor bisa memperbaikinya | tidak | 4 | 25-32 | minim |
-| [Application Security & DevSecOps Engineer](#application-security--devsecops-engineer) | Bekerja bersama developer supaya kode dirilis dengan aman: meninjau desain dan kode, serta menambahkan pengecekan keamanan ke pipeline build | tidak | 17 | 69-85 | baik |
+| [Application Security & DevSecOps Engineer](#application-security--devsecops-engineer) | Bekerja bersama developer supaya kode dirilis dengan aman: meninjau desain dan kode, serta menambahkan pengecekan keamanan ke pipeline build | tidak | 18 | 74-91 | baik |
 | [Cloud Security Engineer](#cloud-security-engineer) | Mengamankan akun, identitas, jaringan, dan workload di AWS, Azure, atau Google Cloud | tidak | 10 | 43-50 | sebagian |
 | [Threat Intelligence & OSINT Analyst](#threat-intelligence--osint-analyst) | Melacak kelompok penyerang dan metodenya dari sumber publik maupun privat, lalu mengubahnya jadi saran yang bisa dipakai tim defender | tidak | 5 | 25-30 | sebagian |
 | [Spesialis Keamanan Mobile & IoT](#spesialis-keamanan-mobile--iot) | Menguji aplikasi ponsel, perangkat pintar, dan firmware-nya, mulai dari kode aplikasi sampai papan sirkuit | tidak | 14 | 66-81 | sebagian |
@@ -395,8 +395,9 @@ Waktu belajar jalur ini: sekitar 25 sampai 32 jam di luar fondasi inti.
 | 15 | `LC-067` | [Offensive Python & Go for Pentesters](programming-security/id/Offensive%20Python%20%26%20Go%20for%20Pentesters.md) | Lanjutan | 6-8 jam |
 | 16 | `LC-077` | [Cloud Security Fundamentals](cloud-security/id/1.%20Cloud%20Security%20Fundamentals.md) | Menengah | 5-6 jam |
 | 17 | `LC-078` | [DevSecOps Fundamentals](devsecops/id/1.%20DevSecOps%20Fundamentals.md) | Menengah | 6-7 jam |
+| 18 | `LC-080` | [AI & LLM Security Fundamentals](ai-security/id/1.%20AI%20%26%20LLM%20Security%20Fundamentals.md) | Menengah | 5-6 jam |
 
-Waktu belajar jalur ini: sekitar 69 sampai 85 jam di luar fondasi inti.
+Waktu belajar jalur ini: sekitar 74 sampai 91 jam di luar fondasi inti.
 
 **Belum dibahas di Zero2Root** (pelajari dari sumber lain):
 
